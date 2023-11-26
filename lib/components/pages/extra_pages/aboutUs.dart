@@ -9,6 +9,9 @@ class AboutUs extends StatelessWidget {
         appBar: AppBar(
           title: Text("elPlatform - About Us"),
         ),
-        body: Text("About us"));
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text("About us"),
+        ));
   }
 }

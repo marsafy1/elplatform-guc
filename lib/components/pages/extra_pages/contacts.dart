@@ -9,6 +9,9 @@ class Contacts extends StatelessWidget {
         appBar: AppBar(
           title: Text("elPlatform - Contacts"),
         ),
-        body: Text("Contacts"));
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text("Contacts"),
+        ));
   }
 }

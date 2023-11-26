@@ -9,6 +9,9 @@ class Courses extends StatelessWidget {
         appBar: AppBar(
           title: Text("elPlatform - Courses"),
         ),
-        body: Text("Courses"));
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text("Courses"),
+        ));
   }
 }

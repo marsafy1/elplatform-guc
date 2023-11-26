@@ -9,6 +9,9 @@ class Instructors extends StatelessWidget {
         appBar: AppBar(
           title: Text("elPlatform - Instructors"),
         ),
-        body: Text("Instructors"));
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text("Instructors"),
+        ));
   }
 }

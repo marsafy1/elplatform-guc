@@ -9,6 +9,9 @@ class Navigation extends StatelessWidget {
         appBar: AppBar(
           title: Text("elPlatform - Navigation"),
         ),
-        body: Text("Navigation"));
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text("Navigation"),
+        ));
   }
 }

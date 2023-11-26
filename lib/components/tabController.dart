@@ -40,7 +40,10 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
         backgroundColor: Color.fromARGB(255, 9, 5, 5).withOpacity(0.3),
       ),
       drawer: MainDrawer(),
-      body: myPages[selectedTabIndex],
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: myPages[selectedTabIndex],
+      ),
       bottomNavigationBar: GlassMorphicBottomNavigationBar(
         selectedIndex: selectedTabIndex,
         onItemSelected: switchPage,
