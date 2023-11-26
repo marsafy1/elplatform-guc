@@ -18,6 +18,8 @@ class GlassMorphicBottomNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // A glassmorphic container with blur effect
+    var brightness = MediaQuery.of(context).platformBrightness;
+    var isDarkTheme = brightness == Brightness.dark;
     return ClipRRect(
       borderRadius:
           BorderRadius.vertical(top: Radius.circular(16)), // Rounded corners
@@ -25,8 +27,10 @@ class GlassMorphicBottomNavigationBar extends StatelessWidget {
         filter: ImageFilter.blur(sigmaX: blurStrength, sigmaY: blurStrength),
         child: Container(
           decoration: BoxDecoration(
-            color: Color.fromARGB(255, 9, 5, 5)
-                .withOpacity(0.3), // Semi-transparent container
+            color: isDarkTheme
+                ? Color.fromARGB(255, 9, 5, 5).withOpacity(0.3)
+                : Color.fromARGB(255, 9, 5, 5)
+                    .withOpacity(0.3), // Semi-transparent container
           ),
           child: BottomNavigationBar(
             type: BottomNavigationBarType.fixed,

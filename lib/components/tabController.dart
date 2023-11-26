@@ -36,7 +36,8 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('ElMatbakh'),
+        title: Text('elPlatform'),
+        backgroundColor: Color.fromARGB(255, 9, 5, 5).withOpacity(0.3),
       ),
       drawer: MainDrawer(),
       body: myPages[selectedTabIndex],

@@ -12,7 +12,8 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
-      themeMode: ThemeMode.system,
+      // themeMode: ThemeMode.system,
+      themeMode: ThemeMode.dark,
       initialRoute: '/',
       routes: {
         '/': (dummCtx) => TabsControllerScreen(),
