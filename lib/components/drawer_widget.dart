@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:guc_swiss_knife/configs/constants.dart';
 
 class MainDrawer extends StatelessWidget {
+  const MainDrawer({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -13,43 +16,43 @@ class MainDrawer extends StatelessWidget {
               Container(
                 height: 100,
                 width: double.infinity,
-                padding: EdgeInsets.all(20),
+                padding: const EdgeInsets.all(20),
                 alignment: Alignment.centerLeft,
-                child: Text(
-                  'elPlatform',
+                child: const Text(
+                  appName,
                   style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 30,
                       color: Colors.white),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               ListTile(
-                leading: FaIcon(FontAwesomeIcons.phone),
-                title: Text("GUC Contacts"),
+                leading: const FaIcon(FontAwesomeIcons.phone),
+                title: const Text("GUC Contacts"),
                 onTap: () {
                   Navigator.of(context).pushNamed('/contacts');
                 },
               ),
               ListTile(
-                leading: FaIcon(FontAwesomeIcons.mapLocation),
-                title: Text("Navigation"),
+                leading: const FaIcon(FontAwesomeIcons.mapLocation),
+                title: const Text("Navigation"),
                 onTap: () {
                   Navigator.of(context).pushNamed('/navigation');
                 },
               ),
               ListTile(
-                leading: FaIcon(FontAwesomeIcons.book),
-                title: Text("Courses"),
+                leading: const FaIcon(FontAwesomeIcons.book),
+                title: const Text("Courses"),
                 onTap: () {
                   Navigator.of(context).pushNamed('/courses');
                 },
               ),
               ListTile(
-                leading: FaIcon(FontAwesomeIcons.chalkboardUser),
-                title: Text("Instructors"),
+                leading: const FaIcon(FontAwesomeIcons.chalkboardUser),
+                title: const Text("Instructors"),
                 onTap: () {
                   Navigator.of(context).pushNamed('/instructors');
                 },
@@ -59,13 +62,13 @@ class MainDrawer extends StatelessWidget {
           Column(
             children: [
               ListTile(
-                leading: FaIcon(FontAwesomeIcons.rightFromBracket),
-                title: Text("Logout"),
+                leading: const FaIcon(FontAwesomeIcons.rightFromBracket),
+                title: const Text("Logout"),
                 onTap: () {},
               ),
               ListTile(
-                leading: FaIcon(FontAwesomeIcons.info),
-                title: Text("About Us"),
+                leading: const FaIcon(FontAwesomeIcons.info),
+                title: const Text("About Us"),
                 onTap: () {
                   Navigator.of(context).pushNamed('/aboutUs');
                 },

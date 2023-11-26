@@ -5,6 +5,6 @@ class LostAndFoundsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text("Lost And Founds Page");
+    return const Text("Lost And Founds Page");
   }
 }

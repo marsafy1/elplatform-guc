@@ -5,6 +5,6 @@ class ConfessionsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text("Confessions Page");
+    return const Text("Confessions Page");
   }
 }

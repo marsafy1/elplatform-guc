@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guc_swiss_knife/configs/constants.dart';
 
 class Navigation extends StatelessWidget {
   const Navigation({super.key});
@@ -7,10 +8,10 @@ class Navigation extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("elPlatform - Navigation"),
+          title: const Text("$appName - Navigation"),
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(8.0),
+        body: const Padding(
+          padding: EdgeInsets.all(8.0),
           child: Text("Navigation"),
         ));
   }

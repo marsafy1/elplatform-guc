@@ -5,6 +5,6 @@ class QuestionsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text("Questions Page");
+    return const Text("Questions Page");
   }
 }
