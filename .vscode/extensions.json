@@ -1,0 +1,13 @@
+{
+    "recommendations": [
+        "nash.awesome-flutter-snippets",
+        "aaron-bond.better-comments",
+        "streetsidesoftware.code-spell-checker",
+        "naumovs.color-highlight",
+        "usernamehw.errorlens",
+        "dart-code.flutter",
+        "gmlewis-vscode.flutter-stylizer",
+        "christian-kohler.path-intellisense",
+        "jeroen-meijer.pubspec-assist"
+    ]
+}
