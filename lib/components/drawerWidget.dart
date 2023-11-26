@@ -30,28 +30,28 @@ class MainDrawer extends StatelessWidget {
                 leading: FaIcon(FontAwesomeIcons.phone),
                 title: Text("GUC Contacts"),
                 onTap: () {
-                  Navigator.of(context).pushNamed('/');
+                  Navigator.of(context).pushNamed('/contacts');
                 },
               ),
               ListTile(
                 leading: FaIcon(FontAwesomeIcons.mapLocation),
                 title: Text("Navigation"),
                 onTap: () {
-                  Navigator.of(context).pushNamed('/');
+                  Navigator.of(context).pushNamed('/navigation');
                 },
               ),
               ListTile(
                 leading: FaIcon(FontAwesomeIcons.book),
                 title: Text("Courses"),
                 onTap: () {
-                  Navigator.of(context).pushNamed('/');
+                  Navigator.of(context).pushNamed('/courses');
                 },
               ),
               ListTile(
                 leading: FaIcon(FontAwesomeIcons.chalkboardUser),
                 title: Text("Instructors"),
                 onTap: () {
-                  Navigator.of(context).pushNamed('/');
+                  Navigator.of(context).pushNamed('/instructors');
                 },
               ),
             ],
@@ -61,15 +61,13 @@ class MainDrawer extends StatelessWidget {
               ListTile(
                 leading: FaIcon(FontAwesomeIcons.rightFromBracket),
                 title: Text("Logout"),
-                onTap: () {
-                  Navigator.of(context).pushNamed('/');
-                },
+                onTap: () {},
               ),
               ListTile(
                 leading: FaIcon(FontAwesomeIcons.info),
                 title: Text("About Us"),
                 onTap: () {
-                  Navigator.of(context).pushNamed('/');
+                  Navigator.of(context).pushNamed('/aboutUs');
                 },
               ),
             ],
