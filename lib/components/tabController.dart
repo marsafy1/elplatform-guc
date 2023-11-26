@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // importing tabs controller
-import './tabs controlleer/glassyNavbar.dart';
+import './tabsController/glassyNavbar.dart';
 // importing the drawer
 import './drawerWidget.dart';
 // importing the main pages

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import './components/tabController.dart';
 // importing extra pages that will be placed in the drawer
-import './components/pages/extra_pages/aboutUs.dart';
-import './components/pages/extra_pages/contacts.dart';
-import './components/pages/extra_pages/courses.dart';
-import './components/pages/extra_pages/instructors.dart';
-import './components/pages/extra_pages/navigation.dart';
+import './components/pages/extraPages/aboutUs.dart';
+import './components/pages/extraPages/contacts.dart';
+import './components/pages/extraPages/courses.dart';
+import './components/pages/extraPages/instructors.dart';
+import './components/pages/extraPages/navigation.dart';
 
 void main() {
   runApp(MyApp());
