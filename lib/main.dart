@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:guc_swiss_knife/configs/constants.dart';
 import 'components/tab_controller.dart';
-import 'components/pages/extra_pages/about_us.dart';
-import 'components/pages/extra_pages/contacts.dart';
-import 'components/pages/extra_pages/courses.dart';
-import 'components/pages/extra_pages/instructors.dart';
-import 'components/pages/extra_pages/navigation.dart';
+import 'pages/extra_pages/about_us.dart';
+import 'pages/extra_pages/contacts.dart';
+import 'pages/extra_pages/courses.dart';
+import 'pages/extra_pages/instructors.dart';
+import 'pages/extra_pages/navigation.dart';
 
 void main() {
   runApp(const MyApp());

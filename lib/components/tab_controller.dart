@@ -4,11 +4,11 @@ import 'package:guc_swiss_knife/configs/constants.dart';
 
 import 'tabs_controller/glassy_navbar.dart';
 import 'drawer_widget.dart';
-import 'pages/home_page.dart';
-import 'pages/confessions_page.dart';
-import 'pages/questions_page.dart';
-import 'pages/lost_and_founds_page.dart';
-import 'pages/notifications_page.dart';
+import '../pages/home_page.dart';
+import '../pages/confessions_page.dart';
+import '../pages/questions_page.dart';
+import '../pages/lost_and_founds_page.dart';
+import '../pages/notifications_page.dart';
 
 class TabsControllerScreen extends StatefulWidget {
   const TabsControllerScreen({super.key});
