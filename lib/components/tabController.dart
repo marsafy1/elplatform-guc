@@ -1,6 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+// importing tabs controller
+import './tabs controlleer/glassyNavbar.dart';
+// importing the drawer
 import './drawerWidget.dart';
+// importing the main pages
 import './pages/homePage.dart';
+import './pages/confessionsPage.dart';
+import './pages/questionsPage.dart';
+import './pages/lostAndFoundsPage.dart';
+import './pages/notificationsPage.dart';
 
 class TabsControllerScreen extends StatefulWidget {
   @override
@@ -10,6 +19,11 @@ class TabsControllerScreen extends StatefulWidget {
 class _TabsControllerScreenState extends State<TabsControllerScreen> {
   final List<Widget> myPages = [
     HomePage(),
+    ConfessionsPage(),
+    QuestionsPage(),
+    LostAndFoundsPage(),
+    NotificationsPage()
+    // Add other page widgets here
   ];
   var selectedTabIndex = 0;
   void switchPage(int index) {
@@ -21,22 +35,38 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('ElMatbakh'),
-        ),
-        drawer: MainDrawer(),
-        body: myPages[selectedTabIndex],
-        bottomNavigationBar: BottomNavigationBar(
-          items: [
-            BottomNavigationBarItem(
-                icon: Icon(Icons.fastfood_rounded), label: 'Categories'),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.favorite_rounded), label: 'Favorites'),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.settings), label: 'Settings')
-          ],
-          currentIndex: selectedTabIndex,
-          onTap: switchPage,
-        ));
+      appBar: AppBar(
+        title: Text('ElMatbakh'),
+      ),
+      drawer: MainDrawer(),
+      body: myPages[selectedTabIndex],
+      bottomNavigationBar: GlassMorphicBottomNavigationBar(
+        selectedIndex: selectedTabIndex,
+        onItemSelected: switchPage,
+        listItems: [
+          BottomNavigationBarItem(
+            icon: FaIcon(FontAwesomeIcons.house),
+            label: 'Home', // Empty string for label
+          ),
+          BottomNavigationBarItem(
+            icon: FaIcon(FontAwesomeIcons.solidHeart),
+            label: 'Confessions', // Empty string for label
+          ),
+          BottomNavigationBarItem(
+            icon: FaIcon(FontAwesomeIcons.fileCircleQuestion),
+            label: 'Q/A', // Empty string for label
+          ),
+          BottomNavigationBarItem(
+            icon: FaIcon(FontAwesomeIcons.suitcase),
+            label: 'Lost & Founds', // Empty string for label
+          ),
+          BottomNavigationBarItem(
+            icon: FaIcon(FontAwesomeIcons.solidBell),
+            label: 'Noitifications', // Empty string for label
+          ),
+          // Add more items as needed
+        ],
+      ),
+    );
   }
 }
