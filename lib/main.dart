@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
         '/': (dummyCtx) => const TabsControllerScreen(),
         '/contacts': (dummyCtx) => const Contacts(),
         '/navigation': (dummyCtx) => const Navigation(),
-        '/courses': (dummyCtx) => const Courses(),
+        '/courses': (dummyCtx) => Courses(),
         '/instructors': (dummyCtx) => const Instructors(),
         '/aboutUs': (dummyCtx) => const AboutUs(),
       },
