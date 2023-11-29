@@ -24,23 +24,61 @@ class CourseCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              padding: const EdgeInsets.all(10.0),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(5.0),
-                child: Image.network(
-                  course.photoUrl,
-                  fit: BoxFit.cover,
-                  width: 120,
-                  height: 120,
-                ),
+              padding: const EdgeInsets.fromLTRB(10, 15, 10, 15),
+              width: 120,
+              height: 120,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  const CircularProgressIndicator(),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(5.0),
+                    child: FadeInImage(
+                      placeholder: const AssetImage('assets/Empty.png'),
+                      image: NetworkImage(course.photoUrl),
+                      fit: BoxFit.cover,
+                      width: 100,
+                      height: 100,
+                    ),
+                  ),
+                ],
               ),
             ),
-            Column(
-              children: [Text(course.title), Text(course.description)],
-            )
+            CourseCardDetails(course: course)
           ],
         ),
       ),
+    );
+  }
+}
+
+class CourseCardDetails extends StatelessWidget {
+  final Course course;
+  const CourseCardDetails({required this.course, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+            padding: const EdgeInsets.fromLTRB(0, 12, 0, 5),
+            child: Text(
+              course.title,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.left,
+            )),
+        Text(
+          course.description,
+          style: const TextStyle(
+            fontSize: 14,
+          ),
+          textAlign: TextAlign.left,
+        ),
+      ],
     );
   }
 }
