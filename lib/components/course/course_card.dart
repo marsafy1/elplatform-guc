@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:guc_swiss_knife/models/course.dart';
 
 class CourseCard extends StatelessWidget {
@@ -71,12 +73,35 @@ class CourseCardDetails extends StatelessWidget {
               ),
               textAlign: TextAlign.left,
             )),
-        Text(
-          course.description,
-          style: const TextStyle(
-            fontSize: 14,
+        RatingBar.builder(
+          initialRating: 3.5,
+          minRating: 1,
+          direction: Axis.horizontal,
+          allowHalfRating: true,
+          itemCount: 5,
+          itemPadding: const EdgeInsets.symmetric(horizontal: 0),
+          itemBuilder: (context, _) => const Icon(
+            Icons.star,
+            color: Colors.amber,
           ),
-          textAlign: TextAlign.left,
+          itemSize: 15,
+          onRatingUpdate: (_) {},
+          ignoreGestures: true,
+        ),
+        // a widget that displays a long text in several lines
+        Container(
+          padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+          //make width equals parent width
+          width: MediaQuery.of(context).size.width - 140,
+          child: const Text(
+            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+            style: TextStyle(
+              fontSize: 14,
+            ),
+            textAlign: TextAlign.left,
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
       ],
     );
