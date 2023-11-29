@@ -1,4 +1,3 @@
-//stateless widget that displays the course card based on Course model
 import 'package:flutter/material.dart';
 import 'package:guc_swiss_knife/models/course.dart';
 
@@ -15,31 +14,30 @@ class CourseCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(5),
+      ),
+      margin: const EdgeInsets.fromLTRB(10, 10, 10, 0),
       child: InkWell(
         onTap: () => onTap(course),
-        child: Column(
+        child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              child: Image.network(
-                course.photoUrl,
-                fit: BoxFit.cover,
+            Container(
+              padding: const EdgeInsets.all(10.0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(5.0),
+                child: Image.network(
+                  course.photoUrl,
+                  fit: BoxFit.cover,
+                  width: 120,
+                  height: 120,
+                ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                course.title,
-                style: Theme.of(context).textTheme.headline6,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                course.description,
-                style: Theme.of(context).textTheme.bodyText2,
-              ),
-            ),
+            Column(
+              children: [Text(course.title), Text(course.description)],
+            )
           ],
         ),
       ),
