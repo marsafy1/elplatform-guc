@@ -53,8 +53,7 @@ class Courses extends StatelessWidget {
           Expanded(
               child: ListView.builder(
                   itemBuilder: (ctx, index) {
-                    return CourseCard(
-                        course: courses[index], onTap: (course) {});
+                    return CourseCard(course: courses[index]);
                   },
                   itemCount: courses.length))
         ]));
