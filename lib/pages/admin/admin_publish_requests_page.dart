@@ -6,24 +6,25 @@ import 'package:guc_swiss_knife/models/publish_request.dart';
 
 class AdminPublishRequests extends StatelessWidget {
   const AdminPublishRequests({super.key});
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: MyAppBar(),
-        drawer: const MainDrawer(),
-        // generate list of cards in the body
-        body: ListView.builder(
-          itemCount: 10,
-          itemBuilder: (context, index) {
-            return PublishRequestCard(
-              publishRequest: PublishRequest(
-                title: 'title',
-                content: 'content',
-                tags: ['tag1', 'tag2'],
-              ),
-            );
-          },
-        ));
+      appBar: MyAppBar(),
+      drawer: const MainDrawer(),
+      // generate list of cards in the body
+      body: ListView.builder(
+        itemCount: 10,
+        itemBuilder: (context, index) {
+          return PublishRequestCard(
+            publishRequest: PublishRequest(
+              title: 'title',
+              content: 'content',
+              tags: ['tag1', 'tag2'],
+            ),
+          );
+        },
+      ),
+    );
   }
 }
