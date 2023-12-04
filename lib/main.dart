@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
         '/contacts': (dummyCtx) => const Contacts(),
         '/navigation': (dummyCtx) => const Navigation(),
         '/courses': (dummyCtx) => Courses(),
-        '/courseDetails': (dummyCtx) => const CourseDetails(),
+        '/courseDetails': (dummyCtx) => CourseDetails(),
         '/instructors': (dummyCtx) => const Instructors(),
         '/aboutUs': (dummyCtx) => const AboutUs(),
       },
