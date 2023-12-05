@@ -19,7 +19,8 @@ class CourseCard extends StatelessWidget {
       ),
       margin: const EdgeInsets.fromLTRB(10, 10, 10, 0),
       child: InkWell(
-        onTap: () => Navigator.of(context).pushNamed('/courseDetails'),
+        onTap: () => Navigator.of(context)
+            .pushNamed('/courseDetails', arguments: {'id': course.id}),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

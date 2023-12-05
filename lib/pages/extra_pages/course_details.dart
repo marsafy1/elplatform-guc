@@ -1,18 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:guc_swiss_knife/models/course.dart';
+import 'package:guc_swiss_knife/services/course_service.dart';
 
-class CourseDetails extends StatelessWidget {
-  final Course course = Course(
-    id: '1',
-    title: "Course 1",
-    description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-    photoUrl: "https://picsum.photos/200/300",
-  );
-  CourseDetails({super.key});
+class CourseDetails extends StatefulWidget {
+  const CourseDetails({super.key});
+  @override
+  _CourseDetails createState() => _CourseDetails();
+}
+
+class _CourseDetails extends State<CourseDetails> {
+  final CourseService _courseService = CourseService();
+  Course course = Course(id: "", title: "", description: "", photoUrl: "");
 
   @override
   Widget build(BuildContext context) {
+    final routeArgs =
+        ModalRoute.of(context)!.settings.arguments as Map<String, String>;
+    final courseId = routeArgs['id'];
+    _courseService.getCourseById(courseId).then((value) {
+      setState(() {
+        course = value;
+      });
+    });
     return Scaffold(
         appBar: AppBar(
           title: Text(course.title),
@@ -41,9 +50,7 @@ class CourseDetails extends StatelessWidget {
 
 class CourseDescription extends StatefulWidget {
   final String description;
-  final int maxLines;
-  const CourseDescription(
-      {required this.description, this.maxLines = 3, super.key});
+  const CourseDescription({required this.description, super.key});
   @override
   State<CourseDescription> createState() {
     return _CourseDescription();
@@ -51,9 +58,10 @@ class CourseDescription extends StatefulWidget {
 }
 
 class _CourseDescription extends State<CourseDescription> {
-  String description = "";
   int maxLines = 3;
+  String buttonText = "Show More";
   _CourseDescription();
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -61,16 +69,22 @@ class _CourseDescription extends State<CourseDescription> {
       child: Column(
         children: [
           Text(
-            description,
+            widget.description,
             maxLines: maxLines,
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.left,
           ),
           TextButton(
-            onPressed: () {},
-            child: const Text(
-              "Read More",
-              style: TextStyle(
+            onPressed: () {
+              setState(() {
+                maxLines = maxLines == 3 ? 100000 : 3;
+                buttonText =
+                    buttonText == "Show More" ? "Show Less" : "Show More";
+              });
+            },
+            child: Text(
+              buttonText,
+              style: const TextStyle(
                 color: Colors.blue,
               ),
             ),

@@ -17,4 +17,16 @@ class CourseService {
       }).toList();
     });
   }
+
+  Future<Course> getCourseById(String? id) {
+    if (id == null) throw Exception("id is null");
+    return _coursesCollectionReference.doc(id).get().then((doc) {
+      return Course(
+        id: doc.id,
+        title: doc['title'],
+        description: doc['description'],
+        photoUrl: doc['photo_url'],
+      );
+    });
+  }
 }
