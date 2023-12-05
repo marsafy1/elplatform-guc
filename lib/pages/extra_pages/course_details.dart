@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:guc_swiss_knife/configs/constants.dart';
 import 'package:guc_swiss_knife/models/course.dart';
 
 class CourseDetails extends StatelessWidget {
