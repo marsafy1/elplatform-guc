@@ -22,9 +22,9 @@ class InstructorCard extends StatelessWidget {
         title: Text(instructorName),
         subtitle: Text("$instructorRating ⭐"),
         trailing: const Icon(Icons.arrow_forward_ios),
-        // onTap: () {
-        //   Navigator.pushNamed(context, '/instructorDetails');
-        // },
+        onTap: () {
+          Navigator.pushNamed(context, '/instructorDetails',  arguments: { 'instructorName': instructorName, 'instructorRating': instructorRating});
+        },
         
       ),
     );

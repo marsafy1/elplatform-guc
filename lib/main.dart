@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guc_swiss_knife/configs/constants.dart';
+import 'package:guc_swiss_knife/pages/admin/instructor_details.dart';
 import 'components/tab_controller.dart';
 import 'pages/extra_pages/about_us.dart';
 import 'pages/extra_pages/contacts.dart';
@@ -29,8 +30,9 @@ class MyApp extends StatelessWidget {
         '/contacts': (dummyCtx) => const Contacts(),
         '/navigation': (dummyCtx) => const Navigation(),
         '/courses': (dummyCtx) => const Courses(),
-        '/instructors': (dummyCtx) => const Instructors(),
         '/aboutUs': (dummyCtx) => const AboutUs(),
+        '/instructors': (dummyCtx) => const Instructors(),
+        '/instructorDetails': (dummyCtx) => const InstructorDetails()
       },
     );
   }
