@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "11875649217",
+    "project_id": "el-platform",
+    "storage_bucket": "el-platform.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:11875649217:android:a20bfdccca44cc2aaff640",
+        "android_client_info": {
+          "package_name": "com.example.guc_swiss_knife"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAv4q1mYsSwtgVckeTn1veF7lkqkq-6UhY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

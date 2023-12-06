@@ -1,16 +1,23 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:guc_swiss_knife/configs/constants.dart';
 import 'package:guc_swiss_knife/pages/admin/instructor_details.dart';
 import 'package:guc_swiss_knife/pages/admin/admin_publish_requests_page.dart';
 import 'package:guc_swiss_knife/pages/admin/publish_request_details.dart';
+import 'package:guc_swiss_knife/pages/extra_pages/course_details.dart';
 import 'components/tab_controller.dart';
 import 'pages/extra_pages/about_us.dart';
 import 'pages/extra_pages/contacts.dart';
 import 'pages/extra_pages/courses.dart';
 import 'pages/extra_pages/instructors.dart';
 import 'pages/extra_pages/navigation.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -32,8 +39,9 @@ class MyApp extends StatelessWidget {
         '/contacts': (dummyCtx) => const Contacts(),
         '/navigation': (dummyCtx) => const Navigation(),
         '/courses': (dummyCtx) => const Courses(),
-        '/aboutUs': (dummyCtx) => const AboutUs(),
+        '/courseDetails': (dummyCtx) => const CourseDetails(),
         '/instructors': (dummyCtx) => const Instructors(),
+        '/aboutUs': (dummyCtx) => const AboutUs(),
         '/instructorDetails': (dummyCtx) => const InstructorDetails(),
         '/publishRequests': (dummyCtx) => const AdminPublishRequests(),
         '/publishRequestDetails': (dummyCtx) => const PublishRequestsDetails(),
