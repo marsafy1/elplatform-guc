@@ -12,16 +12,11 @@ class Courses extends StatefulWidget {
 }
 
 class _CoursesState extends State<Courses> {
-  final CourseService _courseService = CourseService();
-  List<Course> courses = [];
+  late Future<List<Course>> futureCourses;
   @override
   void initState() {
     super.initState();
-    _courseService.getCourses().then((value) {
-      setState(() {
-        courses = value;
-      });
-    });
+    futureCourses = CourseService.getCourses();
   }
 
   @override
@@ -31,12 +26,40 @@ class _CoursesState extends State<Courses> {
           title: const Text("$appName - Courses"),
         ),
         body: Column(children: [
-          Expanded(
-              child: ListView.builder(
-                  itemBuilder: (ctx, index) {
-                    return CourseCard(course: courses[index]);
-                  },
-                  itemCount: courses.length))
+          FutureBuilder(
+            future: futureCourses,
+            builder: (context, AsyncSnapshot<List<Course>> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(height: 100),
+                      SizedBox(
+                        height: 100,
+                        width: 100,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 5.0,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else {
+                List<Course>? courses = snapshot.data;
+                return Expanded(
+                  child: ListView.builder(
+                    itemCount: courses!.length,
+                    itemBuilder: (context, index) {
+                      return CourseCard(course: courses[index]);
+                    },
+                  ),
+                );
+              }
+            },
+          ),
         ]));
   }
 }

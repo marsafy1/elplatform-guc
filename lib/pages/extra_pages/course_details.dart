@@ -1,36 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:guc_swiss_knife/components/course/course_description.dart';
+import 'package:guc_swiss_knife/components/course/course_reviews.dart';
 import 'package:guc_swiss_knife/models/course.dart';
-import 'package:guc_swiss_knife/services/course_service.dart';
+import 'package:guc_swiss_knife/models/review.dart';
 
-class CourseDetails extends StatefulWidget {
+class CourseDetails extends StatelessWidget {
   const CourseDetails({super.key});
-  @override
-  _CourseDetails createState() => _CourseDetails();
-}
-
-class _CourseDetails extends State<CourseDetails> {
-  final CourseService _courseService = CourseService();
-  Course course = Course(id: "", title: "", description: "", photoUrl: "");
-
   @override
   Widget build(BuildContext context) {
     final routeArgs =
-        ModalRoute.of(context)!.settings.arguments as Map<String, String>;
-    final courseId = routeArgs['id'];
-    _courseService.getCourseById(courseId).then((value) {
-      setState(() {
-        course = value;
-      });
-    });
+        ModalRoute.of(context)!.settings.arguments as Map<String, Course>;
+    final course = routeArgs['course'];
+
     return Scaffold(
         appBar: AppBar(
-          title: Text(course.title),
+          title: Text(course!.title),
         ),
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Image.network(course.photoUrl),
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  const CircularProgressIndicator(),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(5.0),
+                    child: FadeInImage(
+                      placeholder: const AssetImage('assets/Empty.png'),
+                      image: NetworkImage(course.photoUrl),
+                      fit: BoxFit.cover,
+                      width: 100,
+                      height: 100,
+                    ),
+                  ),
+                ],
+              ),
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Text(
@@ -42,55 +47,9 @@ class _CourseDetails extends State<CourseDetails> {
                 ),
               ),
               CourseDescription(description: course.description),
+              CourseReviews(reviews: course.reviews)
             ],
           ),
         ));
-  }
-}
-
-class CourseDescription extends StatefulWidget {
-  final String description;
-  const CourseDescription({required this.description, super.key});
-  @override
-  State<CourseDescription> createState() {
-    return _CourseDescription();
-  }
-}
-
-class _CourseDescription extends State<CourseDescription> {
-  int maxLines = 3;
-  String buttonText = "Show More";
-  _CourseDescription();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(10.0),
-      child: Column(
-        children: [
-          Text(
-            widget.description,
-            maxLines: maxLines,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.left,
-          ),
-          TextButton(
-            onPressed: () {
-              setState(() {
-                maxLines = maxLines == 3 ? 100000 : 3;
-                buttonText =
-                    buttonText == "Show More" ? "Show Less" : "Show More";
-              });
-            },
-            child: Text(
-              buttonText,
-              style: const TextStyle(
-                color: Colors.blue,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }
