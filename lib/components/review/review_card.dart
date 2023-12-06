@@ -22,43 +22,73 @@ class _ReviewCardState extends State<ReviewCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: FutureBuilder(
-        future: futureUser,
-        builder: (context, AsyncSnapshot<User> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator();
-          } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          } else {
-            User? user = snapshot.data;
-            return ListTile(
-              leading: CircleAvatar(
-                backgroundImage: NetworkImage(user!.photoUrl),
-              ),
-              title: Text(user.firstName),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+      child: SizedBox(
+        width: double.infinity,
+        child: FutureBuilder(
+          future: futureUser,
+          builder: (context, AsyncSnapshot<User> snapshot) {
+            if (true) {
+              return const SizedBox(
+                  width: 10, child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            } else {
+              User? user = snapshot.data;
+
+              return Column(
                 children: [
-                  Text(widget.review.review),
-                  RatingBar.builder(
-                    initialRating: widget.review.rating!.toDouble(),
-                    minRating: 1,
-                    direction: Axis.horizontal,
-                    allowHalfRating: true,
-                    itemCount: 5,
-                    itemSize: 20,
-                    itemPadding: const EdgeInsets.symmetric(horizontal: 1.0),
-                    itemBuilder: (context, _) => const Icon(
-                      Icons.star,
-                      color: Colors.amber,
+                  Row(children: [
+                    Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: CircleAvatar(
+                        backgroundImage: NetworkImage(user!.photoUrl),
+                        maxRadius: 25,
+                      ),
                     ),
-                    onRatingUpdate: (rating) {},
-                  ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 2),
+                          child: Text(
+                            '${user.firstName} ${user.lastName}',
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
+                          child: RatingBar.builder(
+                            initialRating: widget.review.rating!.toDouble(),
+                            minRating: 1,
+                            direction: Axis.horizontal,
+                            allowHalfRating: true,
+                            itemCount: 5,
+                            itemSize: 15,
+                            itemPadding:
+                                const EdgeInsets.symmetric(horizontal: 1.0),
+                            itemBuilder: (context, _) => const Icon(
+                              Icons.star,
+                              color: Colors.amber,
+                            ),
+                            onRatingUpdate: (rating) {},
+                          ),
+                        ),
+                      ],
+                    )
+                  ]),
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Text(
+                      widget.review.review,
+                      maxLines: 3,
+                    ),
+                  )
                 ],
-              ),
-            );
-          }
-        },
+              );
+            }
+          },
+        ),
       ),
     );
   }
