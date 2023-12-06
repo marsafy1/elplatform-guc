@@ -12,18 +12,18 @@ class ReviewCard extends StatefulWidget {
 }
 
 class _ReviewCardState extends State<ReviewCard> {
-  late Future<User> user;
+  late Future<User> futureUser;
   @override
   void initState() {
     super.initState();
-    user = UserService.getUserById(widget.review.userId);
+    futureUser = UserService.getUserById(widget.review.userId);
   }
 
   @override
   Widget build(BuildContext context) {
     return Card(
       child: FutureBuilder(
-        future: user,
+        future: futureUser,
         builder: (context, AsyncSnapshot<User> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const CircularProgressIndicator();
@@ -31,7 +31,6 @@ class _ReviewCardState extends State<ReviewCard> {
             return Text('Error: ${snapshot.error}');
           } else {
             User? user = snapshot.data;
-            //return review details with the user photo and name
             return ListTile(
               leading: CircleAvatar(
                 backgroundImage: NetworkImage(user!.photoUrl),
