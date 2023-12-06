@@ -3,10 +3,12 @@ class User {
   final String firstName;
   final String lastName;
   final String email;
-  final String bio;
-  final String faculty;
+  final UserType userType;
   final bool isPublisher;
-  final String photoUrl;
+  final String? header;
+  final String? bio;
+  final String? faculty;
+  final String? photoUrl;
   final String? gucId;
 
   User({
@@ -14,10 +16,20 @@ class User {
     required this.firstName,
     required this.lastName,
     required this.email,
-    required this.bio,
-    required this.faculty,
+    required this.userType,
     required this.isPublisher,
-    required this.photoUrl,
+    this.header,
+    this.bio,
+    this.faculty,
+    this.photoUrl,
     this.gucId,
   });
+}
+
+enum UserType { student, instructor, admin }
+
+extension ParseToString on UserType {
+  String toShortString() {
+    return toString().split('.').last;
+  }
 }
