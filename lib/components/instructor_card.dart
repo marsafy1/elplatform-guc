@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 
 class InstructorCard extends StatelessWidget {
@@ -23,9 +21,11 @@ class InstructorCard extends StatelessWidget {
         subtitle: Text("$instructorRating ⭐"),
         trailing: const Icon(Icons.arrow_forward_ios),
         onTap: () {
-          Navigator.pushNamed(context, '/instructorDetails',  arguments: { 'instructorName': instructorName, 'instructorRating': instructorRating});
+          Navigator.pushNamed(context, '/instructorDetails', arguments: {
+            'instructorName': instructorName,
+            'instructorRating': instructorRating
+          });
         },
-        
       ),
     );
   }

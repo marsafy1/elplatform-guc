@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:guc_swiss_knife/models/user.dart';
 
 class InstructorDetails extends StatelessWidget {
   const InstructorDetails({Key? key});
