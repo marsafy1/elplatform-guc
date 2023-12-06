@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:guc_swiss_knife/configs/constants.dart';
+import 'package:guc_swiss_knife/components/app_bar_widget.dart';
+
 
 import 'tabs_controller/glassy_navbar.dart';
 import 'drawer_widget.dart';
@@ -36,11 +37,8 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(appName),
-        backgroundColor: const Color.fromARGB(255, 9, 5, 5).withOpacity(0.3),
-      ),
-      drawer: MainDrawer(),
+      appBar: MyAppBar(),
+      drawer: const MainDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: myPages[selectedTabIndex],
