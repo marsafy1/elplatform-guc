@@ -12,12 +12,11 @@ class Courses extends StatefulWidget {
 }
 
 class _CoursesState extends State<Courses> {
-  final CourseService _courseService = CourseService();
   List<Course> courses = [];
   @override
   void initState() {
     super.initState();
-    _courseService.getCourses().then((value) {
+    CourseService.getCourses().then((value) {
       setState(() {
         courses = value;
       });
