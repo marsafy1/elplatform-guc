@@ -41,7 +41,7 @@ class _ReviewCardState extends State<ReviewCard> {
                     Padding(
                       padding: const EdgeInsets.all(10),
                       child: CircleAvatar(
-                        backgroundImage: NetworkImage(user!.photoUrl),
+                        backgroundImage: NetworkImage(user!.photoUrl ?? ''),
                         maxRadius: 25,
                       ),
                     ),

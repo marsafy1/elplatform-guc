@@ -74,6 +74,7 @@ class AuthProvider with ChangeNotifier {
     required String lastName,
     required String email,
     required String password,
+    required UserType userType,
   }) async {
     try {
       final FirebaseAuth.UserCredential userCredential = await _auth
@@ -86,13 +87,12 @@ class AuthProvider with ChangeNotifier {
       final String uid = userCredential.user!.uid;
 
       await FirebaseFirestore.instance.collection('users').doc(uid).set({
-        'firstName': firstName,
-        'lastName': lastName,
+        'first_name': firstName,
+        'last_name': lastName,
         'email': email,
-        'isPublisher': false
-        // TODO: add userType
+        'is_publisher': false,
+        'user_type': userType.toShortString(),
       });
-
       return userCredential.user;
     } on FirebaseAuth.FirebaseAuthException catch (e) {
       throw AuthException(message: _handleAuthException(e));

@@ -17,6 +17,7 @@ class UserService {
         faculty: doc['faculty'],
         isPublisher: doc['is_publisher'],
         gucId: doc['guc_id'],
+        userType: doc['user_type'] as UserType,
       );
     });
   }

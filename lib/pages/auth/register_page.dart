@@ -1,8 +1,10 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'package:guc_swiss_knife/components/auth/form_input_field.dart';
+import 'package:guc_swiss_knife/models/user.dart';
 import 'package:guc_swiss_knife/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
+
+const String emailRegex = r'^[a-zA-Z]+\.[a-zA-Z]+@(student\.)?guc\.edu\.eg$';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
@@ -13,33 +15,76 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   late final AuthProvider _authProvider;
-
-  final Map<String, DynamicField> fields = {
-    "first_name": DynamicField(
-        name: "First Name",
-        controller: TextEditingController(),
-        icon: Icons.person),
-    "last_name": DynamicField(
-        name: "Last Name",
-        controller: TextEditingController(),
-        icon: Icons.person),
-    "email": DynamicField(
-        name: "Email", controller: TextEditingController(), icon: Icons.email),
-    "password": DynamicField(
-        name: "Password",
-        controller: TextEditingController(),
-        icon: Icons.password,
-        isPassword: true),
-    "confirm_password": DynamicField(
-        name: "Confirm Password",
-        controller: TextEditingController(),
-        icon: Icons.password,
-        isPassword: true),
-  };
+  late final GlobalKey<FormState> _formKey;
+  late final Map<String, FormInputField> fields;
 
   @override
   void initState() {
     _authProvider = Provider.of<AuthProvider>(context, listen: false);
+    _formKey = GlobalKey<FormState>();
+
+    fields = {
+      "first_name": FormInputField(
+          name: "First Name",
+          controller: TextEditingController(),
+          icon: Icons.person,
+          validator: (value) {
+            if (value!.isEmpty) {
+              return 'First name is required';
+            }
+            return null;
+          }),
+      "last_name": FormInputField(
+          name: "Last Name",
+          controller: TextEditingController(),
+          icon: Icons.person,
+          validator: (value) {
+            if (value!.isEmpty) {
+              return 'Last name is required';
+            }
+            return null;
+          }),
+      "email": FormInputField(
+          name: "Email",
+          controller: TextEditingController(),
+          icon: Icons.email,
+          validator: (value) {
+            if (value!.isEmpty) {
+              return 'Email is required';
+            } else if (!RegExp(emailRegex).hasMatch(value)) {
+              return 'Email should be a valid GUC email';
+            }
+            return null;
+          }),
+      "password": FormInputField(
+          name: "Password",
+          controller: TextEditingController(),
+          icon: Icons.password,
+          isPassword: true,
+          validator: (value) {
+            if (value!.isEmpty) {
+              return 'Password is required';
+            } else if (value.length < 8) {
+              return 'Password must be at least 8 characters';
+            }
+            return null;
+          }),
+      "confirm_password": FormInputField(
+          name: "Confirm Password",
+          controller: TextEditingController(),
+          icon: Icons.password,
+          isPassword: true,
+          validator: (value) {
+            if (value!.isEmpty) {
+              return 'Confirm password is required';
+            } else if (value != fields["password"]!.controller.text) {
+              return 'Passwords do not match';
+            }
+
+            return null;
+          }),
+    };
+
     super.initState();
   }
 
@@ -54,21 +99,27 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        margin: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            _header(),
-            _inputFields(),
-            _login(),
-          ],
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.only(top: 50),
+        child: Container(
+          margin: const EdgeInsets.all(24),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _headerSection(),
+                _inputFieldsSection(),
+                _loginSection(),
+              ],
+            ),
+          ),
         ),
       ),
     );
   }
 
-  _header() {
+  _headerSection() {
     return const Column(
       children: [
         Text(
@@ -76,22 +127,17 @@ class _RegisterPageState extends State<RegisterPage> {
           style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
         ),
         Text("Create your account to get started"),
+        SizedBox(height: 50),
       ],
     );
   }
 
-  _inputFields() {
+  _inputFieldsSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        ...fields.entries
-            .map((entry) {
-              return _inputField(
-                  name: entry.value.name,
-                  inputController: entry.value.controller,
-                  icon: entry.value.icon,
-                  isPassword: entry.value.isPassword);
-            })
+        ...fields.values
+            .toList()
             .expand((widget) => [widget, const SizedBox(height: 10)])
             .toList(),
         ElevatedButton(
@@ -112,55 +158,7 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  Widget _inputField(
-      {required name,
-      required inputController,
-      required icon,
-      isPassword = false}) {
-    return TextField(
-      controller: inputController,
-      decoration: InputDecoration(
-        hintText: name,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(18),
-          borderSide: BorderSide.none,
-        ),
-        fillColor: Theme.of(context).primaryColor.withOpacity(0.1),
-        filled: true,
-        prefixIcon: Icon(icon),
-      ),
-      obscureText: isPassword,
-    );
-  }
-
-  Future<void> _registerPressed() async {
-    // todo: handle password mismatch and empty fields
-    try {
-      await _authProvider.signUp(
-          email: fields["email"]!.controller.text,
-          password: fields["password"]!.controller.text,
-          firstName: fields["first_name"]!.controller.text,
-          lastName: fields["last_name"]!.controller.text);
-    } catch (e) {
-      if (e is AuthException) {
-        _showError(e.message);
-      } else {
-        print('Unexpected error: $e');
-        _showError('An unexpected error occurred. Please try again later.');
-      }
-    }
-  }
-
-  void _showError(String errorMessage) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(errorMessage),
-        backgroundColor: Colors.red,
-      ),
-    );
-  }
-
-  Widget _login() {
+  Widget _loginSection() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -175,21 +173,42 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
+  Future<void> _registerPressed() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+    final UserType userType =
+        fields["email"]!.controller.text.contains("student")
+            ? UserType.student
+            : UserType.instructor;
+    try {
+      await _authProvider.signUp(
+          email: fields["email"]!.controller.text,
+          password: fields["password"]!.controller.text,
+          firstName: fields["first_name"]!.controller.text,
+          lastName: fields["last_name"]!.controller.text,
+          userType: userType);
+      Navigator.of(context).pushReplacementNamed('/home');
+    } catch (e) {
+      if (e is AuthException) {
+        _showError(e.message);
+      } else {
+        print('Unexpected error: $e');
+        _showError('An unexpected error occurred. Please try again later.');
+      }
+    }
+  }
+
   void _loginPressed() {
     Navigator.of(context).pushNamed('/login');
   }
-}
 
-class DynamicField {
-  final String name;
-  final TextEditingController controller;
-  final IconData icon;
-  final bool isPassword;
-
-  DynamicField({
-    required this.name,
-    required this.controller,
-    required this.icon,
-    this.isPassword = false,
-  });
+  void _showError(String errorMessage) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(errorMessage),
+        backgroundColor: Colors.red,
+      ),
+    );
+  }
 }
