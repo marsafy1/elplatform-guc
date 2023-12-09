@@ -59,6 +59,7 @@ class _ReviewCardState extends State<ReviewCard> {
                     );
                   },
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
