@@ -7,10 +7,21 @@ class CourseReviews extends StatelessWidget {
   const CourseReviews({super.key, required this.reviews});
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        ...reviews.map((review) => ReviewCard(review: review)).toList()
-      ],
+    //return a row that is horizontally scrollable
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+        child: Row(
+          children: [
+            for (var review in reviews)
+              Padding(
+                padding: const EdgeInsets.only(right: 4),
+                child: ReviewCard(review: review),
+              ),
+          ],
+        ),
+      ),
     );
   }
 }
