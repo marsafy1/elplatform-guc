@@ -19,17 +19,30 @@ class _ReviewCardState extends State<ReviewCard> {
     futureUser = UserService.getUserById(widget.review.userId);
   }
 
+//get screen width
+  double getScreenWidth(BuildContext context) {
+    return MediaQuery.of(context).size.width;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
       child: SizedBox(
-        width: double.infinity,
+        width: MediaQuery.of(context).size.width * 0.9,
+        height: MediaQuery.of(context).size.height * 0.2,
         child: FutureBuilder(
           future: futureUser,
           builder: (context, AsyncSnapshot<User> snapshot) {
-            if (true) {
-              return const SizedBox(
-                  width: 10, child: CircularProgressIndicator());
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.1,
+                  width: MediaQuery.of(context).size.height * 0.1,
+                  child: const CircularProgressIndicator(
+                    strokeWidth: 5.0,
+                  ),
+                ),
+              );
             } else if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
             } else {
@@ -82,6 +95,7 @@ class _ReviewCardState extends State<ReviewCard> {
                     child: Text(
                       widget.review.review,
                       maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   )
                 ],
