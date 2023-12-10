@@ -12,11 +12,13 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  late final AuthProvider _authProvider;
   late User user;
 
   @override
   void initState() {
-    user = Provider.of<AuthProvider>(context, listen: false).user!;
+    _authProvider = Provider.of<AuthProvider>(context, listen: false);
+    user = _authProvider.user!;
     super.initState();
   }
 
@@ -50,45 +52,7 @@ class _ProfileState extends State<Profile> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Column(
-              children: [
-                Center(
-                  child: SizedBox(
-                    height: 100,
-                    width: 100,
-                    child: CircleAvatar(
-                      backgroundImage: NetworkImage(
-                          user.photoUrl ?? ''), // TODO: repalce with avatar
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  "${user.firstName} ${user.lastName}",
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  "${StringUtils.capitalize(user.userType.toShortString())} @ ${user.faculty}",
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  user.header ?? "",
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 20),
-              ],
-            ),
+            _header(),
             const Divider(),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -109,6 +73,51 @@ class _ProfileState extends State<Profile> {
     return ListTile(
       title: Text(title),
       subtitle: Text(value),
+    );
+  }
+
+  Widget _header() {
+    return Column(
+      children: [
+        Center(
+          child: SizedBox(
+            height: 100,
+            width: 100,
+            child: CircleAvatar(
+              backgroundImage:
+                  user.photoUrl != null && user.photoUrl!.isNotEmpty
+                      ? NetworkImage(user.photoUrl!)
+                      : const AssetImage('assets/default_profile_picture.png')
+                          as ImageProvider<Object>?,
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
+        Text(
+          "${user.firstName} ${user.lastName}",
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 10),
+        Text(
+          "${StringUtils.capitalize(user.userType.toShortString())} @ ${user.faculty ?? "GUC"}",
+          style: const TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 20),
+        Text(
+          user.header ?? "",
+          style: const TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 20),
+      ],
     );
   }
 }

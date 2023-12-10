@@ -1,35 +1,49 @@
-import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart' as FirebaseAuth;
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:guc_swiss_knife/models/user.dart';
 import 'package:flutter/material.dart';
 
 class AuthProvider with ChangeNotifier {
-  final FirebaseAuth.FirebaseAuth _auth = FirebaseAuth.FirebaseAuth.instance;
-  User? _user = User(
-      id: "1",
-      firstName: "Ahmed",
-      lastName: "Nasser",
-      email: "ahmed.elkakhaia@student.guc.edu.eg",
-      userType: UserType.student,
-      header: "Software Engineer | Ex-Amazon",
-      bio:
-          "I am a software engineer who is passionate about mobile development and open source.",
-      faculty: "MET-CS",
-      isPublisher: true,
-      gucId: '49-17266',
-      photoUrl:
-          "https://media.licdn.com/dms/image/D4E03AQF8DvuOB4-NBQ/profile-displayphoto-shrink_800_800/0/1692136136142?e=1706745600&v=beta&t=35kUFJnQ5CG1XF5ljn1nm-7li0n7fMTqYHs2KMlxyrg");
+  final firebase_auth.FirebaseAuth _auth = firebase_auth.FirebaseAuth.instance;
+  User? _user;
 
   AuthProvider() {
-    FirebaseAuth.FirebaseAuth.instance
+    firebase_auth.FirebaseAuth.instance
         .authStateChanges()
-        .listen((FirebaseAuth.User? user) async {
-      // if (user == null) {
-      //   _user = null;
-      // }
-      // _user = await _userFromFirebaseUser(user!);
+        .listen((firebase_auth.User? user) {
       notifyListeners();
+    });
+
+    firebase_auth.FirebaseAuth.instance
+        .authStateChanges()
+        .listen((firebase_auth.User? user) {
+      if (user == null) {
+        _user = null;
+      } else {
+        FirebaseFirestore.instance.collection('users').doc(user.uid).get().then(
+          (DocumentSnapshot documentSnapshot) {
+            if (documentSnapshot.exists) {
+              Map<String, dynamic> userData =
+                  documentSnapshot.data() as Map<String, dynamic>;
+
+              _user = User(
+                  id: user.uid,
+                  firstName: userData["first_name"],
+                  lastName: userData["last_name"],
+                  email: userData["email"],
+                  userType: (userData["user_type"] as String).toUserType(),
+                  isPublisher: userData["is_publisher"],
+                  header: userData["header"],
+                  bio: userData["bio"],
+                  faculty: userData["faculty"],
+                  gucId: userData["guc_id"]);
+            } else {
+              throw AuthException(message: 'User data not found');
+            }
+          },
+        );
+        notifyListeners();
+      }
     });
   }
 
@@ -37,39 +51,25 @@ class AuthProvider with ChangeNotifier {
     return _auth.currentUser != null;
   }
 
-  // Future<User?> _userFromFirebaseUser(FirebaseAuth.User user) async {
-  //   final uid = user.uid;
-  //   var userData =
-  //       await FirebaseFirestore.instance.collection('users').doc(uid).get();
-  //   return User(
-  //       id: uid,
-  //       firstName: userData.data()!["firstName"],
-  //       lastName: userData.data()!["lastName"],
-  //       email: userData.data()!["email"],
-  //       userType: userData.data()!["userType"],
-  //       isPublisher: userData.data()!["isPublisher"]);
-  //   // return
-  // }
-
   User? get user {
     return _user;
   }
 
-  Future<FirebaseAuth.User?> signIn({
+  Future<firebase_auth.User?> signIn({
     required String email,
     required String password,
   }) async {
     try {
-      final FirebaseAuth.UserCredential userCredential = await _auth
+      final firebase_auth.UserCredential userCredential = await _auth
           .signInWithEmailAndPassword(email: email, password: password);
 
       return userCredential.user;
-    } on FirebaseAuth.FirebaseAuthException catch (e) {
+    } on firebase_auth.FirebaseAuthException catch (e) {
       throw AuthException(message: _handleAuthException(e));
     }
   }
 
-  Future<FirebaseAuth.User?> signUp({
+  Future<firebase_auth.User?> signUp({
     required String firstName,
     required String lastName,
     required String email,
@@ -77,7 +77,7 @@ class AuthProvider with ChangeNotifier {
     required UserType userType,
   }) async {
     try {
-      final FirebaseAuth.UserCredential userCredential = await _auth
+      final firebase_auth.UserCredential userCredential = await _auth
           .createUserWithEmailAndPassword(email: email, password: password);
 
       if (userCredential.user == null) {
@@ -94,12 +94,12 @@ class AuthProvider with ChangeNotifier {
         'user_type': userType.toShortString(),
       });
       return userCredential.user;
-    } on FirebaseAuth.FirebaseAuthException catch (e) {
+    } on firebase_auth.FirebaseAuthException catch (e) {
       throw AuthException(message: _handleAuthException(e));
     }
   }
 
-  String _handleAuthException(FirebaseAuth.FirebaseAuthException e) {
+  String _handleAuthException(firebase_auth.FirebaseAuthException e) {
     switch (e.code) {
       case 'user-not-found':
         return 'No user found with this email.';
@@ -115,11 +115,40 @@ class AuthProvider with ChangeNotifier {
   }
 
   void logout() {
-    FirebaseAuth.FirebaseAuth.instance.signOut();
+    firebase_auth.FirebaseAuth.instance.signOut();
   }
 
-  void updateUser() {
-    // Todo: implement
+  Future<void> updateUser({
+    String? firstName,
+    String? lastName,
+    String? header,
+    String? bio,
+    String? faculty,
+    String? gucId,
+  }) async {
+    await FirebaseFirestore.instance.collection('users').doc(_user!.id).update({
+      'first_name': firstName ?? _user!.firstName,
+      'last_name': lastName ?? _user!.lastName,
+      'header': header ?? _user!.header,
+      'bio': bio ?? _user!.bio,
+      'faculty': faculty ?? _user!.faculty,
+      'guc_id': gucId ?? _user!.gucId,
+    });
+
+    _user = User(
+      id: _user!.id,
+      firstName: firstName ?? _user!.firstName,
+      lastName: lastName ?? _user!.lastName,
+      email: _user!.email,
+      userType: _user!.userType,
+      isPublisher: _user!.isPublisher,
+      header: header ?? _user!.header,
+      bio: bio ?? _user!.bio,
+      faculty: faculty ?? _user!.faculty,
+      gucId: gucId ?? _user!.gucId,
+    );
+
+    notifyListeners();
   }
 }
 

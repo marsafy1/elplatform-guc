@@ -33,3 +33,12 @@ extension ParseToString on UserType {
     return toString().split('.').last;
   }
 }
+
+extension ParseToUserType on String {
+  UserType toUserType() {
+    return UserType.values.firstWhere(
+      (element) => element.toShortString() == this,
+      orElse: () => UserType.student,
+    );
+  }
+}

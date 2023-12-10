@@ -50,11 +50,11 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
         ),
         darkTheme: ThemeData(
+          brightness: Brightness.dark,
           primarySwatch: Colors.blue,
         ),
-        themeMode: ThemeMode.system,
-        // themeMode: ThemeMode.dark,
-        // initialRoute: '/',
+        // themeMode: ThemeMode.system,
+        themeMode: ThemeMode.dark,
         routes: {
           '/home': (dummyCtx) => const TabsControllerScreen(),
           '/contacts': (dummyCtx) => const Contacts(),
@@ -76,56 +76,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-
-// class MyApp extends StatelessWidget {
-//   const MyApp({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return MultiProvider(
-//       providers: [ChangeNotifierProvider(create: (ctx) => AuthProvider())],
-//       child: MaterialApp(
-//         home: Consumer<AuthProvider>(
-//           builder: (context, authProvider, _) {
-//             print(authProvider.user);
-//             // print(authProvider.user!);
-//             if (authProvider.isAuthenticated) {
-//               return const TabsControllerScreen();
-//             } else {
-//               return const LoginPage();
-//             }
-//           },
-//         ),
-//         title: appName,
-//         debugShowCheckedModeBanner: false,
-//         theme: ThemeData(
-//           primarySwatch: Colors.blue,
-//         ),
-//         darkTheme: ThemeData(
-//           primarySwatch: Colors.blue,
-//         ),
-//         themeMode: ThemeMode.system,
-//         // themeMode: ThemeMode.dark,
-//         // initialRoute: '/',
-//         routes: {
-//           '/home': (dummyCtx) => const TabsControllerScreen(),
-//           '/contacts': (dummyCtx) => const Contacts(),
-//           '/navigation': (dummyCtx) => const Navigation(),
-//           '/courses': (dummyCtx) => const Courses(),
-//           '/courseDetails': (dummyCtx) => const CourseDetails(),
-//           '/instructors': (dummyCtx) => const Instructors(),
-//           '/aboutUs': (dummyCtx) => const AboutUs(),
-//           '/instructorDetails': (dummyCtx) => const InstructorDetails(),
-//           '/publishRequests': (dummyCtx) => const AdminPublishRequests(),
-//           '/publishRequestDetails': (dummyCtx) =>
-//               const PublishRequestsDetails(),
-//           '/profile': (dummyCtx) => const Profile(),
-//           '/editProfile': (dummyCtx) => const EditProfile(),
-//           '/login': (dummyCtx) => const LoginPage(),
-//           '/register': (dummyCtx) => const RegisterPage(),
-//         },
-//       ),
-//     );
-//   }
-// }
