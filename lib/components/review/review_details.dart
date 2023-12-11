@@ -27,7 +27,7 @@ class ReviewDetails extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: 25,
-                    backgroundImage: NetworkImage(user.photoUrl),
+                    backgroundImage: NetworkImage(user.photoUrl ?? ""),
                   ),
                   const SizedBox(width: 10),
                   Column(
@@ -44,7 +44,7 @@ class ReviewDetails extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(left: 2, top: 2),
                         child: Text(
-                          user.bio,
+                          user.bio ?? '',
                           style: const TextStyle(
                               fontWeight: FontWeight.normal,
                               fontSize: 12,

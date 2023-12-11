@@ -1,9 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:guc_swiss_knife/configs/constants.dart';
+import 'package:guc_swiss_knife/providers/auth_provider.dart';
+import 'package:provider/provider.dart';
 
-class MainDrawer extends StatelessWidget {
+class MainDrawer extends StatefulWidget {
   const MainDrawer({super.key});
+
+  @override
+  State<MainDrawer> createState() => _MainDrawerState();
+}
+
+class _MainDrawerState extends State<MainDrawer> {
+  late final AuthProvider _authProvider;
+
+  @override
+  void initState() {
+    _authProvider = Provider.of<AuthProvider>(context, listen: false);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,9 +77,19 @@ class MainDrawer extends StatelessWidget {
           Column(
             children: [
               ListTile(
+                leading:
+                    const CircleAvatar(), // TODO: add current user profile image
+                title: const Text("Profile"),
+                onTap: () {
+                  Navigator.of(context).pushNamed('/profile');
+                },
+              ),
+              ListTile(
                 leading: const FaIcon(FontAwesomeIcons.rightFromBracket),
                 title: const Text("Logout"),
-                onTap: () {},
+                onTap: () {
+                  _authProvider.logout();
+                },
               ),
               ListTile(
                 leading: const FaIcon(FontAwesomeIcons.info),

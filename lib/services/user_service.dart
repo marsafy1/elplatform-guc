@@ -9,14 +9,15 @@ class UserService {
     return _usersCollectionReference.doc(id).get().then((doc) {
       return User(
         id: doc.id,
-        firstName: doc['first_name'] ?? "",
-        lastName: doc['last_name'] ?? "",
-        photoUrl: doc['photo_url'] ?? "",
-        email: doc['email'] ?? "",
-        bio: doc['bio'] ?? "",
-        faculty: doc['faculty'] ?? "",
-        isPublisher: doc['is_publisher'] as bool,
-        gucId: doc['guc_id'] ?? "",
+        firstName: doc['first_name'],
+        lastName: doc['last_name'],
+        photoUrl: doc['photo_url'],
+        email: doc['email'],
+        bio: doc['bio'],
+        faculty: doc['faculty'],
+        isPublisher: doc['is_publisher'],
+        gucId: doc['guc_id'],
+        userType: doc['user_type'] as UserType,
       );
     });
   }
