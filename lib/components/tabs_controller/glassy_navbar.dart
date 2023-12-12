@@ -25,19 +25,15 @@ class GlassMorphicBottomNavigationBar extends StatelessWidget {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: blurStrength, sigmaY: blurStrength),
         child: Container(
-          decoration: BoxDecoration(
-            color: isDarkTheme
-                ? const Color.fromARGB(255, 9, 5, 5).withOpacity(0.3)
-                : const Color.fromARGB(255, 9, 5, 5)
-                    .withOpacity(0.3), // Semi-transparent container
-          ),
           child: BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
-            backgroundColor: Colors.transparent, // Transparent background color
+            backgroundColor: Theme.of(context)
+                .colorScheme
+                .background, // Transparent background color
             items: listItems,
             currentIndex: selectedIndex,
             onTap: (index) => onItemSelected(index),
-            selectedItemColor: Colors.blue,
+            selectedItemColor: Theme.of(context).colorScheme.primary,
             unselectedItemColor: Colors.grey,
             showSelectedLabels:
                 false, // Do not show label for the selected item

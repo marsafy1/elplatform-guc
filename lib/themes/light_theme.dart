@@ -4,10 +4,10 @@ import 'package:google_fonts/google_fonts.dart';
 final ThemeData lightTheme = ThemeData(
   useMaterial3: true,
   colorScheme: ColorScheme.fromSeed(
-    primary: Colors.pink,
-    seedColor: Colors.purple,
-    brightness: Brightness.dark,
-  ),
+      primary: Colors.blue[700],
+      seedColor: Colors.lightBlue,
+      brightness: Brightness.light,
+      background: Colors.white),
   textTheme: TextTheme(
     displayLarge: const TextStyle(
       fontSize: 60,

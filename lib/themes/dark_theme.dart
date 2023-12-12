@@ -5,11 +5,11 @@ final ThemeData darkTheme = ThemeData(
   useMaterial3: true,
   secondaryHeaderColor: Colors.grey[900],
   colorScheme: ColorScheme.fromSeed(
-    primary: Colors.blue,
-    secondary: Colors.pink,
-    seedColor: Colors.indigo,
-    brightness: Brightness.dark,
-  ),
+      primary: Colors.blue,
+      secondary: Colors.pink,
+      seedColor: Colors.indigo,
+      brightness: Brightness.dark,
+      background: Colors.grey[900]),
   textTheme: TextTheme(
     displayLarge: const TextStyle(
       fontSize: 60,

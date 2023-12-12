@@ -161,8 +161,10 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
           showBottomSheetForNewPost(context);
         },
         backgroundColor: Theme.of(context).colorScheme.primary,
-        child: const FaIcon(FontAwesomeIcons
-            .plus), // The '+' icon is typical for an "Add" action
+        child: const FaIcon(
+          FontAwesomeIcons.plus,
+          color: Colors.white,
+        ), // The '+' icon is typical for an "Add" action
       ),
       bottomNavigationBar: GlassMorphicBottomNavigationBar(
         selectedIndex: selectedTabIndex,
