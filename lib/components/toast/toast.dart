@@ -41,7 +41,7 @@ class Toast {
                     const EdgeInsets.symmetric(horizontal: 14.0, vertical: 6.0),
                 child: Text(
                   message,
-                  style: TextStyle(fontSize: 14.0, color: Colors.white),
+                  style: const TextStyle(fontSize: 14.0, color: Colors.white),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -54,7 +54,7 @@ class Toast {
     overlay?.insert(overlayEntry);
 
     // Automatically dismiss the notification after some duration
-    Future.delayed(Duration(seconds: 5)).then((value) {
+    Future.delayed(const Duration(seconds: 5)).then((value) {
       if (overlayEntry.mounted) {
         overlayEntry.remove();
       }
