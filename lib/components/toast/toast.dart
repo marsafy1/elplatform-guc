@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class Toast {
   static void show(BuildContext context, String message, String type,
-      {VoidCallback? onTap}) {
+      {IconData icon = FontAwesomeIcons.info, VoidCallback? onTap}) {
     Map<String, Color> typeToColor = {
       "success": Colors.green,
       "error": Colors.red,
@@ -39,10 +40,31 @@ class Toast {
               child: Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 14.0, vertical: 6.0),
-                child: Text(
-                  message,
-                  style: const TextStyle(fontSize: 14.0, color: Colors.white),
-                  textAlign: TextAlign.center,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(right: 5.0),
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle, // Makes the container circular
+                        color:
+                            Color.fromARGB(76, 255, 255, 255), // Circle color
+                      ),
+                      padding: const EdgeInsets.all(
+                          10), // The padding inside the circle
+                      child: FaIcon(
+                        icon,
+                        size: 14, // Adjust icon size as needed
+                        color: Colors.white, // Icon color
+                      ),
+                    ),
+                    Text(
+                      message,
+                      style:
+                          const TextStyle(fontSize: 14.0, color: Colors.white),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
               ),
             ),

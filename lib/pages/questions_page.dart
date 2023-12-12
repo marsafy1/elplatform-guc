@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../models/category.dart';
 import '../models/post.dart';
 import '../managers/categories_manager.dart';
@@ -139,10 +140,9 @@ class _QuestionsPageState extends State<QuestionsPage> {
             // New post received - Show toast
             WidgetsBinding.instance?.addPostFrameCallback((_) {
               Toast.show(context, "New posts available", "info", onTap: () {
-                print("Toast tapped!");
                 // Any additional action on tap
                 scrollToTop();
-              });
+              }, icon: FontAwesomeIcons.arrowUp);
             });
             latestPostTimestamp = newestPostTimestamp;
           }
