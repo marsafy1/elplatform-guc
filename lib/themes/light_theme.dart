@@ -10,14 +10,14 @@ final ThemeData lightTheme = ThemeData(
   ),
   textTheme: TextTheme(
     displayLarge: const TextStyle(
-      fontSize: 72,
+      fontSize: 60,
       fontWeight: FontWeight.bold,
     ),
-    titleLarge: GoogleFonts.oswald(
+    titleLarge: GoogleFonts.notoSans(
       fontSize: 30,
       fontStyle: FontStyle.italic,
     ),
-    bodyMedium: GoogleFonts.merriweather(),
-    displaySmall: GoogleFonts.pacifico(),
+    bodyMedium: GoogleFonts.notoSans(),
+    displaySmall: GoogleFonts.notoSans(),
   ),
 );

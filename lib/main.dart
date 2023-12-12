@@ -50,8 +50,8 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: lightTheme,
         darkTheme: darkTheme,
-        // themeMode: ThemeMode.system,
-        themeMode: ThemeMode.dark,
+        themeMode: ThemeMode.system,
+        // themeMode: ThemeMode.dark,
 
         routes: {
           '/home': (dummyCtx) => const TabsControllerScreen(),
