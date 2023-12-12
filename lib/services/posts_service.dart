@@ -6,7 +6,7 @@ class PostsService {
 
   Stream<List<Post>> getPosts() {
     Stream<List<Post>> fetchedQuestions = _firestore
-        .collection('posts')
+        .collection('questions')
         .orderBy('dateCreated', descending: true) // Add this line
         .snapshots()
         .map((snapshot) {
@@ -19,6 +19,6 @@ class PostsService {
   }
 
   Future<void> addQuestion(Post question) async {
-    await _firestore.collection('posts').add(question.toMap());
+    await _firestore.collection('questions').add(question.toMap());
   }
 }

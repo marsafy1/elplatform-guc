@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:guc_swiss_knife/components/app_bar_widget.dart';
-
+import 'package:guc_swiss_knife/services/posts_service.dart';
+import '../models/category.dart';
+import '../models/post.dart';
 import 'tabs_controller/glassy_navbar.dart';
 import 'drawer_widget.dart';
+import './categories/categories.dart';
+import '../components/form_components/inputs/textfield.dart';
+import '../components/toast/toast.dart';
 import '../pages/home_page.dart';
 import '../pages/confessions_page.dart';
 import '../pages/questions_page.dart';
@@ -18,6 +23,7 @@ class TabsControllerScreen extends StatefulWidget {
 }
 
 class _TabsControllerScreenState extends State<TabsControllerScreen> {
+  final PostsService _postsService = PostsService();
   final List<Widget> myPages = const [
     HomePage(),
     ConfessionsPage(),
@@ -26,11 +32,118 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
     NotificationsPage()
     // Add other page widgets here
   ];
+  List<Category> categoriesChoices = [];
+  List<Category> selectedCategoriesChoices = [];
   var selectedTabIndex = 0;
   void switchPage(int index) {
     setState(() {
       selectedTabIndex = index;
     });
+  }
+
+  void showBottomSheetForNewPost(BuildContext context) {
+    final TextEditingController titleController = TextEditingController();
+    final TextEditingController descriptionController = TextEditingController();
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.black,
+      builder: (BuildContext bc) {
+        return SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(bc).viewInsets.bottom,
+            ),
+            child: Wrap(
+              children: [
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text("Ask Question",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              )),
+                        ),
+                        Categories(
+                            key: UniqueKey(),
+                            categories: categoriesChoices,
+                            asFilter: false),
+                        TextFieldInput(
+                          inputPlaceholder: "Title",
+                          controller: titleController,
+                          minLines: 1,
+                          maxLines: 2,
+                        ),
+                        TextFieldInput(
+                          inputPlaceholder: "Add more details here...",
+                          controller: descriptionController,
+                          minLines: 10,
+                          maxLines: 12,
+                        ),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Theme.of(context).primaryColor,
+                              minimumSize: const Size(double.infinity, 36)),
+                          child: const Text("Ask"),
+                          onPressed: () {
+                            String title = titleController.text.trim();
+                            String description =
+                                descriptionController.text.trim();
+                            String category =
+                                selectedCategoriesChoices.isNotEmpty
+                                    ? selectedCategoriesChoices[0]
+                                        .name
+                                        .toLowerCase()
+                                    : "all";
+
+                            if (title.isEmpty) {
+                              Toast.show(
+                                  context, "Please enter a title", "error");
+                              return; // Stop the execution if validation fails
+                            }
+
+                            if (description.isEmpty) {
+                              Toast.show(context, "Please enter a description",
+                                  "error");
+                              return; // Stop the execution if validation fails
+                            }
+
+                            if (category.isEmpty) {
+                              Toast.show(
+                                  context, "Please choose a category", "error");
+                              return; // Stop the execution if validation fails
+                            }
+
+                            // If all validations pass, proceed to create a new question
+                            DateTime dateTime = DateTime.now();
+                            Post newQuestion = Post(
+                                title: title,
+                                username: "static_username",
+                                category: category,
+                                description: description,
+                                photosUrls: [],
+                                dateCreated: dateTime);
+                            _postsService.addQuestion(newQuestion);
+                            Navigator.pop(
+                                context); // Close the bottom sheet upon success
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -41,6 +154,15 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: myPages[selectedTabIndex],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Action to take when the FAB is tapped
+          showBottomSheetForNewPost(context);
+        },
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        child: const FaIcon(FontAwesomeIcons
+            .plus), // The '+' icon is typical for an "Add" action
       ),
       bottomNavigationBar: GlassMorphicBottomNavigationBar(
         selectedIndex: selectedTabIndex,
