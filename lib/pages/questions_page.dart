@@ -151,7 +151,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
           return Text('Error: ${snapshot.error}');
         }
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator();
+          return const Center(child: CircularProgressIndicator());
         }
         // Retrieve posts and filter them based on selected categories
         List<Post> allPosts = snapshot.data ?? [];
