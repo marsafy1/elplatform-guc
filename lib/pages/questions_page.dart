@@ -1,10 +1,214 @@
-import 'package:flutter/material.dart';
+// import 'package:flutter/material.dart';
+// import '../models/category.dart';
+// import '../models/post.dart';
+// import '../components/managers/categories_manager.dart';
+// import '../components/posts/posts.dart';
+// import '../components/categories/category_icon.dart';
+// import '../components/categories/categories.dart';
 
-class QuestionsPage extends StatelessWidget {
-  const QuestionsPage({super.key});
+// // import '../services/questions_service.dart';
+// // import '../components/toast/toast.dart';
 
-  @override
-  Widget build(BuildContext context) {
-    return const Text("Questions Page");
-  }
-}
+// class QuestionsPage extends StatefulWidget {
+//   QuestionsPage({super.key});
+
+//   @override
+//   State<QuestionsPage> createState() => _QuestionsPageState();
+// }
+
+// class _QuestionsPageState extends State<QuestionsPage> {
+//   // final QuestionService _questionService = QuestionService();
+
+//   late List<Category> categories;
+//   List<Category> selectedCategories = [];
+
+//   late List<Category> categoriesChoices;
+//   List<Category> selectedCategoriesChoices = [];
+
+//   var categoriesMap = CategoryManager().categoriesMap;
+
+//   DateTime? latestPostTimestamp;
+//   bool hasNewPosts = false;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     categories = categoriesMap.entries.map((entry) {
+//       return Category(
+//         name: entry.value.name, // Use the name from the CategoryItem in the map
+//         icon: CategoryIcon(
+//             icon: entry.value.icon), // Use the icon from the CategoryItem
+//         addCategory: addCategory,
+//         removeCategory: removeCategory,
+//       );
+//     }).toList();
+
+//     categoriesChoices = categoriesMap.entries.map((entry) {
+//       return Category(
+//         name: entry.value.name, // Use the name from the CategoryItem in the map
+//         icon: CategoryIcon(
+//             icon: entry.value.icon), // Use the icon from the CategoryItem
+//         addCategory: addCategory,
+//         removeCategory: removeCategory,
+//       );
+//     }).toList();
+
+//     setState(() {
+//       categories[0].selected = true;
+//       categoriesChoices[0].selected = true;
+//     });
+//   }
+
+//   // void updateCategoriesAndReopenBottomSheet() {
+//   //   Navigator.pop(context); // Close the existing bottom sheet
+//   //   someFunctionThatUpdatesCategories(); // Update your categoriesChoices here
+//   //   showBottomSheetForNewPost(context); // Reopen the bottom sheet
+//   // }
+
+//   void addCategory(Category c, bool asFilter) {
+//     setState(() {
+//       if (asFilter) {
+//         if (c.name.toLowerCase() != "all") {
+//           selectedCategories.add(c);
+//           print('Added category: ${c.name}');
+//         }
+//         categories.forEach((element) {
+//           element.selected = false;
+//         });
+//         c.selected = true;
+//       } else {
+//         // Deselect all categories
+//         categoriesChoices.forEach((element) {
+//           element.selected = false;
+//         });
+
+//         // Select the chosen category
+//         c.selected = true;
+//         selectedCategoriesChoices = [c];
+//       }
+//     });
+
+//     categoriesChoices.forEach((element) {
+//       print(element.name + " " + element.selected.toString());
+//     });
+//   }
+
+//   void removeCategory(Category c, bool asFilter) {
+//     setState(() {
+//       print("remove category");
+//       if (asFilter) {
+//         selectedCategories.remove(c);
+//         print("checking if category is empty");
+//         if (selectedCategories.isEmpty) {
+//           print("empty");
+//           categories[0].selected = true;
+//           addCategory(categories[0], asFilter);
+//         }
+//       } else {
+//         selectedCategoriesChoices.remove(c);
+//       }
+//     });
+//   }
+
+//   final ScrollController _scrollController = ScrollController();
+//   @override
+//   void dispose() {
+//     _scrollController.dispose(); // Important to dispose the controller
+//     super.dispose();
+//   }
+
+//   void scrollToTop() {
+//     _scrollController.animateTo(
+//       0.0,
+//       curve: Curves.easeOut,
+//       duration: const Duration(milliseconds: 1500),
+//     );
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return StreamBuilder(
+//       stream: _questionService.getQuestions(),
+//       builder: (context, AsyncSnapshot<List<Question>> snapshot) {
+//         if (snapshot.hasData) {
+//           DateTime? newestPostTimestamp = snapshot.data?.first.dateCreated;
+//           if (latestPostTimestamp == null) {
+//             latestPostTimestamp = newestPostTimestamp;
+//           } else if (newestPostTimestamp != null &&
+//               newestPostTimestamp.isAfter(latestPostTimestamp!)) {
+//             // New post received - Show toast
+//             WidgetsBinding.instance?.addPostFrameCallback((_) {
+//               Toast.show(context, "New posts available", "info", onTap: () {
+//                 print("Toast tapped!");
+//                 // Any additional action on tap
+//                 scrollToTop();
+//               });
+//             });
+//             latestPostTimestamp = newestPostTimestamp;
+//           }
+//         }
+//         if (snapshot.hasError) {
+//           return Text('Error: ${snapshot.error}');
+//         }
+//         if (snapshot.connectionState == ConnectionState.waiting) {
+//           return const CircularProgressIndicator();
+//         }
+//         // Retrieve questions and filter them based on selected categories
+
+//         List<Question> allQuestions = snapshot.data ?? [];
+//         List<Question> filteredQuestions = selectedCategories.isEmpty
+//             ? allQuestions
+//             : allQuestions.where((question) {
+//                 return selectedCategories.any((category) =>
+//                     question.category.toLowerCase() ==
+//                     category.name.toLowerCase());
+//               }).toList();
+
+//         return Column(
+//           children: [
+//             Categories(
+//                 key: UniqueKey(), categories: categories, asFilter: true),
+//             // ElevatedButton(
+//             //   style: ElevatedButton.styleFrom(
+//             //       backgroundColor: Theme.of(context).primaryColor,
+//             //       minimumSize: const Size(double.infinity, 36)),
+//             //   child: const Text("Add Post"),
+//             //   onPressed: () {
+//             //     // showBottomSheetForNewPost(context);
+//             //   },
+//             // ),
+//             Expanded(
+//               child: Posts(
+//                 questions: filteredQuestions,
+//                 selectedCategories: selectedCategories,
+//                 controller: _scrollController,
+//               ),
+//             ),
+//           ],
+//         );
+//       },
+//     );
+//   }
+
+//   // @override
+//   // Widget build(BuildContext context) {
+//   //   return Column(
+//   //     children: [
+//   //       Categories(categories: categories),
+//   //       ElevatedButton(
+//   //         style: ElevatedButton.styleFrom(
+//   //             backgroundColor: Theme.of(context).primaryColor,
+//   //             minimumSize: const Size(double.infinity, 36)),
+//   //         child: const Text("Add Post"),
+//   //         onPressed: () {
+//   //           // showBottomSheetForNewPost(context);
+//   //           QuestionService().getQuestions();
+//   //         },
+//   //       ),
+//   //       Expanded(
+//   //         child: Posts(questions: [], selectedCategories: selectedCategories),
+//   //       ),
+//   //     ],
+//   //   );
+//   // }
+// }
