@@ -21,7 +21,7 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
   final List<Widget> myPages = const [
     HomePage(),
     ConfessionsPage(),
-    // QuestionsPage(),
+    QuestionsPage(),
     LostAndFoundsPage(),
     NotificationsPage()
     // Add other page widgets here

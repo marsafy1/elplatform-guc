@@ -10,7 +10,7 @@ import '../services/posts_service.dart';
 import '../components/toast/toast.dart';
 
 class QuestionsPage extends StatefulWidget {
-  QuestionsPage({super.key});
+  const QuestionsPage({super.key});
 
   @override
   State<QuestionsPage> createState() => _QuestionsPageState();
