@@ -6,7 +6,7 @@
 // import '../components/categories/category_icon.dart';
 // import '../components/categories/categories.dart';
 
-// // import '../services/questions_service.dart';
+// import '../services/posts_service.dart';
 // // import '../components/toast/toast.dart';
 
 // class QuestionsPage extends StatefulWidget {
@@ -17,7 +17,7 @@
 // }
 
 // class _QuestionsPageState extends State<QuestionsPage> {
-//   // final QuestionService _questionService = QuestionService();
+//   final PostsService _postsService = PostsService();
 
 //   late List<Category> categories;
 //   List<Category> selectedCategories = [];
@@ -128,8 +128,8 @@
 //   @override
 //   Widget build(BuildContext context) {
 //     return StreamBuilder(
-//       stream: _questionService.getQuestions(),
-//       builder: (context, AsyncSnapshot<List<Question>> snapshot) {
+//       stream: _postsService.getPosts(),
+//       builder: (context, AsyncSnapshot<List<Post>> snapshot) {
 //         if (snapshot.hasData) {
 //           DateTime? newestPostTimestamp = snapshot.data?.first.dateCreated;
 //           if (latestPostTimestamp == null) {
@@ -155,8 +155,8 @@
 //         }
 //         // Retrieve questions and filter them based on selected categories
 
-//         List<Question> allQuestions = snapshot.data ?? [];
-//         List<Question> filteredQuestions = selectedCategories.isEmpty
+//         List<Post> allQuestions = snapshot.data ?? [];
+//         List<Post> filteredQuestions = selectedCategories.isEmpty
 //             ? allQuestions
 //             : allQuestions.where((question) {
 //                 return selectedCategories.any((category) =>
@@ -179,7 +179,7 @@
 //             // ),
 //             Expanded(
 //               child: Posts(
-//                 questions: filteredQuestions,
+//                 posts: filteredQuestions,
 //                 selectedCategories: selectedCategories,
 //                 controller: _scrollController,
 //               ),

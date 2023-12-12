@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:guc_swiss_knife/components/app_bar_widget.dart';
 
-
 import 'tabs_controller/glassy_navbar.dart';
 import 'drawer_widget.dart';
 import '../pages/home_page.dart';
@@ -22,7 +21,7 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
   final List<Widget> myPages = const [
     HomePage(),
     ConfessionsPage(),
-    QuestionsPage(),
+    // QuestionsPage(),
     LostAndFoundsPage(),
     NotificationsPage()
     // Add other page widgets here

@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/post.dart';
 
-class QuestionService {
+class PostsService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Stream<List<Post>> getPosts() {
