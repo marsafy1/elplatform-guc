@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/category.dart';
 import '../models/post.dart';
-import '../components/managers/categories_manager.dart';
+import '../managers/categories_manager.dart';
 import '../components/posts/posts.dart';
 import '../components/categories/category_icon.dart';
 import '../components/categories/categories.dart';

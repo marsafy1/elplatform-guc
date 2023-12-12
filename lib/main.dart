@@ -18,6 +18,8 @@ import 'pages/extra_pages/contacts.dart';
 import 'pages/extra_pages/courses.dart';
 import 'pages/extra_pages/instructors.dart';
 import 'pages/extra_pages/navigation.dart';
+import 'themes/dark_theme.dart';
+import 'themes/light_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,15 +48,11 @@ class MyApp extends StatelessWidget {
         ),
         title: appName,
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        darkTheme: ThemeData(
-          brightness: Brightness.dark,
-          primarySwatch: Colors.blue,
-        ),
+        theme: lightTheme,
+        darkTheme: darkTheme,
         // themeMode: ThemeMode.system,
         themeMode: ThemeMode.dark,
+
         routes: {
           '/home': (dummyCtx) => const TabsControllerScreen(),
           '/contacts': (dummyCtx) => const Contacts(),

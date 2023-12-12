@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import '../managers/categories_manager.dart';
+import '../../managers/categories_manager.dart';
 
 class ChipElement extends StatelessWidget {
   final String category;

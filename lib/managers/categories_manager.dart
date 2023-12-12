@@ -1,5 +1,5 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import '../../models/category_item.dart';
+import '../models/category_item.dart';
 
 class CategoryManager {
   static final CategoryManager _instance = CategoryManager._internal();
