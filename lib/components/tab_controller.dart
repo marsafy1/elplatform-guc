@@ -175,8 +175,14 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          final userAuth = Provider.of<AuthProvider>(context, listen: false);
+          bool isPublisher = userAuth.user!.isPublisher;
           // Action to take when the FAB is tapped
-          showBottomSheetForNewPost(context);
+          if (!isPublisher) {
+            Toast.show(context, "You need to be a publisher", "warning");
+          } else {
+            showBottomSheetForNewPost(context);
+          }
         },
         backgroundColor: Theme.of(context).colorScheme.primary,
         child: const FaIcon(

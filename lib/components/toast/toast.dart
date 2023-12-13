@@ -12,7 +12,7 @@ class Toast {
     Map<String, Color> typeToColor = {
       "success": Colors.green,
       "error": Colors.red,
-      "warning": Colors.yellow,
+      "warning": Colors.orange,
       "info": Colors.blue
     };
 
