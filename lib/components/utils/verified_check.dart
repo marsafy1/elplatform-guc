@@ -9,8 +9,8 @@ class VerifiedCheck extends StatelessWidget {
       margin: const EdgeInsets.all(5.0),
       height: 18,
       width: 18,
-      decoration: const BoxDecoration(
-        color: Colors.blue, // Blue background color
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.primary, // Blue background color
         shape: BoxShape.circle, // Circular shape
       ),
       child: const Icon(
