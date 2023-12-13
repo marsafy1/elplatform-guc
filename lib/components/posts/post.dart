@@ -78,7 +78,7 @@ class _PostState extends State<PostWidget> {
                   Text(
                       "${widget.post.user!.firstName} ${widget.post.user!.lastName}",
                       style: const TextStyle(fontWeight: FontWeight.bold)),
-                  if (true) const VerifiedCheck(),
+                  if (widget.post.user!.isPublisher) const VerifiedCheck(),
                 ],
               ),
               const Text('5th year student',
