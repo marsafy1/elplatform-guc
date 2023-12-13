@@ -7,7 +7,9 @@ import '../utils/chip.dart';
 
 class PostWidget extends StatefulWidget {
   final Post post;
-  const PostWidget({Key? key, required this.post}) : super(key: key);
+  final String collection;
+  const PostWidget({Key? key, required this.post, required this.collection})
+      : super(key: key);
 
   @override
   State<PostWidget> createState() => _PostState();
@@ -89,14 +91,32 @@ class _PostState extends State<PostWidget> {
   }
 
   Widget _buildFooter(context) {
+    Map<String, IconData> collectionToInteractionIcon = {
+      "questions": FontAwesomeIcons.arrowUp,
+      "confessions": FontAwesomeIcons.heart
+    };
+    Map<String, String> collectionToInteractionAction = {
+      "questions": "Upvote",
+      "confessions": "Like"
+    };
+    Map<String, String> collectionToComment = {
+      "questions": "Answers",
+      "confessions": "Comments"
+    };
+    IconData interactionIcon = collectionToInteractionIcon[widget.collection] ??
+        FontAwesomeIcons.heart;
+    String interactionAction =
+        collectionToInteractionAction[widget.collection] ?? "Like";
+    String interactionComment =
+        collectionToComment[widget.collection] ?? "Comments";
     return Column(
       children: [
         const Divider(),
-        const Row(
+        Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('1,441 upvotes'),
-            Text('213 answers'),
+            Text('1,441 ${interactionAction}s'),
+            Text('213 $interactionComment'),
           ],
         ),
         const SizedBox(height: 10),
@@ -111,15 +131,15 @@ class _PostState extends State<PostWidget> {
                     color: Theme.of(context).primaryColor,
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const Row(
+                  child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      FaIcon(FontAwesomeIcons.arrowUp, size: 17),
-                      SizedBox(
+                      FaIcon(interactionIcon, size: 17),
+                      const SizedBox(
                         width: 8,
                       ),
-                      Text("Upvote")
+                      Text(interactionAction)
                     ],
                   ),
                 ),
@@ -135,15 +155,15 @@ class _PostState extends State<PostWidget> {
                     color: Theme.of(context).primaryColor,
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const Row(
+                  child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      FaIcon(FontAwesomeIcons.comment, size: 17),
-                      SizedBox(
+                      const FaIcon(FontAwesomeIcons.comment, size: 17),
+                      const SizedBox(
                         width: 8,
                       ),
-                      Text("Answers")
+                      Text(interactionComment)
                     ],
                   ),
                 ),

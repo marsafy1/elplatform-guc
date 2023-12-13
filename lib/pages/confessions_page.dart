@@ -73,6 +73,7 @@ class _ConfessionsPageState extends State<ConfessionsPage> {
                   posts: allPosts,
                   selectedCategories: const [],
                   controller: _scrollController,
+                  collection: "confessions",
                 ),
               ),
             ],

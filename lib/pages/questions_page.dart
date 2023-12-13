@@ -174,6 +174,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
                   posts: filteredPosts,
                   selectedCategories: selectedCategories,
                   controller: _scrollController,
+                  collection: "questions",
                 ),
               ),
             ],
