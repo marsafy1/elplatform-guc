@@ -129,7 +129,7 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
                                 description: description,
                                 photosUrls: [],
                                 dateCreated: dateTime);
-                            _postsService.addQuestion(newQuestion);
+                            _postsService.addPost('questions', newQuestion);
                             Navigator.pop(
                                 context); // Close the bottom sheet upon success
                           },

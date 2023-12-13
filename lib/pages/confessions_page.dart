@@ -37,22 +37,24 @@ class _ConfessionsPageState extends State<ConfessionsPage> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: _postsService.getPosts(),
+      stream: _postsService.getPosts('confessions'),
       builder: (context, AsyncSnapshot<List<Post>> snapshot) {
         if (snapshot.hasData) {
-          DateTime? newestPostTimestamp = snapshot.data?.first.dateCreated;
-          if (latestPostTimestamp == null) {
-            latestPostTimestamp = newestPostTimestamp;
-          } else if (newestPostTimestamp != null &&
-              newestPostTimestamp.isAfter(latestPostTimestamp!)) {
-            // New post received - Show toast
-            WidgetsBinding.instance?.addPostFrameCallback((_) {
-              Toast.show(context, "New posts available", "info", onTap: () {
-                // Any additional action on tap
-                scrollToTop();
-              }, icon: FontAwesomeIcons.arrowUp);
-            });
-            latestPostTimestamp = newestPostTimestamp;
+          if (snapshot.data!.isNotEmpty) {
+            DateTime? newestPostTimestamp = snapshot.data?.first.dateCreated;
+            if (latestPostTimestamp == null) {
+              latestPostTimestamp = newestPostTimestamp;
+            } else if (newestPostTimestamp != null &&
+                newestPostTimestamp.isAfter(latestPostTimestamp!)) {
+              // New post received - Show toast
+              WidgetsBinding.instance?.addPostFrameCallback((_) {
+                Toast.show(context, "New posts available", "info", onTap: () {
+                  // Any additional action on tap
+                  scrollToTop();
+                }, icon: FontAwesomeIcons.arrowUp);
+              });
+              latestPostTimestamp = newestPostTimestamp;
+            }
           }
         }
         if (snapshot.hasError) {
@@ -63,18 +65,23 @@ class _ConfessionsPageState extends State<ConfessionsPage> {
         }
         // Retrieve posts and filter them based on selected categories
         List<Post> allPosts = snapshot.data ?? [];
-
-        return Column(
-          children: [
-            Expanded(
-              child: Posts(
-                posts: allPosts,
-                selectedCategories: const [],
-                controller: _scrollController,
+        if (snapshot.data!.isNotEmpty) {
+          return Column(
+            children: [
+              Expanded(
+                child: Posts(
+                  posts: allPosts,
+                  selectedCategories: const [],
+                  controller: _scrollController,
+                ),
               ),
-            ),
-          ],
-        );
+            ],
+          );
+        } else {
+          return const Center(
+            child: Text("No Confessions Available"),
+          );
+        }
       },
     );
   }
