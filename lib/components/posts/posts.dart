@@ -7,12 +7,14 @@ class Posts extends StatelessWidget {
   final List<Category> selectedCategories;
   final List<Post> posts;
   final ScrollController controller;
+  final String collection;
 
   const Posts(
       {super.key,
       required this.posts,
       required this.selectedCategories,
-      required this.controller});
+      required this.controller,
+      required this.collection});
 
   @override
   Widget build(BuildContext context) {
@@ -21,9 +23,7 @@ class Posts extends StatelessWidget {
       scrollDirection: Axis.vertical,
       child: Column(
         children: posts.map((post) {
-          return PostWidget(
-            post: post,
-          );
+          return PostWidget(post: post, collection: collection);
         }).toList(),
       ),
     );

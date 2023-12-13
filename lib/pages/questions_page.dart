@@ -129,22 +129,24 @@ class _QuestionsPageState extends State<QuestionsPage> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: _postsService.getPosts(),
+      stream: _postsService.getPosts('questions'),
       builder: (context, AsyncSnapshot<List<Post>> snapshot) {
         if (snapshot.hasData) {
-          DateTime? newestPostTimestamp = snapshot.data?.first.dateCreated;
-          if (latestPostTimestamp == null) {
-            latestPostTimestamp = newestPostTimestamp;
-          } else if (newestPostTimestamp != null &&
-              newestPostTimestamp.isAfter(latestPostTimestamp!)) {
-            // New post received - Show toast
-            WidgetsBinding.instance?.addPostFrameCallback((_) {
-              Toast.show(context, "New posts available", "info", onTap: () {
-                // Any additional action on tap
-                scrollToTop();
-              }, icon: FontAwesomeIcons.arrowUp);
-            });
-            latestPostTimestamp = newestPostTimestamp;
+          if (snapshot.data!.isNotEmpty) {
+            DateTime? newestPostTimestamp = snapshot.data?.first.dateCreated;
+            if (latestPostTimestamp == null) {
+              latestPostTimestamp = newestPostTimestamp;
+            } else if (newestPostTimestamp != null &&
+                newestPostTimestamp.isAfter(latestPostTimestamp!)) {
+              // New post received - Show toast
+              WidgetsBinding.instance?.addPostFrameCallback((_) {
+                Toast.show(context, "New posts available", "info", onTap: () {
+                  // Any additional action on tap
+                  scrollToTop();
+                }, icon: FontAwesomeIcons.arrowUp);
+              });
+              latestPostTimestamp = newestPostTimestamp;
+            }
           }
         }
         if (snapshot.hasError) {
@@ -162,19 +164,26 @@ class _QuestionsPageState extends State<QuestionsPage> {
                     post.category.toLowerCase() == category.name.toLowerCase());
               }).toList();
 
-        return Column(
-          children: [
-            Categories(
-                key: UniqueKey(), categories: categories, asFilter: true),
-            Expanded(
-              child: Posts(
-                posts: filteredPosts,
-                selectedCategories: selectedCategories,
-                controller: _scrollController,
+        if (snapshot.data!.isNotEmpty) {
+          return Column(
+            children: [
+              Categories(
+                  key: UniqueKey(), categories: categories, asFilter: true),
+              Expanded(
+                child: Posts(
+                  posts: filteredPosts,
+                  selectedCategories: selectedCategories,
+                  controller: _scrollController,
+                  collection: "questions",
+                ),
               ),
-            ),
-          ],
-        );
+            ],
+          );
+        } else {
+          return const Center(
+            child: Text("No Confessions Available"),
+          );
+        }
       },
     );
   }

@@ -4,9 +4,9 @@ import '../models/post.dart';
 class PostsService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Stream<List<Post>> getPosts() {
-    Stream<List<Post>> fetchedQuestions = _firestore
-        .collection('questions')
+  Stream<List<Post>> getPosts(String collection) {
+    Stream<List<Post>> fetchedPosts = _firestore
+        .collection(collection)
         .orderBy('dateCreated', descending: true) // Add this line
         .snapshots()
         .map((snapshot) {
@@ -15,10 +15,10 @@ class PostsService {
           .toList();
     });
 
-    return fetchedQuestions;
+    return fetchedPosts;
   }
 
-  Future<void> addQuestion(Post question) async {
-    await _firestore.collection('questions').add(question.toMap());
+  Future<void> addPost(String collection, Post post) async {
+    await _firestore.collection(collection).add(post.toMap());
   }
 }

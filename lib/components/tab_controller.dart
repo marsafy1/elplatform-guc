@@ -32,6 +32,13 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
     NotificationsPage()
     // Add other page widgets here
   ];
+  final Map<int, String> indexToCollection = {
+    0: "feed",
+    1: "confessions",
+    2: "questions",
+    3: "lost_and_founds",
+    4: "notifications"
+  };
   List<Category> categoriesChoices = [];
   List<Category> selectedCategoriesChoices = [];
   var selectedTabIndex = 0;
@@ -44,7 +51,14 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
   void showBottomSheetForNewPost(BuildContext context) {
     final TextEditingController titleController = TextEditingController();
     final TextEditingController descriptionController = TextEditingController();
-
+    final Map<String, String> collectionToAction = {
+      "feed": "Add Post",
+      "confessions": "Add Confession",
+      "questions": "Add Question",
+      "lost_and_founds": "Look For",
+    };
+    String collection = indexToCollection[selectedTabIndex] ?? "feed";
+    String action = collectionToAction[collection] ?? "post";
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -62,10 +76,10 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
                       children: [
-                        const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text("Ask Question",
-                              style: TextStyle(
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(action,
+                              style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                               )),
@@ -90,7 +104,7 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
                           style: ElevatedButton.styleFrom(
                               backgroundColor: Theme.of(context).primaryColor,
                               minimumSize: const Size(double.infinity, 36)),
-                          child: const Text("Ask"),
+                          child: Text(action.split(" ")[0]),
                           onPressed: () {
                             String title = titleController.text.trim();
                             String description =
@@ -129,7 +143,7 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
                                 description: description,
                                 photosUrls: [],
                                 dateCreated: dateTime);
-                            _postsService.addQuestion(newQuestion);
+                            _postsService.addPost(collection, newQuestion);
                             Navigator.pop(
                                 context); // Close the bottom sheet upon success
                           },
