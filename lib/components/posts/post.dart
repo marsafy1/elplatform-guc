@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../models/post.dart';
 import '../utils/images_slider.dart';
 import '../utils/chip.dart';
+import '../utils/verified_check.dart';
 
 class PostWidget extends StatefulWidget {
   final Post post;
@@ -72,9 +73,14 @@ class _PostState extends State<PostWidget> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                  "${widget.post.user!.firstName} ${widget.post.user!.lastName}",
-                  style: const TextStyle(fontWeight: FontWeight.bold)),
+              Row(
+                children: [
+                  Text(
+                      "${widget.post.user!.firstName} ${widget.post.user!.lastName}",
+                      style: const TextStyle(fontWeight: FontWeight.bold)),
+                  if (true) const VerifiedCheck(),
+                ],
+              ),
               const Text('5th year student',
                   style: TextStyle(color: Colors.grey)),
             ],
