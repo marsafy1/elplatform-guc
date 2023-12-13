@@ -121,6 +121,7 @@ class _PostState extends State<PostWidget> {
 
   Widget _buildFooter(context) {
     Map<String, IconData> collectionToInteractionIcon = {
+      "feed": FontAwesomeIcons.thumbsUp,
       "questions": FontAwesomeIcons.arrowUp,
       "confessions": FontAwesomeIcons.heart
     };
