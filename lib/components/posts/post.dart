@@ -50,7 +50,10 @@ class _PostState extends State<PostWidget> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(widget.post.userId,
+              Text(
+                  widget.post.user!.firstName +
+                      " " +
+                      widget.post.user!.lastName,
                   style: const TextStyle(fontWeight: FontWeight.bold)),
               const Text('5th year student',
                   style: TextStyle(color: Colors.grey)),
