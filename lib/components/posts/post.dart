@@ -39,11 +39,13 @@ class _PostState extends State<PostWidget> {
   }
 
   Widget _buildHeader() {
+    String avatarName =
+        widget.post.user!.firstName.characters.first.toUpperCase();
     return Row(
       children: [
-        const CircleAvatar(
+        CircleAvatar(
           backgroundColor: Colors.black,
-          child: Text('AN'),
+          child: Text(avatarName),
         ),
         const SizedBox(width: 10),
         Expanded(
@@ -51,9 +53,7 @@ class _PostState extends State<PostWidget> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                  widget.post.user!.firstName +
-                      " " +
-                      widget.post.user!.lastName,
+                  "${widget.post.user!.firstName} ${widget.post.user!.lastName}",
                   style: const TextStyle(fontWeight: FontWeight.bold)),
               const Text('5th year student',
                   style: TextStyle(color: Colors.grey)),
