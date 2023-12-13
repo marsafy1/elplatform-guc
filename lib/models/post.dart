@@ -20,11 +20,11 @@ class Post {
   factory Post.fromMap(Map<String, dynamic> map, String documentId) {
     return Post(
       id: documentId,
-      title: map['title'],
-      userId: map['userId'],
-      category: map['category'],
-      description: map['description'],
-      photosUrls: map['photosUrls'],
+      title: map['title'] ?? "Title",
+      userId: map['userId'] ?? "Default",
+      category: map['category'] ?? "all",
+      description: map['description'] ?? "Description",
+      photosUrls: map['photosUrls'] ?? [],
       dateCreated: map['dateCreated'] != null
           ? map['dateCreated'].toDate()
           : DateTime.now(),
