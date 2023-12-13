@@ -1,10 +1,81 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../models/post.dart';
+import '../components/posts/posts.dart';
 
-class ConfessionsPage extends StatelessWidget {
+import '../services/posts_service.dart';
+import '../components/toast/toast.dart';
+
+class ConfessionsPage extends StatefulWidget {
   const ConfessionsPage({super.key});
 
   @override
+  State<ConfessionsPage> createState() => _ConfessionsPageState();
+}
+
+class _ConfessionsPageState extends State<ConfessionsPage> {
+  final PostsService _postsService = PostsService();
+
+  DateTime? latestPostTimestamp;
+  bool hasNewPosts = false;
+
+  final ScrollController _scrollController = ScrollController();
+  @override
+  void dispose() {
+    _scrollController.dispose(); // Important to dispose the controller
+    super.dispose();
+  }
+
+  void scrollToTop() {
+    _scrollController.animateTo(
+      0.0,
+      curve: Curves.easeOut,
+      duration: const Duration(milliseconds: 1500),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return const Text("Confessions Page");
+    return StreamBuilder(
+      stream: _postsService.getPosts(),
+      builder: (context, AsyncSnapshot<List<Post>> snapshot) {
+        if (snapshot.hasData) {
+          DateTime? newestPostTimestamp = snapshot.data?.first.dateCreated;
+          if (latestPostTimestamp == null) {
+            latestPostTimestamp = newestPostTimestamp;
+          } else if (newestPostTimestamp != null &&
+              newestPostTimestamp.isAfter(latestPostTimestamp!)) {
+            // New post received - Show toast
+            WidgetsBinding.instance?.addPostFrameCallback((_) {
+              Toast.show(context, "New posts available", "info", onTap: () {
+                // Any additional action on tap
+                scrollToTop();
+              }, icon: FontAwesomeIcons.arrowUp);
+            });
+            latestPostTimestamp = newestPostTimestamp;
+          }
+        }
+        if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        }
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        // Retrieve posts and filter them based on selected categories
+        List<Post> allPosts = snapshot.data ?? [];
+
+        return Column(
+          children: [
+            Expanded(
+              child: Posts(
+                posts: allPosts,
+                selectedCategories: const [],
+                controller: _scrollController,
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
