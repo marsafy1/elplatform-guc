@@ -138,7 +138,7 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
                             DateTime dateTime = DateTime.now();
                             Post newQuestion = Post(
                                 title: title,
-                                username: "static_username",
+                                userId: "static_username",
                                 category: category,
                                 description: description,
                                 photosUrls: [],

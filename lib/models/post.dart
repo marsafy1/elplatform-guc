@@ -1,6 +1,6 @@
 class Post {
   final String id;
-  final String username;
+  final String userId;
   final String category;
   final String title;
   final String description;
@@ -10,7 +10,7 @@ class Post {
   Post({
     this.id = "",
     required this.title,
-    required this.username,
+    required this.userId,
     required this.category,
     required this.description,
     required this.dateCreated,
@@ -21,7 +21,7 @@ class Post {
     return Post(
       id: documentId,
       title: map['title'],
-      username: map['username'],
+      userId: map['userId'],
       category: map['category'],
       description: map['description'],
       photosUrls: map['photosUrls'],
@@ -34,7 +34,7 @@ class Post {
   Map<String, dynamic> toMap() {
     return {
       'title': title,
-      'username': username,
+      'userId': userId,
       'category': category,
       'description': description,
       'photosUrls': photosUrls,
