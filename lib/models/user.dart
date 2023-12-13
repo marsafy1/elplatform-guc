@@ -59,16 +59,16 @@ class User {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'firstName': firstName,
-      'lastName': lastName,
+      'first_name': firstName,
+      'last_name': lastName,
       'email': email,
-      'userType': userType.toShortString(),
-      'isPublisher': isPublisher,
+      'user_type': userType.toShortString(),
+      'is_publisher': isPublisher,
       'header': header,
       'bio': bio,
       'faculty': faculty,
-      'photoUrl': photoUrl,
-      'gucId': gucId,
+      'photo_url': photoUrl,
+      'guc_id': gucId,
     };
   }
 }
