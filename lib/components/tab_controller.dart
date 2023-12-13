@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:guc_swiss_knife/components/app_bar_widget.dart';
 import 'package:guc_swiss_knife/services/posts_service.dart';
+import 'package:guc_swiss_knife/providers/auth_provider.dart';
 import '../models/category.dart';
 import '../models/post.dart';
 import 'tabs_controller/glassy_navbar.dart';
@@ -59,6 +61,8 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
     };
     String collection = indexToCollection[selectedTabIndex] ?? "feed";
     String action = collectionToAction[collection] ?? "post";
+    final userAuth = Provider.of<AuthProvider>(context, listen: false);
+    String userId = userAuth.user!.id;
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -138,7 +142,7 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
                             DateTime dateTime = DateTime.now();
                             Post newQuestion = Post(
                                 title: title,
-                                username: "static_username",
+                                userId: userId,
                                 category: category,
                                 description: description,
                                 photosUrls: [],

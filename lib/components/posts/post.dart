@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -39,18 +41,39 @@ class _PostState extends State<PostWidget> {
   }
 
   Widget _buildHeader() {
+    String avatarChar =
+        widget.post.user!.firstName.characters.first.toUpperCase();
+    Widget avatar;
+    if (widget.post.user!.photoUrl != null) {
+      avatar = CircleAvatar(
+        backgroundColor: Colors.black,
+        backgroundImage: NetworkImage(widget.post.user!.photoUrl!),
+        // child: Text("Avatar"),
+      );
+    } else {
+      var rand = Random();
+      List<MaterialColor> avatarBg = [
+        Colors.red,
+        Colors.blue,
+        Colors.purple,
+        Colors.orange
+      ];
+      avatar = CircleAvatar(
+        backgroundColor: avatarBg[rand.nextInt(avatarBg.length)],
+        // backgroundImage: NetworkImage(widget.post.user.photoUrl),
+        child: Text(avatarChar),
+      );
+    }
     return Row(
       children: [
-        const CircleAvatar(
-          backgroundColor: Colors.black,
-          child: Text('AN'),
-        ),
+        avatar,
         const SizedBox(width: 10),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(widget.post.username,
+              Text(
+                  "${widget.post.user!.firstName} ${widget.post.user!.lastName}",
                   style: const TextStyle(fontWeight: FontWeight.bold)),
               const Text('5th year student',
                   style: TextStyle(color: Colors.grey)),
