@@ -37,7 +37,7 @@ class User {
         header: 'Default header',
         bio: 'Default bio',
         faculty: 'Default faculty',
-        photoUrl: 'default_photo_url',
+        photoUrl: null,
         gucId: 'default_gucid',
       );
   factory User.fromMap(Map<String, dynamic> map, String documentId) {
