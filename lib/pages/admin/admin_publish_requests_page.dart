@@ -21,27 +21,28 @@ class _AdminPublishRequestsState extends State<AdminPublishRequests> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: _publishRequestsService.fetchPublishRequests(),
-        builder: (context, AsyncSnapshot<List<PublishRequest>> snapshot) {
-          if (snapshot.hasData) {
-            return Scaffold(
-              appBar: MyAppBar(),
-              drawer: const MainDrawer(),
-              // generate list of cards in the body
-              body: ListView.builder(
-                itemCount: snapshot.data!.length,
-                itemBuilder: (context, index) {
-                  return snapshot.data![index].approved != 0
-                      ? null
-                      : PublishRequestCard(
-                          publishRequest: snapshot.data![index],
-                        );
-                },
-              ),
-            );
-          } else {
-            return const Center(child: CircularProgressIndicator());
-          }
-        });
+      stream: _publishRequestsService.fetchPublishRequests(),
+      builder: (context, AsyncSnapshot<List<PublishRequest>> snapshot) {
+        if (snapshot.hasData) {
+          return Scaffold(
+            appBar: MyAppBar(),
+            drawer: const MainDrawer(),
+            // generate list of cards in the body
+            body: ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                return snapshot.data![index].approved != 0
+                    ? null
+                    : PublishRequestCard(
+                        publishRequest: snapshot.data![index],
+                      );
+              },
+            ),
+          );
+        } else {
+          return const Center(child: CircularProgressIndicator());
+        }
+      },
+    );
   }
 }
