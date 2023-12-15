@@ -18,78 +18,67 @@ class RatingsSummary extends StatelessWidget {
         (oneStar + twoStar * 2 + threeStar * 3 + fourStar * 4 + fiveStar * 5) /
             total;
 
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Ratings Summary',
-            style: TextStyle(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+          child: Text(
+            'Ratings ($total)',
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 20,
+              fontSize: 16,
             ),
           ),
-          const SizedBox(height: 10),
-          Row(
+        ),
+        Row(children: [
+          _buildAverageRating(average, context),
+          Column(
             children: [
-              const Text(
-                'Average Rating: ',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                ),
-              ),
-              Text(
-                average.toStringAsFixed(1),
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                ),
-              ),
-              const SizedBox(width: 10),
-              RatingBarIndicator(
-                rating: average,
-                itemBuilder: (context, index) => const Icon(
-                  Icons.star,
-                  color: Colors.amber,
-                ),
-                itemCount: 5,
-                itemSize: 20.0,
-                direction: Axis.horizontal,
-              ),
+              _buildRow(fiveStar, total, 5, context),
+              _buildRow(fourStar, total, 4, context),
+              _buildRow(threeStar, total, 3, context),
+              _buildRow(twoStar, total, 2, context),
+              _buildRow(oneStar, total, 1, context),
             ],
           ),
-          const SizedBox(height: 10),
-          const SizedBox(height: 10),
-          _buildRow(oneStar, 1),
-          _buildRow(twoStar, 2),
-          _buildRow(threeStar, 3),
-          _buildRow(fourStar, 4),
-          _buildRow(fiveStar, 5),
-        ],
+        ]),
+      ],
+    );
+  }
+
+  Widget _buildAverageRating(double average, BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.2,
+        height: MediaQuery.of(context).size.width * 0.2,
+        child: Column(
+          children: [
+            Text(
+              average.toStringAsFixed(1),
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 30,
+              ),
+            ),
+            const Text(
+              'out of 5',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 15,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildRow(int count, int rating) {
+  Widget _buildRow(int count, int total, int rating, BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text(
-          '5 Star: ',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 15,
-          ),
-        ),
-        Text(
-          count.toString(),
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 15,
-          ),
-        ),
-        const SizedBox(width: 10),
         RatingBarIndicator(
           rating: rating.toDouble(),
           itemBuilder: (context, index) => const Icon(
@@ -99,6 +88,17 @@ class RatingsSummary extends StatelessWidget {
           itemCount: 5,
           itemSize: 20.0,
           direction: Axis.horizontal,
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 12),
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.4,
+            height: 5,
+            child: LinearProgressIndicator(
+              value: count / total,
+              valueColor: const AlwaysStoppedAnimation<Color>(Colors.amber),
+            ),
+          ),
         ),
       ],
     );
