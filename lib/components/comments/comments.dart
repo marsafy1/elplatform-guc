@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:guc_swiss_knife/providers/auth_provider.dart';
 import './comment.dart';
-import '../../models/user.dart';
 import '../../models/comment.dart';
 import '../../services/comments_service.dart';
 
@@ -45,9 +44,7 @@ class Comments extends StatelessWidget {
           if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           }
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
+
           // Retrieve posts and filter them based on selected categories
           List<CommentModel> allComments = snapshot.data ?? [];
 
@@ -55,13 +52,20 @@ class Comments extends StatelessWidget {
             padding: MediaQuery.of(context).viewInsets,
             child: Wrap(
               children: <Widget>[
-                if (allComments.isNotEmpty)
+                if (snapshot.connectionState == ConnectionState.waiting)
+                  const Padding(
+                    padding: EdgeInsets.all(50.0),
+                    child: Center(child: CircularProgressIndicator()),
+                  ),
+                if (snapshot.connectionState != ConnectionState.waiting &&
+                    allComments.isNotEmpty)
                   Column(
                     children: allComments.map((comment) {
                       return Comment(comment: comment);
                     }).toList(),
                   ),
-                if (allComments.isEmpty)
+                if (snapshot.connectionState != ConnectionState.waiting &&
+                    allComments.isEmpty)
                   const Padding(
                     padding: EdgeInsets.all(50.0),
                     child: Center(child: Text("No Comments")),
