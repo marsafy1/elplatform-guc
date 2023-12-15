@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:guc_swiss_knife/models/user.dart';
 import 'package:guc_swiss_knife/providers/auth_provider.dart';
 import 'package:guc_swiss_knife/services/user_service.dart';
+import 'package:guc_swiss_knife/utils_functions/profile.dart';
 import 'package:provider/provider.dart';
 
 class Profile extends StatefulWidget {
@@ -115,19 +116,7 @@ class _ProfileState extends State<Profile> {
   Widget _header(User user) {
     return Column(
       children: [
-        Center(
-          child: SizedBox(
-            height: 100,
-            width: 100,
-            child: CircleAvatar(
-              backgroundImage:
-                  user.photoUrl != null && user.photoUrl!.isNotEmpty
-                      ? NetworkImage(user.photoUrl!)
-                      : const AssetImage('assets/default_profile_picture.png')
-                          as ImageProvider<Object>?,
-            ),
-          ),
-        ),
+        generateAvatar(context, user, radius: 100),
         const SizedBox(height: 20),
         Text(
           "${user.firstName} ${user.lastName}",

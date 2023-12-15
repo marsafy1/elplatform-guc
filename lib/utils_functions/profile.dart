@@ -2,7 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import '../models/user.dart';
 
-Widget generateAvatar(BuildContext context, User user) {
+Widget generateAvatar(BuildContext context, User user, {double? radius}) {
   String avatarChar = user.firstName.characters.first.toUpperCase();
   Widget avatar;
 
@@ -19,18 +19,23 @@ Widget generateAvatar(BuildContext context, User user) {
       Colors.purple,
       Colors.orange,
     ];
-    avatar = GestureDetector(
+    avatar = CircleAvatar(
+      backgroundColor: avatarBg[rand.nextInt(avatarBg.length)],
+      child: Text(
+        avatarChar,
+        style: TextStyle(fontSize: (radius ?? 35) / 2),
+      ),
+    );
+  }
+
+  avatar = GestureDetector(
       onTap: () {
         Navigator.of(context).pushNamed('/profile', arguments: {
           'userId': user.id,
         });
       },
-      child: CircleAvatar(
-        backgroundColor: avatarBg[rand.nextInt(avatarBg.length)],
-        child: Text(avatarChar),
-      ),
-    );
-  }
+      child:
+          SizedBox(height: radius ?? 40, width: radius ?? 40, child: avatar));
 
   return avatar;
 }
