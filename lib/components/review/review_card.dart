@@ -22,17 +22,12 @@ class _ReviewCardState extends State<ReviewCard> {
     futureUser = UserService.getUserById(widget.review.userId);
   }
 
-//get screen width
-  double getScreenWidth(BuildContext context) {
-    return MediaQuery.of(context).size.width;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Card(
       child: SizedBox(
         width: MediaQuery.of(context).size.width * 0.85,
-        height: MediaQuery.of(context).size.height * 0.15,
+        height: MediaQuery.of(context).size.height * 0.16,
         child: FutureBuilder(
           future: futureUser,
           builder: (context, AsyncSnapshot<User> snapshot) {
@@ -67,7 +62,10 @@ class _ReviewCardState extends State<ReviewCard> {
                       Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            header,
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: header,
+                            ),
                             const Spacer(),
                             Padding(
                               padding: const EdgeInsets.fromLTRB(0, 0, 12, 0),
