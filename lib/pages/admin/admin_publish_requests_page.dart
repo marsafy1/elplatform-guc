@@ -31,9 +31,11 @@ class _AdminPublishRequestsState extends State<AdminPublishRequests> {
               body: ListView.builder(
                 itemCount: snapshot.data!.length,
                 itemBuilder: (context, index) {
-                  return PublishRequestCard(
-                    publishRequest: snapshot.data![index],
-                  );
+                  return snapshot.data![index].approved != 0
+                      ? null
+                      : PublishRequestCard(
+                          publishRequest: snapshot.data![index],
+                        );
                 },
               ),
             );

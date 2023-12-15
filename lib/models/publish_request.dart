@@ -1,18 +1,16 @@
-import 'package:guc_swiss_knife/models/user.dart';
-
 class PublishRequest {
   String id;
   String title;
   String content;
   String userId;
   DateTime createdAt = DateTime.now();
-  bool approved;
+  int approved;
   PublishRequest({
     this.id = "",
     required this.title,
     required this.content,
     required this.userId,
-    required this.approved,
+    this.approved = 0,
   });
 
   Map<String, dynamic> toMap() {

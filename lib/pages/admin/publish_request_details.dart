@@ -3,6 +3,7 @@ import 'package:guc_swiss_knife/components/app_bar_widget.dart';
 import 'package:guc_swiss_knife/components/drawer_widget.dart';
 import 'package:guc_swiss_knife/models/publish_request.dart';
 import 'package:guc_swiss_knife/models/user.dart';
+import 'package:guc_swiss_knife/services/publish_requests_service.dart';
 import 'package:guc_swiss_knife/services/user_service.dart';
 
 class PublishRequestsDetails extends StatefulWidget {
@@ -15,7 +16,7 @@ class PublishRequestsDetails extends StatefulWidget {
 class _PublishRequestsDetailsState extends State<PublishRequestsDetails> {
   User? user;
   PublishRequest? publishRequest;
-
+  PublishRequestsService publishRequestsService = PublishRequestsService();
   Future<void> fetchUser() async {
     User? fetchedUser = await UserService.getUserById(publishRequest!.userId!);
     setState(() {
@@ -84,7 +85,11 @@ class _PublishRequestsDetailsState extends State<PublishRequestsDetails> {
                   ),
                   child: IconButton(
                     icon: const Icon(Icons.check),
-                    onPressed: () {},
+                    onPressed: () {
+                      publishRequestsService
+                          .approvePublishRequest(publishRequest);
+                      Navigator.pop(context);
+                    },
                   ),
                 ),
                 sizedBoxSpaceH,
@@ -95,7 +100,11 @@ class _PublishRequestsDetailsState extends State<PublishRequestsDetails> {
                   ),
                   child: IconButton(
                     icon: const Icon(Icons.close),
-                    onPressed: () {},
+                    onPressed: () {
+                      publishRequestsService
+                          .declinePublishRequest(publishRequest);
+                      Navigator.pop(context);
+                    },
                   ),
                 )
               ],

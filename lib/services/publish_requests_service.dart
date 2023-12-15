@@ -19,13 +19,23 @@ class PublishRequestsService {
   }
 
   // approve publish request
-  Future<void> approvePublishRequest(PublishRequest publishRequest) async {
+  Future<void> approvePublishRequest(PublishRequest? publishRequest) async {
     await _firestore
         .collection("publish_requests")
-        .doc(publishRequest.id)
-        .update({'approved': true});
+        .doc(publishRequest!.id)
+        .update({'approved': 1});
     _firestore.collection("users").doc(publishRequest.userId).update({
       'is_publisher': true,
+    });
+  }
+
+  Future<void> declinePublishRequest(PublishRequest? publishRequest) async {
+    await _firestore
+        .collection("publish_requests")
+        .doc(publishRequest!.id)
+        .update({'approved': 2});
+    _firestore.collection("users").doc(publishRequest.userId).update({
+      'is_publisher': false,
     });
   }
 
