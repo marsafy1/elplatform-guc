@@ -67,7 +67,8 @@ class _ReviewCardState extends State<ReviewCard> {
                             Padding(
                               padding: const EdgeInsets.all(10),
                               child: CircleAvatar(
-                                backgroundImage: NetworkImage(user!.photoUrl),
+                                backgroundImage:
+                                    NetworkImage(user!.photoUrl ?? ""),
                                 maxRadius: 25,
                               ),
                             ),
@@ -87,7 +88,7 @@ class _ReviewCardState extends State<ReviewCard> {
                                   padding:
                                       const EdgeInsets.only(left: 2, top: 2),
                                   child: Text(
-                                    user.bio,
+                                    user.bio ?? '',
                                     style: const TextStyle(
                                         fontWeight: FontWeight.normal,
                                         fontSize: 12,
