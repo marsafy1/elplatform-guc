@@ -1,11 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:guc_swiss_knife/providers/auth_provider.dart';
 import './comment.dart';
 import '../../models/user.dart';
+import '../../models/comment.dart';
+import '../../services/comments_service.dart';
 
 class Comments extends StatelessWidget {
   final String postId;
+  final String collectionName;
 
-  const Comments({super.key, required this.postId});
+  const Comments(
+      {super.key, required this.postId, required this.collectionName});
+
+  void handleCommentSubmission(String comment, BuildContext context,
+      TextEditingController commentController) {
+    CommentService commentService = CommentService();
+    final userAuth = Provider.of<AuthProvider>(context, listen: false);
+    if (comment.trim().isNotEmpty) {
+      CommentModel newComment = CommentModel(
+        postId: postId,
+        userId: userAuth.user!.id,
+        comment: commentController.text,
+        dateCreated: DateTime.now(),
+      );
+      // Add the comment to Firestore
+      commentService.addComment(newComment, collectionName).then((_) {
+        print('Comment added successfully.');
+        commentController.clear(); // Clear the text field after submission
+        Navigator.pop(
+            context); // Optionally close the bottom sheet after submission
+      }).catchError((error) {
+        print('Error adding comment: $error');
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +57,8 @@ class Comments extends StatelessWidget {
                     controller: commentController,
                     textInputAction: TextInputAction.send,
                     onSubmitted: (value) {
-                      // handleCommentSubmission(
-                      // value, context, commentController);
+                      handleCommentSubmission(
+                          value, context, commentController);
                     },
                     decoration: InputDecoration(
                       hintText: 'Write an answer...',
@@ -47,8 +76,8 @@ class Comments extends StatelessWidget {
                 IconButton(
                   icon: const Icon(Icons.send),
                   onPressed: () {
-                    // handleCommentSubmission(
-                    // commentController.text, context, commentController);
+                    handleCommentSubmission(
+                        commentController.text, context, commentController);
                   },
                 ),
               ],

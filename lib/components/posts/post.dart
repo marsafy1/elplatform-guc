@@ -190,18 +190,11 @@ class _PostState extends State<PostWidget> {
       context: context,
       isScrollControlled: true,
       builder: (BuildContext bc) {
-        return Comments(postId: widget.post.id);
+        return Comments(
+          postId: widget.post.id,
+          collectionName: "comments_${widget.collection}",
+        );
       },
     );
-  }
-
-  void handleCommentSubmission(String comment, BuildContext context,
-      TextEditingController commentController) {
-    if (comment.trim().isNotEmpty) {
-      // TODO: Implement the logic to post the comment
-      commentController.clear(); // Clear the text field after submission
-      Navigator.pop(
-          context); // Optionally close the bottom sheet after submission
-    }
   }
 }

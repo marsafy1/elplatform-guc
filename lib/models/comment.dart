@@ -1,6 +1,6 @@
 import './user.dart';
 
-class Comment {
+class CommentModel {
   final String id;
   final String postId;
   final String userId;
@@ -8,7 +8,7 @@ class Comment {
   final DateTime dateCreated;
   User? user;
 
-  Comment(
+  CommentModel(
       {this.id = "",
       required this.postId,
       required this.userId,
@@ -16,9 +16,9 @@ class Comment {
       required this.dateCreated,
       this.user});
 
-  factory Comment.fromMap(Map<String, dynamic> map, String documentId,
+  factory CommentModel.fromMap(Map<String, dynamic> map, String documentId,
       {User? user}) {
-    return Comment(
+    return CommentModel(
         id: documentId,
         userId: map['userId'] ?? "Default",
         postId: map['postId'] ?? "Default",
