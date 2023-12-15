@@ -43,22 +43,5 @@ class _AdminPublishRequestsState extends State<AdminPublishRequests> {
             return const Center(child: CircularProgressIndicator());
           }
         });
-    // return Scaffold(
-    //   appBar: MyAppBar(),
-    //   drawer: const MainDrawer(),
-    //   // generate list of cards in the body
-    //   body: ListView.builder(
-    //     itemCount: 10,
-    //     itemBuilder: (context, index) {
-    //       return PublishRequestCard(
-    //         publishRequest: PublishRequest(
-    //           title: 'title',
-    //           content: 'content',
-    //           tags: ['tag1', 'tag2'],
-    //         ),
-    //       );
-    //     },
-    //   ),
-    // );
   }
 }
