@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:guc_swiss_knife/components/course/course_description.dart';
 import 'package:guc_swiss_knife/components/course/course_reviews.dart';
+import 'package:guc_swiss_knife/components/course/ratings_summary.dart';
 import 'package:guc_swiss_knife/models/course.dart';
-import 'package:guc_swiss_knife/models/review.dart';
 
 class CourseDetails extends StatelessWidget {
   const CourseDetails({super.key});
@@ -20,22 +20,7 @@ class CourseDetails extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  const CircularProgressIndicator(),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(5.0),
-                    child: FadeInImage(
-                      placeholder: const AssetImage('assets/Empty.png'),
-                      image: NetworkImage(course.photoUrl),
-                      fit: BoxFit.cover,
-                      width: 100,
-                      height: 100,
-                    ),
-                  ),
-                ],
-              ),
+              _buildImage(course.photoUrl, context),
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Text(
@@ -47,9 +32,29 @@ class CourseDetails extends StatelessWidget {
                 ),
               ),
               CourseDescription(description: course.description),
+              RatingsSummary(reviews: course.reviews),
               CourseReviews(reviews: course.reviews)
             ],
           ),
         ));
+  }
+
+  Widget _buildImage(String photoUrl, BuildContext context) {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        const CircularProgressIndicator(),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(5.0),
+          child: FadeInImage(
+            placeholder: const AssetImage('assets/Empty.png'),
+            image: NetworkImage(photoUrl),
+            fit: BoxFit.cover,
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height * 0.2,
+          ),
+        ),
+      ],
+    );
   }
 }
