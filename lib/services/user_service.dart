@@ -4,21 +4,30 @@ import 'package:guc_swiss_knife/models/user.dart';
 class UserService {
   static final CollectionReference _usersCollectionReference =
       FirebaseFirestore.instance.collection('users');
-  static Future<User> getUserById(String? id) {
+  static Future<User> getUserById(String? id) async {
     if (id == null) throw Exception("id is null");
-    return _usersCollectionReference.doc(id).get().then((doc) {
-      return User(
-        id: doc.id,
-        firstName: doc['first_name'],
-        lastName: doc['last_name'],
-        photoUrl: doc['photo_url'],
-        email: doc['email'],
-        bio: doc['bio'],
-        faculty: doc['faculty'],
-        isPublisher: doc['is_publisher'],
-        gucId: doc['guc_id'],
-        userType: doc['user_type'] as UserType,
-      );
+    return await _usersCollectionReference
+        .doc(id)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        Map<String, dynamic> userData =
+            documentSnapshot.data() as Map<String, dynamic>;
+
+        return User(
+            id: documentSnapshot.id,
+            firstName: userData["first_name"],
+            lastName: userData["last_name"],
+            email: userData["email"],
+            userType: (userData["user_type"] as String).toUserType(),
+            isPublisher: userData["is_publisher"],
+            header: userData["header"],
+            bio: userData["bio"],
+            faculty: userData["faculty"],
+            gucId: userData["guc_id"]);
+      } else {
+        throw Exception("User not found");
+      }
     });
   }
 }
