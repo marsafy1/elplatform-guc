@@ -10,7 +10,7 @@ class PublishRequestsService {
         .asyncMap((snapshot) async {
       List<PublishRequest> requests = [];
       for (var doc in snapshot.docs) {
-        PublishRequest request = PublishRequest.fromMap(doc.data());
+        PublishRequest request = PublishRequest.fromMap(doc.data(), doc.id);
         requests.add(request);
       }
       return requests;

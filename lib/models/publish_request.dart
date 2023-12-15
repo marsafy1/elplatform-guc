@@ -27,8 +27,8 @@ class PublishRequest {
   }
 
   //from map
-  PublishRequest.fromMap(Map<String, dynamic> map)
-      : id = map['id'],
+  PublishRequest.fromMap(Map<String, dynamic> map, String documentId)
+      : id = documentId,
         title = map['title'],
         content = map['content'],
         userId = map['user_id'],
