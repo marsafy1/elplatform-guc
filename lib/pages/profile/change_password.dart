@@ -92,9 +92,26 @@ class _ChangePasswordState extends State<ChangePassword> {
   Future<void> changePasswordClicked() async {
     final String oldPassword = fields["old_password"]!.controller.text;
     final String newPassword = fields["new_password"]!.controller.text;
+    try {
+      await _authProvider.changePassword(
+          oldPassword: oldPassword, newPassword: newPassword);
+      Navigator.of(context).pop();
+    } catch (e) {
+      if (e is AuthException) {
+        _showError(e.message);
+      } else {
+        print('Unexpected error: $e');
+        _showError('An unexpected error occurred. Please try again later.');
+      }
+    }
+  }
 
-    await _authProvider.changePassword(
-        oldPassword: oldPassword, newPassword: newPassword);
-    Navigator.of(context).pop();
+  void _showError(String errorMessage) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(errorMessage),
+        backgroundColor: Colors.red,
+      ),
+    );
   }
 }
