@@ -9,9 +9,9 @@ import '../../services/comments_service.dart';
 class Comments extends StatelessWidget {
   final String postId;
   final String collectionName;
+  final CommentService _commentsService = CommentService();
 
-  const Comments(
-      {super.key, required this.postId, required this.collectionName});
+  Comments({super.key, required this.postId, required this.collectionName});
 
   void handleCommentSubmission(String comment, BuildContext context,
       TextEditingController commentController) {
@@ -39,52 +39,72 @@ class Comments extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TextEditingController commentController = TextEditingController();
-    return Padding(
-      padding: MediaQuery.of(context).viewInsets,
-      child: Wrap(
-        children: <Widget>[
-          Comment(
-            user: User.defaultUser,
-            comment: "Test comment",
-          ),
-          const Divider(),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
+    return StreamBuilder(
+        stream: _commentsService.getComments(collectionName, postId),
+        builder: (context, AsyncSnapshot<List<CommentModel>> snapshot) {
+          if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          }
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          // Retrieve posts and filter them based on selected categories
+          List<CommentModel> allComments = snapshot.data ?? [];
+
+          return Padding(
+            padding: MediaQuery.of(context).viewInsets,
+            child: Wrap(
               children: <Widget>[
-                Expanded(
-                  child: TextField(
-                    controller: commentController,
-                    textInputAction: TextInputAction.send,
-                    onSubmitted: (value) {
-                      handleCommentSubmission(
-                          value, context, commentController);
-                    },
-                    decoration: InputDecoration(
-                      hintText: 'Write an answer...',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25.0),
-                        borderSide: BorderSide.none,
-                      ),
-                      filled: true,
-                      fillColor: Colors.grey[800],
-                      contentPadding:
-                          const EdgeInsets.symmetric(horizontal: 16),
-                    ),
+                if (allComments.isNotEmpty)
+                  Column(
+                    children: allComments.map((comment) {
+                      return Comment(comment: comment);
+                    }).toList(),
                   ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.send),
-                  onPressed: () {
-                    handleCommentSubmission(
-                        commentController.text, context, commentController);
-                  },
+                if (allComments.isEmpty)
+                  const Padding(
+                    padding: EdgeInsets.all(50.0),
+                    child: Center(child: Text("No Comments")),
+                  ),
+                const Divider(),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: TextField(
+                          controller: commentController,
+                          textInputAction: TextInputAction.send,
+                          onSubmitted: (value) {
+                            handleCommentSubmission(
+                                value, context, commentController);
+                          },
+                          decoration: InputDecoration(
+                            hintText: 'Write an answer...',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(25.0),
+                              borderSide: BorderSide.none,
+                            ),
+                            filled: true,
+                            fillColor: Colors.grey[800],
+                            contentPadding:
+                                const EdgeInsets.symmetric(horizontal: 16),
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.send),
+                        onPressed: () {
+                          handleCommentSubmission(commentController.text,
+                              context, commentController);
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
-          ),
-        ],
-      ),
-    );
+          );
+        });
   }
 }
