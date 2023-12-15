@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -7,6 +5,8 @@ import '../../models/post.dart';
 import '../utils/images_slider.dart';
 import '../utils/chip.dart';
 import '../utils/verified_check.dart';
+import '../comments/comments.dart';
+import '../../utils_functions/profile.dart';
 
 class PostWidget extends StatefulWidget {
   final Post post;
@@ -42,32 +42,11 @@ class _PostState extends State<PostWidget> {
   }
 
   Widget _buildHeader() {
-    String avatarChar =
-        widget.post.user!.firstName.characters.first.toUpperCase();
-    Widget avatar;
-    if (widget.post.user!.photoUrl != null) {
-      avatar = CircleAvatar(
-        backgroundColor: Colors.black,
-        backgroundImage: NetworkImage(widget.post.user!.photoUrl!),
-        // child: Text("Avatar"),
-      );
-    } else {
-      var rand = Random();
-      List<MaterialColor> avatarBg = [
-        Colors.red,
-        Colors.blue,
-        Colors.purple,
-        Colors.orange
-      ];
-      avatar = CircleAvatar(
-        backgroundColor: avatarBg[rand.nextInt(avatarBg.length)],
-        // backgroundImage: NetworkImage(widget.post.user.photoUrl),
-        child: Text(avatarChar),
-      );
-    }
+    Widget userAvatar = generateAvatar(widget.post.user!);
+
     return Row(
       children: [
-        avatar,
+        userAvatar,
         const SizedBox(width: 10),
         Expanded(
           child: Column(
@@ -207,65 +186,11 @@ class _PostState extends State<PostWidget> {
   }
 
   void showCommentsBottomSheet(BuildContext context) {
-    TextEditingController commentController = TextEditingController();
-
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       builder: (BuildContext bc) {
-        return Padding(
-          padding: MediaQuery.of(bc).viewInsets,
-          child: Wrap(
-            children: <Widget>[
-              const ListTile(
-                leading: CircleAvatar(child: Text('AB')),
-                title: Text('Commenter Name'),
-                subtitle: Text('Comment text goes here...'),
-              ),
-              const ListTile(
-                leading: CircleAvatar(child: Text('CD')),
-                title: Text('Another Name'),
-                subtitle: Text('Another comment text...'),
-              ),
-              const Divider(),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: TextField(
-                        controller: commentController,
-                        textInputAction: TextInputAction.send,
-                        onSubmitted: (value) {
-                          handleCommentSubmission(
-                              value, context, commentController);
-                        },
-                        decoration: InputDecoration(
-                          hintText: 'Write an answer...',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(25.0),
-                            borderSide: BorderSide.none,
-                          ),
-                          filled: true,
-                          fillColor: Colors.grey[800],
-                          contentPadding:
-                              const EdgeInsets.symmetric(horizontal: 16),
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.send),
-                      onPressed: () {
-                        handleCommentSubmission(
-                            commentController.text, context, commentController);
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
+        return Comments(postId: widget.post.id);
       },
     );
   }
