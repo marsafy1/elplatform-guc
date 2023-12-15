@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guc_swiss_knife/components/course/course_description.dart';
 import 'package:guc_swiss_knife/components/course/course_reviews.dart';
+import 'package:guc_swiss_knife/components/course/ratings_summary.dart';
 import 'package:guc_swiss_knife/models/course.dart';
 import 'package:guc_swiss_knife/models/review.dart';
 
@@ -47,6 +48,7 @@ class CourseDetails extends StatelessWidget {
                 ),
               ),
               CourseDescription(description: course.description),
+              RatingsSummary(reviews: course.reviews),
               CourseReviews(reviews: course.reviews)
             ],
           ),
