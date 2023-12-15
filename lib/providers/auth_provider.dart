@@ -130,6 +130,35 @@ class AuthProvider with ChangeNotifier {
 
     notifyListeners();
   }
+
+  Future<void> changePassword({
+    required String oldPassword,
+    required String newPassword,
+  }) async {
+    final firebase_auth.User? user = _auth.currentUser;
+
+    if (user == null) {
+      throw AuthException(message: 'User not found');
+    }
+
+    final firebase_auth.AuthCredential credential =
+        firebase_auth.EmailAuthProvider.credential(
+      email: user.email!,
+      password: oldPassword,
+    );
+
+    try {
+      await user.reauthenticateWithCredential(credential);
+    } on firebase_auth.FirebaseAuthException catch (e) {
+      throw AuthException(message: _handleAuthException(e));
+    }
+
+    try {
+      await user.updatePassword(newPassword);
+    } on firebase_auth.FirebaseAuthException catch (e) {
+      throw AuthException(message: _handleAuthException(e));
+    }
+  }
 }
 
 class AuthException implements Exception {

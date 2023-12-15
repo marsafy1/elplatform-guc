@@ -56,19 +56,7 @@ class _ProfileState extends State<Profile> {
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
-        actions: isOwnProfile
-            ? [
-                IconButton(
-                  icon: const Icon(
-                    Icons.edit,
-                    color: Colors.grey,
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).pushNamed('/editProfile');
-                  },
-                )
-              ]
-            : [],
+        actions: isOwnProfile ? [_optionsMenu(context)] : [],
       ),
       body: FutureBuilder<User>(
           future: _loadUser(userId),
@@ -145,4 +133,28 @@ class _ProfileState extends State<Profile> {
       ],
     );
   }
+}
+
+Widget _optionsMenu(BuildContext context) {
+  return PopupMenuButton<String>(
+    onSelected: (value) {
+      if (value == 'editProfile') {
+        Navigator.of(context).pushNamed('/editProfile');
+      } else if (value == 'changePassword') {
+        Navigator.of(context).pushNamed('/changePassword');
+      }
+    },
+    itemBuilder: (BuildContext context) {
+      return [
+        const PopupMenuItem(
+          value: 'editProfile',
+          child: Text('Edit Profile'),
+        ),
+        const PopupMenuItem(
+          value: 'changePassword',
+          child: Text('Change Password'),
+        ),
+      ];
+    },
+  );
 }

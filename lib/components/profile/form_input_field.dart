@@ -32,6 +32,7 @@ class FormInputField extends StatelessWidget {
       enabled: enabled,
       maxLines: multiline! ? null : 1,
       keyboardType: multiline! ? TextInputType.multiline : TextInputType.text,
+      obscureText: isPassword ?? false,
     );
   }
 }
