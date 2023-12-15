@@ -1,30 +1,37 @@
 import 'package:guc_swiss_knife/models/user.dart';
 
 class PublishRequest {
+  String id;
   String title;
   String content;
-  List<String> tags;
-  User? user;
+  String userId;
   DateTime createdAt = DateTime.now();
-  PublishRequest(
-      {required this.title,
-      required this.content,
-      required this.tags,
-      this.user});
+  bool approved;
+  PublishRequest({
+    this.id = "",
+    required this.title,
+    required this.content,
+    required this.userId,
+    required this.approved,
+  });
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'title': title,
       'content': content,
-      'tags': tags,
+      'user_id': userId,
+      'created_at': createdAt,
+      'approved': approved,
     };
   }
 
-  factory PublishRequest.fromJson(Map<String, dynamic> json) {
-    return PublishRequest(
-      title: json['title'],
-      content: json['content'],
-      tags: List<String>.from(json['tags']),
-    );
-  }
+  //from map
+  PublishRequest.fromMap(Map<String, dynamic> map)
+      : id = map['id'],
+        title = map['title'],
+        content = map['content'],
+        userId = map['user_id'],
+        createdAt = map['created_at'].toDate(),
+        approved = map['approved'];
 }
