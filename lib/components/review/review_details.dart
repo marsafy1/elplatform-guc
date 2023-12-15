@@ -5,11 +5,10 @@ import 'package:guc_swiss_knife/models/user.dart';
 
 class ReviewDetails extends StatelessWidget {
   final Review review;
-  final User user;
-  const ReviewDetails({super.key, required this.review, required this.user});
+  final Widget header;
+  const ReviewDetails({super.key, required this.review, required this.header});
   @override
   Widget build(BuildContext context) {
-    // return an overlay with the review details
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5),
@@ -23,38 +22,7 @@ class ReviewDetails extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  CircleAvatar(
-                    radius: 25,
-                    backgroundImage: NetworkImage(user.photoUrl ?? ""),
-                  ),
-                  const SizedBox(width: 10),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 2),
-                        child: Text(
-                          '${user.firstName} ${user.lastName}',
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 2, top: 2),
-                        child: Text(
-                          user.bio ?? '',
-                          style: const TextStyle(
-                              fontWeight: FontWeight.normal,
-                              fontSize: 12,
-                              color: Colors.grey),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+              header,
               const SizedBox(height: 10),
               RatingBar.builder(
                 initialRating: review.rating,
