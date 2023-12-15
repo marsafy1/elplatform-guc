@@ -8,9 +8,14 @@ import '../../services/comments_service.dart';
 class Comments extends StatelessWidget {
   final String postId;
   final String collectionName;
+  final String commentsDisplayedName;
   final CommentService _commentsService = CommentService();
 
-  Comments({super.key, required this.postId, required this.collectionName});
+  Comments(
+      {super.key,
+      required this.postId,
+      required this.collectionName,
+      required this.commentsDisplayedName});
 
   void handleCommentSubmission(String comment, BuildContext context,
       TextEditingController commentController) {
@@ -52,6 +57,13 @@ class Comments extends StatelessWidget {
             padding: MediaQuery.of(context).viewInsets,
             child: Wrap(
               children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Center(
+                    child: Text(commentsDisplayedName,
+                        style: const TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                ),
                 if (snapshot.connectionState == ConnectionState.waiting)
                   const Padding(
                     padding: EdgeInsets.all(50.0),
@@ -66,9 +78,9 @@ class Comments extends StatelessWidget {
                   ),
                 if (snapshot.connectionState != ConnectionState.waiting &&
                     allComments.isEmpty)
-                  const Padding(
-                    padding: EdgeInsets.all(50.0),
-                    child: Center(child: Text("No Comments")),
+                  Padding(
+                    padding: const EdgeInsets.all(50.0),
+                    child: Center(child: Text("No $commentsDisplayedName")),
                   ),
                 const Divider(),
                 Padding(
@@ -84,7 +96,7 @@ class Comments extends StatelessWidget {
                                 value, context, commentController);
                           },
                           decoration: InputDecoration(
-                            hintText: 'Write an answer...',
+                            hintText: "What's on your mind?",
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(25.0),
                               borderSide: BorderSide.none,

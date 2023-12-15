@@ -19,6 +19,19 @@ class PostWidget extends StatefulWidget {
 }
 
 class _PostState extends State<PostWidget> {
+  Map<String, IconData> collectionToInteractionIcon = {
+    "feed": FontAwesomeIcons.thumbsUp,
+    "questions": FontAwesomeIcons.arrowUp,
+    "confessions": FontAwesomeIcons.heart
+  };
+  Map<String, String> collectionToInteractionAction = {
+    "questions": "Upvote",
+    "confessions": "Like"
+  };
+  Map<String, String> collectionToComment = {
+    "questions": "Answers",
+    "confessions": "Comments"
+  };
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -99,19 +112,6 @@ class _PostState extends State<PostWidget> {
   }
 
   Widget _buildFooter(context) {
-    Map<String, IconData> collectionToInteractionIcon = {
-      "feed": FontAwesomeIcons.thumbsUp,
-      "questions": FontAwesomeIcons.arrowUp,
-      "confessions": FontAwesomeIcons.heart
-    };
-    Map<String, String> collectionToInteractionAction = {
-      "questions": "Upvote",
-      "confessions": "Like"
-    };
-    Map<String, String> collectionToComment = {
-      "questions": "Answers",
-      "confessions": "Comments"
-    };
     IconData interactionIcon = collectionToInteractionIcon[widget.collection] ??
         FontAwesomeIcons.heart;
     String interactionAction =
@@ -192,6 +192,8 @@ class _PostState extends State<PostWidget> {
       builder: (BuildContext bc) {
         return Comments(
           postId: widget.post.id,
+          commentsDisplayedName:
+              collectionToComment[widget.collection] ?? "Comments",
           collectionName: "comments_${widget.collection}",
         );
       },
