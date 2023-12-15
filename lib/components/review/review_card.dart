@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:guc_swiss_knife/components/review/review_details.dart';
+import 'package:guc_swiss_knife/components/utils/verified_check.dart';
 import 'package:guc_swiss_knife/models/review.dart';
 import 'package:guc_swiss_knife/models/user.dart';
 import 'package:guc_swiss_knife/services/user_service.dart';
+import '../../utils_functions/profile.dart';
 
 class ReviewCard extends StatefulWidget {
   final Review review;
@@ -30,7 +32,7 @@ class _ReviewCardState extends State<ReviewCard> {
     return Card(
       child: SizedBox(
         width: MediaQuery.of(context).size.width * 0.85,
-        height: MediaQuery.of(context).size.height * 0.2,
+        height: MediaQuery.of(context).size.height * 0.15,
         child: FutureBuilder(
           future: futureUser,
           builder: (context, AsyncSnapshot<User> snapshot) {
@@ -48,13 +50,14 @@ class _ReviewCardState extends State<ReviewCard> {
               return Text('Error: ${snapshot.error}');
             } else {
               User? user = snapshot.data;
-
+              Widget header = _buildHeader(user);
               return InkWell(
                   onTap: () {
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
-                        return ReviewDetails(review: widget.review, user: user);
+                        return ReviewDetails(
+                            review: widget.review, header: header);
                       },
                     );
                   },
@@ -64,39 +67,7 @@ class _ReviewCardState extends State<ReviewCard> {
                       Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: CircleAvatar(
-                                backgroundImage:
-                                    NetworkImage(user!.photoUrl ?? ""),
-                                maxRadius: 25,
-                              ),
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 2),
-                                  child: Text(
-                                    '${user.firstName} ${user.lastName}',
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16),
-                                  ),
-                                ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.only(left: 2, top: 2),
-                                  child: Text(
-                                    user.bio ?? '',
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.normal,
-                                        fontSize: 12,
-                                        color: Colors.grey),
-                                  ),
-                                ),
-                              ],
-                            ),
+                            header,
                             const Spacer(),
                             Padding(
                               padding: const EdgeInsets.fromLTRB(0, 0, 12, 0),
@@ -131,6 +102,38 @@ class _ReviewCardState extends State<ReviewCard> {
             }
           },
         ),
+      ),
+    );
+  }
+
+  Widget _buildHeader(User? user) {
+    Widget userAvatar = generateAvatar(context, user!);
+
+    return Padding(
+      padding: const EdgeInsets.only(left: 8),
+      child: Row(
+        children: [
+          userAvatar,
+          const SizedBox(width: 10),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Text("${user.firstName} ${user.lastName}",
+                      style: const TextStyle(fontWeight: FontWeight.bold)),
+                  if (user.isPublisher) const VerifiedCheck(),
+                ],
+              ),
+              SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.4,
+                  child: Text(user.bio ?? '',
+                      style: const TextStyle(color: Colors.grey),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis)),
+            ],
+          ),
+        ],
       ),
     );
   }
