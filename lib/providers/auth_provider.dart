@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:guc_swiss_knife/models/user.dart';
 import 'package:flutter/material.dart';
@@ -12,36 +11,28 @@ class AuthProvider with ChangeNotifier {
     firebase_auth.FirebaseAuth.instance
         .authStateChanges()
         .listen((firebase_auth.User? user) {
-      notifyListeners();
-    });
-
-    firebase_auth.FirebaseAuth.instance
-        .authStateChanges()
-        .listen((firebase_auth.User? user) {
       if (user == null) {
         _user = null;
       } else {
         UserService.getUserById(user.uid).then((value) => _user = value);
-        notifyListeners();
       }
+      notifyListeners();
     });
   }
 
-  bool get isAuthenticated {
-    return _auth.currentUser != null;
-  }
-
-  User? get user {
-    return _user;
-  }
+  bool get isAuthenticated => _auth.currentUser != null;
+  User? get user => _user;
 
   Future<firebase_auth.User?> signIn({
     required String email,
     required String password,
   }) async {
     try {
-      final firebase_auth.UserCredential userCredential = await _auth
-          .signInWithEmailAndPassword(email: email, password: password);
+      final firebase_auth.UserCredential userCredential =
+          await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
       return userCredential.user;
     } on firebase_auth.FirebaseAuthException catch (e) {
@@ -66,13 +57,14 @@ class AuthProvider with ChangeNotifier {
 
       final String uid = userCredential.user!.uid;
 
-      await FirebaseFirestore.instance.collection('users').doc(uid).set({
-        'first_name': firstName,
-        'last_name': lastName,
-        'email': email,
-        'is_publisher': false,
-        'user_type': userType.toShortString(),
-      });
+      await UserService.createUser(
+        id: uid,
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        userType: userType,
+        isPublisher: false,
+      );
       return userCredential.user;
     } on firebase_auth.FirebaseAuthException catch (e) {
       throw AuthException(message: _handleAuthException(e));
@@ -95,7 +87,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   void logout() {
-    firebase_auth.FirebaseAuth.instance.signOut();
+    _auth.signOut();
   }
 
   Future<void> updateUser({
@@ -106,14 +98,15 @@ class AuthProvider with ChangeNotifier {
     String? faculty,
     String? gucId,
   }) async {
-    await FirebaseFirestore.instance.collection('users').doc(_user!.id).update({
-      'first_name': firstName ?? _user!.firstName,
-      'last_name': lastName ?? _user!.lastName,
-      'header': header ?? _user!.header,
-      'bio': bio ?? _user!.bio,
-      'faculty': faculty ?? _user!.faculty,
-      'guc_id': gucId ?? _user!.gucId,
-    });
+    UserService.updateUser(
+      id: _user!.id,
+      firstName: firstName ?? _user!.firstName,
+      lastName: lastName ?? _user!.lastName,
+      header: header ?? _user!.header,
+      bio: bio ?? _user!.bio,
+      faculty: faculty ?? _user!.faculty,
+      gucId: gucId ?? _user!.gucId,
+    );
 
     _user = User(
       id: _user!.id,

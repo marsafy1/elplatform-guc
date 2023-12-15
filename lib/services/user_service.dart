@@ -30,4 +30,40 @@ class UserService {
       }
     });
   }
+
+  static Future<void> createUser({
+    required String id,
+    required String firstName,
+    required String lastName,
+    required String email,
+    required UserType userType,
+    required bool isPublisher,
+  }) async {
+    await _usersCollectionReference.doc(id).set({
+      'first_name': firstName,
+      'last_name': lastName,
+      'email': email,
+      'is_publisher': isPublisher,
+      'user_type': userType.toShortString(),
+    });
+  }
+
+  static Future<void> updateUser({
+    required String id,
+    String? firstName,
+    String? lastName,
+    String? header,
+    String? bio,
+    String? faculty,
+    String? gucId,
+  }) async {
+    await _usersCollectionReference.doc(id).update({
+      'first_name': firstName,
+      'last_name': lastName,
+      'header': header,
+      'bio': bio,
+      'faculty': faculty,
+      'guc_id': gucId,
+    });
+  }
 }
