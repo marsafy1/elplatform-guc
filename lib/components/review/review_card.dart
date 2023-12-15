@@ -107,7 +107,7 @@ class _ReviewCardState extends State<ReviewCard> {
   }
 
   Widget _buildHeader(User? user) {
-    Widget userAvatar = generateAvatar(user!);
+    Widget userAvatar = generateAvatar(context, user!);
 
     return Padding(
       padding: const EdgeInsets.only(left: 8),
