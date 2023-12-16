@@ -5,9 +5,13 @@ import 'package:guc_swiss_knife/models/review.dart';
 class ReviewCourseDialog extends StatefulWidget {
   final Review? initialReview;
   final Function(String review, int rating) onSubmit;
+  final Function() onDelete;
 
   const ReviewCourseDialog(
-      {super.key, this.initialReview, required this.onSubmit});
+      {super.key,
+      this.initialReview,
+      required this.onSubmit,
+      required this.onDelete});
 
   @override
   _ReviewCourseDialog createState() => _ReviewCourseDialog();
@@ -85,6 +89,7 @@ class _ReviewCourseDialog extends State<ReviewCourseDialog> {
         if (widget.initialReview != null)
           TextButton(
             onPressed: () {
+              widget.onDelete();
               Navigator.of(context).pop();
             },
             child: const Text('Delete'),

@@ -59,4 +59,21 @@ class CourseService {
         .then((value) => addReview(courseId, review))
         .catchError((error) => print("Failed to add review: $error"));
   }
+
+  // delete review
+  static Future<void> deleteReview(String courseId, Review? review) {
+    return _coursesCollectionReference
+        .doc(courseId)
+        .update({
+          'reviews': FieldValue.arrayRemove([
+            {
+              'user_id': review!.userId,
+              'rating': review.rating,
+              'review': review.review,
+            }
+          ])
+        })
+        .then((value) => print("Review Deleted"))
+        .catchError((error) => print("Failed to delete review: $error"));
+  }
 }

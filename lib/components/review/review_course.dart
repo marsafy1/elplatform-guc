@@ -60,6 +60,7 @@ class _ReviewCourse extends State<ReviewCourse> {
                     return ReviewCourseDialog(
                       initialReview: oldReview,
                       onSubmit: _onSubmit,
+                      onDelete: _onDelete,
                     );
                   },
                 );
@@ -86,6 +87,7 @@ class _ReviewCourse extends State<ReviewCourse> {
                 return ReviewCourseDialog(
                   initialReview: null,
                   onSubmit: _onSubmit,
+                  onDelete: _onDelete,
                 );
               },
             );
@@ -135,5 +137,12 @@ class _ReviewCourse extends State<ReviewCourse> {
     } else {
       await CourseService.updateReview(widget.course.id, reviewObj);
     }
+  }
+
+  void _onDelete() async {
+    setState(() {
+      widget.course.reviews.removeWhere((element) => element.userId == user.id);
+    });
+    await CourseService.deleteReview(widget.course.id, _getOldReview());
   }
 }
