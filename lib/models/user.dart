@@ -12,6 +12,7 @@ class User {
   final String? faculty;
   final String? photoUrl;
   final String? gucId;
+  final double? rating;
 
   User({
     required this.id,
@@ -25,6 +26,7 @@ class User {
     this.faculty,
     this.photoUrl,
     this.gucId,
+    this.rating = 0.0,
   });
   static User get defaultUser => User(
         id: 'default_id',
@@ -53,6 +55,7 @@ class User {
       faculty: map['faculty'] as String?,
       photoUrl: map['photo_url'] as String?,
       gucId: map['guc_id'] as String?,
+      rating: map['rating'] as double? ?? 0.0,
     );
   }
 
@@ -69,6 +72,7 @@ class User {
       'faculty': faculty,
       'photo_url': photoUrl,
       'guc_id': gucId,
+      'rating': rating,
     };
   }
 }
