@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:guc_swiss_knife/components/review/review_card.dart';
 import 'package:guc_swiss_knife/components/review/review_course_dialog.dart';
-import 'package:guc_swiss_knife/models/course.dart';
 import 'package:guc_swiss_knife/models/review.dart';
 import 'package:guc_swiss_knife/models/user.dart';
 import 'package:guc_swiss_knife/providers/auth_provider.dart';
@@ -12,8 +11,12 @@ import 'package:provider/provider.dart';
 class ReviewCourse extends StatefulWidget {
   final List<Review> reviews;
   final String courseId;
+  final Function setReviews;
   const ReviewCourse(
-      {super.key, required this.reviews, required this.courseId});
+      {super.key,
+      required this.reviews,
+      required this.courseId,
+      required this.setReviews});
 
   @override
   State<ReviewCourse> createState() => _ReviewCourse();
@@ -139,6 +142,7 @@ class _ReviewCourse extends State<ReviewCourse> {
     setState(() {
       widget.reviews.removeWhere((element) => element.userId == user.id);
       widget.reviews.add(reviewObj);
+      widget.setReviews(widget.reviews);
     });
   }
 
@@ -146,6 +150,7 @@ class _ReviewCourse extends State<ReviewCourse> {
     await CourseService.deleteReview(widget.courseId, _getOldReview());
     setState(() {
       widget.reviews.removeWhere((element) => element.userId == user.id);
+      widget.setReviews(widget.reviews);
     });
   }
 }
