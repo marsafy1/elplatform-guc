@@ -11,7 +11,7 @@ class CourseService {
       return snapshot.docs.map((doc) {
         List<Review> reviews = (doc['reviews'] as List<dynamic>)
             .map((e) => Review(
-                  rating: (e['rating'] as int).toDouble(),
+                  rating: e['rating'] as int,
                   review: e['review'],
                   userId: e['user_id'],
                 ))
@@ -24,5 +24,39 @@ class CourseService {
             reviews: reviews);
       }).toList();
     });
+  }
+
+  static Future<void> addReview(String courseId, Review review) {
+    return _coursesCollectionReference
+        .doc(courseId)
+        .update({
+          'reviews': FieldValue.arrayUnion([
+            {
+              'user_id': review.userId,
+              'rating': review.rating,
+              'review': review.review,
+            }
+          ])
+        })
+        .then((value) => print("Review Added"))
+        .catchError((error) => print("Failed to add review: $error"));
+  }
+
+  static Future<void> updateReview(String courseId, Review review) {
+    return _coursesCollectionReference
+        .doc(courseId)
+        .update({
+          'reviews': FieldValue.arrayRemove([
+            {
+              'user_id': review.userId,
+              'rating': review.rating,
+              'review': review.review,
+            }
+          ])
+        })
+        .then((value) => print("Review Deleted"))
+        .catchError((error) => print("Failed to delete review: $error"))
+        .then((value) => addReview(courseId, review))
+        .catchError((error) => print("Failed to add review: $error"));
   }
 }

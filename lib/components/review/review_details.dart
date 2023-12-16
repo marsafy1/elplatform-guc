@@ -25,7 +25,7 @@ class ReviewDetails extends StatelessWidget {
               header,
               const SizedBox(height: 10),
               RatingBar.builder(
-                initialRating: review.rating,
+                initialRating: review.rating.toDouble(),
                 minRating: 1,
                 direction: Axis.horizontal,
                 allowHalfRating: true,

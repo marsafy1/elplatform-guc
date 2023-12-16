@@ -6,6 +6,7 @@ import 'package:guc_swiss_knife/models/course.dart';
 import 'package:guc_swiss_knife/models/review.dart';
 import 'package:guc_swiss_knife/models/user.dart';
 import 'package:guc_swiss_knife/providers/auth_provider.dart';
+import 'package:guc_swiss_knife/services/course_service.dart';
 import 'package:provider/provider.dart';
 
 class ReviewCourse extends StatefulWidget {
@@ -29,13 +30,14 @@ class _ReviewCourse extends State<ReviewCourse> {
 
   @override
   Widget build(BuildContext context) {
-    if (!_isReviewed()) {
-      return _editReview();
+    Review? oldReview = _getOldReview();
+    if (oldReview != null) {
+      return _editReview(oldReview);
     }
     return _addReview();
   }
 
-  Widget _editReview() {
+  Widget _editReview(Review? oldReview) {
     return Container(
         padding: const EdgeInsets.fromLTRB(4, 10, 10, 10),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -56,7 +58,7 @@ class _ReviewCourse extends State<ReviewCourse> {
                   context: context,
                   builder: (BuildContext context) {
                     return ReviewCourseDialog(
-                      initialReview: widget.course.reviews[0],
+                      initialReview: oldReview,
                       onSubmit: (String review, int rating) {},
                     );
                   },
@@ -67,7 +69,7 @@ class _ReviewCourse extends State<ReviewCourse> {
           ]),
           Padding(
             padding: const EdgeInsets.only(left: 4, top: 8),
-            child: ReviewCard(review: widget.course.reviews[0]),
+            child: ReviewCard(review: oldReview!),
           ),
         ]));
   }
@@ -83,7 +85,7 @@ class _ReviewCourse extends State<ReviewCourse> {
               builder: (BuildContext context) {
                 return ReviewCourseDialog(
                   initialReview: null,
-                  onSubmit: (String review, int rating) {},
+                  onSubmit: _onSubmit,
                 );
               },
             );
@@ -109,12 +111,29 @@ class _ReviewCourse extends State<ReviewCourse> {
     );
   }
 
-  bool _isReviewed() {
-    for (var review in widget.course.reviews) {
+  Review? _getOldReview() {
+    for (Review review in widget.course.reviews) {
       if (review.userId == user.id) {
-        return true;
+        return review;
       }
     }
-    return false;
+    return null;
+  }
+
+  void _onSubmit(String review, int rating) async {
+    Review reviewObj = Review(
+      userId: user.id,
+      rating: rating,
+      review: review,
+    );
+    setState(() {
+      widget.course.reviews.removeWhere((element) => element.userId == user.id);
+      widget.course.reviews.add(reviewObj);
+    });
+    if (_getOldReview() == null) {
+      await CourseService.addReview(widget.course.id, reviewObj);
+    } else {
+      await CourseService.updateReview(widget.course.id, reviewObj);
+    }
   }
 }

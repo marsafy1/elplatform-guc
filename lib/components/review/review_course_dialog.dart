@@ -6,7 +6,8 @@ class ReviewCourseDialog extends StatefulWidget {
   final Review? initialReview;
   final Function(String review, int rating) onSubmit;
 
-  ReviewCourseDialog({this.initialReview, required this.onSubmit});
+  const ReviewCourseDialog(
+      {super.key, this.initialReview, required this.onSubmit});
 
   @override
   _ReviewCourseDialog createState() => _ReviewCourseDialog();
@@ -14,12 +15,13 @@ class ReviewCourseDialog extends StatefulWidget {
 
 class _ReviewCourseDialog extends State<ReviewCourseDialog> {
   late TextEditingController _controller;
-
+  int _rating = 0;
   @override
   void initState() {
     super.initState();
     _controller =
         TextEditingController(text: widget.initialReview?.review ?? "");
+    _rating = widget.initialReview?.rating.toInt() ?? 0;
   }
 
   @override
@@ -44,15 +46,19 @@ class _ReviewCourseDialog extends State<ReviewCourseDialog> {
                 Icons.star,
                 color: Colors.amber,
               ),
-              onRatingUpdate: (rating) {},
+              onRatingUpdate: (rating) {
+                setState(() {
+                  _rating = rating.toInt();
+                });
+              },
               ignoreGestures: false,
               updateOnDrag: true,
               glow: false,
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             TextField(
               controller: _controller,
-              maxLines: null, // Set to null for unlimited lines
+              maxLines: null,
               keyboardType: TextInputType.multiline,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
@@ -71,10 +77,18 @@ class _ReviewCourseDialog extends State<ReviewCourseDialog> {
         ),
         TextButton(
           onPressed: () {
+            widget.onSubmit(_controller.text, _rating);
             Navigator.of(context).pop();
           },
           child: const Text('Save'),
         ),
+        if (widget.initialReview != null)
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('Delete'),
+          )
       ],
     );
   }

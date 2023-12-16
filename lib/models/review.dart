@@ -1,7 +1,7 @@
 class Review {
   final String userId;
   final String? review;
-  final double rating;
+  final int rating;
 
   Review({
     required this.userId,
