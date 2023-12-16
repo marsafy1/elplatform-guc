@@ -6,6 +6,7 @@ class PublishRequestsService {
   Stream<List<PublishRequest>> fetchPublishRequests() {
     Stream<List<PublishRequest>> fetchedRequests = _firestore
         .collection("publish_requests")
+        .where('approved', isEqualTo: 0)
         .snapshots()
         .asyncMap((snapshot) async {
       List<PublishRequest> requests = [];

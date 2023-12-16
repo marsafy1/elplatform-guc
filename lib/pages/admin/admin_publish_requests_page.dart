@@ -28,16 +28,16 @@ class _AdminPublishRequestsState extends State<AdminPublishRequests> {
             appBar: MyAppBar(),
             drawer: const MainDrawer(),
             // generate list of cards in the body
-            body: ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                return snapshot.data![index].approved != 0
-                    ? null
-                    : PublishRequestCard(
+            body: snapshot.data!.isEmpty
+                ? const Center(child: Text("No Data Available"))
+                : ListView.builder(
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      return PublishRequestCard(
                         publishRequest: snapshot.data![index],
                       );
-              },
-            ),
+                    },
+                  ),
           );
         } else {
           return const Center(child: CircularProgressIndicator());

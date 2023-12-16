@@ -23,14 +23,16 @@ class _InstructorsState extends State<Instructors> {
             appBar: AppBar(
               title: const Text("$appName - Instructors"),
             ),
-            body: ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                return InstructorCard(
-                  instructor: snapshot.data![index],
-                );
-              },
-            ),
+            body: snapshot.data!.isEmpty
+                ? const Center(child: Text("No Data Available"))
+                : ListView.builder(
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      return InstructorCard(
+                        instructor: snapshot.data![index],
+                      );
+                    },
+                  ),
           );
         } else {
           return const Center(child: CircularProgressIndicator());
