@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
         home: Consumer<AuthProvider>(
           builder: (context, authProvider, _) {
             if (authProvider.isAuthenticated) {
-              bool isAdmin = authProvider.user!.userType == UserType.admin;
+              bool isAdmin = authProvider.user?.userType == UserType.admin;
               return isAdmin
                   ? const AdminPublishRequests()
                   : const TabsControllerScreen();
