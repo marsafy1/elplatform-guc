@@ -2,15 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:guc_swiss_knife/components/app_bar_widget.dart';
 import 'package:guc_swiss_knife/components/drawer_widget.dart';
 import 'package:guc_swiss_knife/models/publish_request.dart';
+import 'package:guc_swiss_knife/models/user.dart';
+import 'package:guc_swiss_knife/services/publish_requests_service.dart';
+import 'package:guc_swiss_knife/services/user_service.dart';
 
-class PublishRequestsDetails extends StatelessWidget {
+class PublishRequestsDetails extends StatefulWidget {
   const PublishRequestsDetails({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final PublishRequest publishRequest =
-        ModalRoute.of(context)!.settings.arguments as PublishRequest;
+  State<PublishRequestsDetails> createState() => _PublishRequestsDetailsState();
+}
 
+class _PublishRequestsDetailsState extends State<PublishRequestsDetails> {
+  User? user;
+  PublishRequest? publishRequest;
+  PublishRequestsService publishRequestsService = PublishRequestsService();
+  Future<void> fetchUser() async {
+    User? fetchedUser = await UserService.getUserById(publishRequest!.userId!);
+    setState(() {
+      user = fetchedUser;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    publishRequest =
+        ModalRoute.of(context)!.settings.arguments as PublishRequest;
+    fetchUser();
     const sizedBoxSpaceV = SizedBox(
       height: 30,
     );
@@ -32,9 +50,9 @@ class PublishRequestsDetails extends StatelessWidget {
                   backgroundColor: Colors.grey,
                   child: Icon(Icons.person),
                 ),
-                title: publishRequest.user == null
+                title: user == null
                     ? const Text("Anonymous")
-                    : Text(publishRequest.user!.firstName),
+                    : Text(user!.firstName),
                 subtitle: const Text("Publish Request"),
               ),
             ),
@@ -52,7 +70,7 @@ class PublishRequestsDetails extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8.0),
               ),
               child: Text(
-                publishRequest.content,
+                publishRequest!.content,
                 style: const TextStyle(fontSize: 16.0),
               ),
             ),
@@ -67,7 +85,11 @@ class PublishRequestsDetails extends StatelessWidget {
                   ),
                   child: IconButton(
                     icon: const Icon(Icons.check),
-                    onPressed: () {},
+                    onPressed: () {
+                      publishRequestsService
+                          .approvePublishRequest(publishRequest);
+                      Navigator.pop(context);
+                    },
                   ),
                 ),
                 sizedBoxSpaceH,
@@ -78,7 +100,11 @@ class PublishRequestsDetails extends StatelessWidget {
                   ),
                   child: IconButton(
                     icon: const Icon(Icons.close),
-                    onPressed: () {},
+                    onPressed: () {
+                      publishRequestsService
+                          .declinePublishRequest(publishRequest);
+                      Navigator.pop(context);
+                    },
                   ),
                 )
               ],

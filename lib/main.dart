@@ -2,6 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:guc_swiss_knife/configs/constants.dart';
 import 'package:guc_swiss_knife/firebase_options.dart';
+import 'package:guc_swiss_knife/models/user.dart';
+import 'package:guc_swiss_knife/pages/admin/add_contact.dart';
 import 'package:guc_swiss_knife/pages/auth/login_page.dart';
 import 'package:guc_swiss_knife/pages/auth/register_page.dart';
 import 'package:guc_swiss_knife/pages/profile/change_password.dart';
@@ -41,7 +43,10 @@ class MyApp extends StatelessWidget {
         home: Consumer<AuthProvider>(
           builder: (context, authProvider, _) {
             if (authProvider.isAuthenticated) {
-              return const TabsControllerScreen();
+              bool isAdmin = authProvider.user!.userType == UserType.admin;
+              return isAdmin
+                  ? const AdminPublishRequests()
+                  : const TabsControllerScreen();
             } else {
               return const LoginPage();
             }
@@ -71,6 +76,7 @@ class MyApp extends StatelessWidget {
           '/changePassword': (dummyCtx) => const ChangePassword(),
           '/login': (dummyCtx) => const LoginPage(),
           '/register': (dummyCtx) => const RegisterPage(),
+          '/addContact': (dummyCtx) => const AddContact(),
         },
       ),
     );

@@ -22,17 +22,14 @@ class _ReviewCardState extends State<ReviewCard> {
     futureUser = UserService.getUserById(widget.review.userId);
   }
 
-//get screen width
-  double getScreenWidth(BuildContext context) {
-    return MediaQuery.of(context).size.width;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Card(
       child: SizedBox(
         width: MediaQuery.of(context).size.width * 0.85,
-        height: MediaQuery.of(context).size.height * 0.15,
+        height: (widget.review.review == null || widget.review.review!.isEmpty)
+            ? MediaQuery.of(context).size.height * 0.07
+            : MediaQuery.of(context).size.height * 0.16,
         child: FutureBuilder(
           future: futureUser,
           builder: (context, AsyncSnapshot<User> snapshot) {
@@ -53,13 +50,16 @@ class _ReviewCardState extends State<ReviewCard> {
               Widget header = _buildHeader(user);
               return InkWell(
                   onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return ReviewDetails(
-                            review: widget.review, header: header);
-                      },
-                    );
+                    if (widget.review.review != null &&
+                        widget.review.review!.isNotEmpty) {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return ReviewDetails(
+                              review: widget.review, header: header);
+                        },
+                      );
+                    }
                   },
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -67,7 +67,10 @@ class _ReviewCardState extends State<ReviewCard> {
                       Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            header,
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: header,
+                            ),
                             const Spacer(),
                             Padding(
                               padding: const EdgeInsets.fromLTRB(0, 0, 12, 0),
@@ -89,14 +92,16 @@ class _ReviewCardState extends State<ReviewCard> {
                               ),
                             ),
                           ]),
-                      Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Text(
-                          widget.review.review ?? "",
-                          maxLines: 3,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      )
+                      if (widget.review.review != null &&
+                          widget.review.review!.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Text(
+                            widget.review.review ?? "",
+                            maxLines: 3,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        )
                     ],
                   ));
             }
@@ -127,7 +132,7 @@ class _ReviewCardState extends State<ReviewCard> {
               ),
               SizedBox(
                   width: MediaQuery.of(context).size.width * 0.4,
-                  child: Text(user.bio ?? '',
+                  child: Text(user.header ?? '',
                       style: const TextStyle(color: Colors.grey),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis)),
