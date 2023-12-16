@@ -40,7 +40,7 @@ class _ReviewCourseDialog extends State<ReviewCourseDialog> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             RatingBar.builder(
-              initialRating: widget.initialReview?.rating.toDouble() ?? 0,
+              initialRating: widget.initialReview?.rating.toDouble() ?? 5,
               minRating: 1,
               direction: Axis.horizontal,
               itemCount: 5,

@@ -10,8 +10,10 @@ import 'package:guc_swiss_knife/services/course_service.dart';
 import 'package:provider/provider.dart';
 
 class ReviewCourse extends StatefulWidget {
-  final Course course;
-  const ReviewCourse({super.key, required this.course});
+  final List<Review> reviews;
+  final String courseId;
+  const ReviewCourse(
+      {super.key, required this.reviews, required this.courseId});
 
   @override
   State<ReviewCourse> createState() => _ReviewCourse();
@@ -114,7 +116,7 @@ class _ReviewCourse extends State<ReviewCourse> {
   }
 
   Review? _getOldReview() {
-    for (Review review in widget.course.reviews) {
+    for (Review review in widget.reviews) {
       if (review.userId == user.id) {
         return review;
       }
@@ -128,21 +130,22 @@ class _ReviewCourse extends State<ReviewCourse> {
       rating: rating,
       review: review,
     );
-    setState(() {
-      widget.course.reviews.removeWhere((element) => element.userId == user.id);
-      widget.course.reviews.add(reviewObj);
-    });
     if (_getOldReview() == null) {
-      await CourseService.addReview(widget.course.id, reviewObj);
+      await CourseService.addReview(widget.courseId, reviewObj);
     } else {
-      await CourseService.updateReview(widget.course.id, reviewObj);
+      await CourseService.updateReview(
+          widget.courseId, _getOldReview(), reviewObj);
     }
+    setState(() {
+      widget.reviews.removeWhere((element) => element.userId == user.id);
+      widget.reviews.add(reviewObj);
+    });
   }
 
   void _onDelete() async {
+    await CourseService.deleteReview(widget.courseId, _getOldReview());
     setState(() {
-      widget.course.reviews.removeWhere((element) => element.userId == user.id);
+      widget.reviews.removeWhere((element) => element.userId == user.id);
     });
-    await CourseService.deleteReview(widget.course.id, _getOldReview());
   }
 }

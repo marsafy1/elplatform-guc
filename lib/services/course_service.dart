@@ -42,50 +42,49 @@ class CourseService {
         .catchError((error) => print("Failed to add review: $error"));
   }
 
-  static Future<void> updateReview(String courseId, Review newReview) async {
-    try {
-      DocumentReference documentReference =
-          _coursesCollectionReference.doc(courseId);
-      DocumentSnapshot documentSnapshot = await documentReference.get();
-      if (documentSnapshot.exists) {
-        List<Review> reviews = (documentSnapshot['reviews'] as List<dynamic>)
-            .map((e) => Review(
-                  rating: e['rating'] as int,
-                  review: e['review'],
-                  userId: e['user_id'],
-                ))
-            .toList();
-        reviews.removeWhere((element) => element.userId == newReview.userId);
-        reviews.add(newReview);
-        await documentReference.update({'your_array_field': reviews});
-      } else {
-        print('Document with ID $courseId does not exist.');
-      }
-    } catch (e) {
-      print('Error updating array element: $e');
-    }
+  static Future<void> updateReview(
+      String courseId, Review? oldReview, Review newReview) async {
+    return _coursesCollectionReference
+        .doc(courseId)
+        .update({
+          'reviews': FieldValue.arrayRemove([
+            {
+              'user_id': oldReview!.userId,
+              'rating': oldReview.rating,
+              'review': oldReview.review,
+            }
+          ])
+        })
+        .then((value) => print("Review Removed"))
+        .catchError((error) => print("Failed to remove review: $error"))
+        .then((value) => _coursesCollectionReference
+            .doc(courseId)
+            .update({
+              'reviews': FieldValue.arrayUnion([
+                {
+                  'user_id': newReview.userId,
+                  'rating': newReview.rating,
+                  'review': newReview.review,
+                }
+              ])
+            })
+            .then((value) => print("Review Added"))
+            .catchError((error) => print("Failed to add review: $error")));
   }
 
   static Future<void> deleteReview(String courseId, Review? review) async {
-    try {
-      DocumentReference documentReference =
-          _coursesCollectionReference.doc(courseId);
-      DocumentSnapshot documentSnapshot = await documentReference.get();
-      if (documentSnapshot.exists) {
-        List<Review> reviews = (documentSnapshot['reviews'] as List<dynamic>)
-            .map((e) => Review(
-                  rating: e['rating'] as int,
-                  review: e['review'],
-                  userId: e['user_id'],
-                ))
-            .toList();
-        reviews.removeWhere((element) => element.userId == review!.userId);
-        await documentReference.update({'your_array_field': reviews});
-      } else {
-        print('Document with ID $courseId does not exist.');
-      }
-    } catch (e) {
-      print('Error updating array element: $e');
-    }
+    return _coursesCollectionReference
+        .doc(courseId)
+        .update({
+          'reviews': FieldValue.arrayRemove([
+            {
+              'user_id': review!.userId,
+              'rating': review.rating,
+              'review': review.review,
+            }
+          ])
+        })
+        .then((value) => print("Review Deleted"))
+        .catchError((error) => print("Failed to delete review: $error"));
   }
 }
