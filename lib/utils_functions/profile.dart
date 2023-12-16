@@ -2,7 +2,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import '../models/user.dart';
 
-Widget generateAvatar(BuildContext context, User user, {double? radius}) {
+Widget generateAvatar(BuildContext context, User user,
+    {double? radius, bool? isClickable = true}) {
   String avatarChar = user.firstName.characters.first.toUpperCase();
   Widget avatar;
 
@@ -30,6 +31,7 @@ Widget generateAvatar(BuildContext context, User user, {double? radius}) {
 
   avatar = GestureDetector(
       onTap: () {
+        if (!isClickable!) return;
         Navigator.of(context).pushNamed('/profile', arguments: {
           'userId': user.id,
         });
