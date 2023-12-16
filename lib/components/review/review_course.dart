@@ -59,7 +59,7 @@ class _ReviewCourse extends State<ReviewCourse> {
                   builder: (BuildContext context) {
                     return ReviewCourseDialog(
                       initialReview: oldReview,
-                      onSubmit: (String review, int rating) {},
+                      onSubmit: _onSubmit,
                     );
                   },
                 );
