@@ -105,7 +105,7 @@ class _EditProfileState extends State<EditProfile> {
         child: Stack(
           alignment: Alignment.center,
           children: [
-            generateAvatar(context, user, radius: 100),
+            generateAvatar(context, user, radius: 100, isClickable: false),
             Positioned(
               bottom: 0,
               right: 0,

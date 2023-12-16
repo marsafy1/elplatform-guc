@@ -78,7 +78,8 @@ class _MainDrawerState extends State<MainDrawer> {
           Column(
             children: [
               ListTile(
-                leading: generateAvatar(context, _authProvider.user!),
+                leading: generateAvatar(context, _authProvider.user!,
+                    isClickable: false),
                 title: const Text("Profile"),
                 onTap: () {
                   Navigator.of(context).pushNamed('/profile');
