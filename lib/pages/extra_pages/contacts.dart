@@ -24,38 +24,41 @@ class _ContactsState extends State<Contacts> {
             appBar: AppBar(
               title: const Text("$appName - Contacts"),
             ),
-            body: ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                return Card(
-                  child: ListTile(
-                    trailing: IconButton(
-                      icon: Icon(Icons.delete),
-                      color: Colors.red,
-                      onPressed: () {
-                        contactService
-                            .deleteContact(snapshot.data![index].id ?? "");
-                      },
-                    ),
-                    leading: Column(
-                      children: [
-                        Icon(
-                          IconData(
-                            snapshot.data![index].iconCodePoint,
-                            fontFamily: snapshot.data![index].iconFontFamily,
+            body: snapshot.data!.isEmpty
+                ? const Center(child: Text("No Data Available"))
+                : ListView.builder(
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      return Card(
+                        child: ListTile(
+                          trailing: IconButton(
+                            icon: Icon(Icons.delete),
+                            color: Colors.red,
+                            onPressed: () {
+                              contactService.deleteContact(
+                                  snapshot.data![index].id ?? "");
+                            },
                           ),
+                          leading: Column(
+                            children: [
+                              Icon(
+                                IconData(
+                                  snapshot.data![index].iconCodePoint,
+                                  fontFamily:
+                                      snapshot.data![index].iconFontFamily,
+                                ),
+                              ),
+                              Text(snapshot.data![index].name),
+                            ],
+                          ),
+                          title: Text(snapshot.data![index].phoneNumber),
+                          onTap: () {
+                            makePhoneCall(snapshot.data![index].phoneNumber);
+                          },
                         ),
-                        Text(snapshot.data![index].name),
-                      ],
-                    ),
-                    title: Text(snapshot.data![index].phoneNumber),
-                    onTap: () {
-                      makePhoneCall(snapshot.data![index].phoneNumber);
+                      );
                     },
                   ),
-                );
-              },
-            ),
             floatingActionButton: FloatingActionButton(
               onPressed: () {
                 Navigator.of(context).pushNamed('/addContact');
