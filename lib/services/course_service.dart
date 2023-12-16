@@ -11,7 +11,7 @@ class CourseService {
       return snapshot.docs.map((doc) {
         List<Review> reviews = (doc['reviews'] as List<dynamic>)
             .map((e) => Review(
-                  rating: (e['rating'] as int).toDouble(),
+                  rating: e['rating'] as int,
                   review: e['review'],
                   userId: e['user_id'],
                 ))
@@ -21,8 +21,76 @@ class CourseService {
             title: doc['title'],
             description: doc['description'],
             photoUrl: doc['photo_url'],
-            reviews: reviews);
+            reviews: reviews,
+            averageRating:
+                (doc['ratings_sum'] as num) / reviews.length.toDouble());
       }).toList();
     });
+  }
+
+  static Future<void> addReview(String courseId, Review review) {
+    return _coursesCollectionReference
+        .doc(courseId)
+        .update({
+          'reviews': FieldValue.arrayUnion([
+            {
+              'user_id': review.userId,
+              'rating': review.rating,
+              'review': review.review,
+            }
+          ]),
+          'ratings_sum': FieldValue.increment(review.rating),
+        })
+        .then((value) => print("Review Added"))
+        .catchError((error) => print("Failed to add review: $error"));
+  }
+
+  static Future<void> updateReview(
+      String courseId, Review? oldReview, Review newReview) async {
+    return _coursesCollectionReference
+        .doc(courseId)
+        .update({
+          'reviews': FieldValue.arrayRemove([
+            {
+              'user_id': oldReview!.userId,
+              'rating': oldReview.rating,
+              'review': oldReview.review,
+            }
+          ]),
+          'ratings_sum': FieldValue.increment(-newReview.rating),
+        })
+        .then((value) => print("Review Removed"))
+        .catchError((error) => print("Failed to remove review: $error"))
+        .then((value) => _coursesCollectionReference
+            .doc(courseId)
+            .update({
+              'reviews': FieldValue.arrayUnion([
+                {
+                  'user_id': newReview.userId,
+                  'rating': newReview.rating,
+                  'review': newReview.review,
+                }
+              ]),
+              'ratings_sum': FieldValue.increment(newReview.rating),
+            })
+            .then((value) => print("Review Added"))
+            .catchError((error) => print("Failed to add review: $error")));
+  }
+
+  static Future<void> deleteReview(String courseId, Review? review) async {
+    return _coursesCollectionReference
+        .doc(courseId)
+        .update({
+          'reviews': FieldValue.arrayRemove([
+            {
+              'user_id': review!.userId,
+              'rating': review.rating,
+              'review': review.review,
+            }
+          ]),
+          'ratings_sum': FieldValue.increment(-review.rating),
+        })
+        .then((value) => print("Review Deleted"))
+        .catchError((error) => print("Failed to delete review: $error"));
   }
 }

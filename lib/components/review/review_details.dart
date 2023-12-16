@@ -11,7 +11,7 @@ class ReviewDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dialog(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(5),
+        borderRadius: BorderRadius.circular(8),
       ),
       elevation: 0,
       child: SingleChildScrollView(
@@ -25,7 +25,7 @@ class ReviewDetails extends StatelessWidget {
               header,
               const SizedBox(height: 10),
               RatingBar.builder(
-                initialRating: review.rating,
+                initialRating: review.rating.toDouble(),
                 minRating: 1,
                 direction: Axis.horizontal,
                 allowHalfRating: true,

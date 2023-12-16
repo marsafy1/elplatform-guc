@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:guc_swiss_knife/models/review.dart';
 
 class Course {
@@ -5,6 +7,7 @@ class Course {
   final String title;
   final String description;
   final String photoUrl;
+  final double averageRating;
   final List<Review> reviews;
   Course({
     required this.id,
@@ -12,5 +15,6 @@ class Course {
     required this.description,
     required this.photoUrl,
     required this.reviews,
+    required this.averageRating,
   });
 }
