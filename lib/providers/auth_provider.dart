@@ -14,10 +14,17 @@ class AuthProvider with ChangeNotifier {
         .listen((firebase_auth.User? user) {
       if (user == null) {
         _user = null;
+        notifyListeners();
       } else {
-        UserService.getUserById(user.uid).then((value) => _user = value);
+        UserService.getUserById(user.uid).then((value) async {
+          _user = value;
+          await AnalyticsService.setUserProperties(
+            userId: user.uid,
+            userType: _user!.userType,
+          );
+          notifyListeners();
+        });
       }
-      notifyListeners();
     });
   }
 
@@ -36,10 +43,6 @@ class AuthProvider with ChangeNotifier {
       );
 
       AnalyticsService.logLogin();
-      await AnalyticsService.setUserProperties(
-        userId: userCredential.user!.uid,
-        userType: _user!.userType,
-      );
 
       return userCredential.user;
     } on firebase_auth.FirebaseAuthException catch (e) {
@@ -74,7 +77,6 @@ class AuthProvider with ChangeNotifier {
       );
 
       AnalyticsService.logSignUp();
-      await AnalyticsService.setUserProperties(userId: uid, userType: userType);
 
       return userCredential.user;
     } on firebase_auth.FirebaseAuthException catch (e) {

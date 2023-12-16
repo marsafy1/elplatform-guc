@@ -9,6 +9,7 @@ import 'package:guc_swiss_knife/pages/auth/register_page.dart';
 import 'package:guc_swiss_knife/pages/profile/change_password.dart';
 import 'package:guc_swiss_knife/pages/profile/edit_profile_page.dart';
 import 'package:guc_swiss_knife/pages/profile/profile_page.dart';
+import 'package:guc_swiss_knife/pages/utils/loading_page.dart';
 import 'package:guc_swiss_knife/providers/auth_provider.dart';
 import 'package:guc_swiss_knife/services/analytics_service.dart';
 import 'package:provider/provider.dart';
@@ -42,13 +43,17 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         home: Consumer<AuthProvider>(
           builder: (context, authProvider, _) {
-            if (authProvider.isAuthenticated) {
-              bool isAdmin = authProvider.user!.userType == UserType.admin;
-              return isAdmin
-                  ? const AdminPublishRequests()
-                  : const TabsControllerScreen();
-            } else {
+            if (!authProvider.isAuthenticated) {
               return const LoginPage();
+            }
+            if (authProvider.user == null) {
+              return const LoadingPage();
+            }
+            switch (authProvider.user!.userType) {
+              case UserType.admin:
+                return const AdminPublishRequests();
+              case UserType.instructor || UserType.student:
+                return const TabsControllerScreen();
             }
           },
         ),
