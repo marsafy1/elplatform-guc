@@ -11,7 +11,7 @@ class ReviewDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dialog(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(5),
+        borderRadius: BorderRadius.circular(8),
       ),
       elevation: 0,
       child: SingleChildScrollView(
