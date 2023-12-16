@@ -2,6 +2,7 @@ import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:guc_swiss_knife/models/user.dart';
 import 'package:guc_swiss_knife/providers/auth_provider.dart';
+import 'package:guc_swiss_knife/services/analytics_service.dart';
 import 'package:guc_swiss_knife/services/user_service.dart';
 import 'package:guc_swiss_knife/utils_functions/profile.dart';
 import 'package:provider/provider.dart';
@@ -42,6 +43,10 @@ class _ProfileState extends State<Profile> {
     final String? userId = routeArgs?['userId'];
 
     bool isOwnProfile = userId == null || userId == _authProvider.user?.id;
+
+    if (!isOwnProfile) {
+      AnalyticsService.logViewOthersProfile();
+    }
 
     return Scaffold(
       appBar: AppBar(

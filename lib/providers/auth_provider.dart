@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:guc_swiss_knife/models/user.dart';
 import 'package:flutter/material.dart';
+import 'package:guc_swiss_knife/services/analytics_service.dart';
 import 'package:guc_swiss_knife/services/user_service.dart';
 
 class AuthProvider with ChangeNotifier {
@@ -34,6 +35,12 @@ class AuthProvider with ChangeNotifier {
         password: password,
       );
 
+      AnalyticsService.logLogin();
+      await AnalyticsService.setUserProperties(
+        userId: userCredential.user!.uid,
+        userType: _user!.userType,
+      );
+
       return userCredential.user;
     } on firebase_auth.FirebaseAuthException catch (e) {
       throw AuthException(message: _handleAuthException(e));
@@ -65,6 +72,10 @@ class AuthProvider with ChangeNotifier {
         userType: userType,
         isPublisher: false,
       );
+
+      AnalyticsService.logSignUp();
+      await AnalyticsService.setUserProperties(userId: uid, userType: userType);
+
       return userCredential.user;
     } on firebase_auth.FirebaseAuthException catch (e) {
       throw AuthException(message: _handleAuthException(e));
@@ -88,6 +99,7 @@ class AuthProvider with ChangeNotifier {
 
   void logout() {
     _auth.signOut();
+    AnalyticsService.logLogout();
   }
 
   Future<void> updateUser({
