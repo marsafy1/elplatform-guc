@@ -37,19 +37,5 @@ class _InstructorsState extends State<Instructors> {
         }
       },
     );
-    // Scaffold(
-    //   appBar: AppBar(
-    //     title: const Text("$appName - Instructors"),
-    //   ),
-    //   body: ListView.builder(
-    //     itemCount: 10,
-    //     itemBuilder: (context, index) {
-    //       return InstructorCard(
-    //         instructorName: "Abdelrahman Elsalh",
-    //         instructorRating: 4.3,
-    //       );
-    //     },
-    //   ),
-    // );
   }
 }
