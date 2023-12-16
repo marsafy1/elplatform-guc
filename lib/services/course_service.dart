@@ -21,7 +21,9 @@ class CourseService {
             title: doc['title'],
             description: doc['description'],
             photoUrl: doc['photo_url'],
-            reviews: reviews);
+            reviews: reviews,
+            averageRating:
+                (doc['ratings_sum'] as num) / reviews.length.toDouble());
       }).toList();
     });
   }
@@ -36,7 +38,8 @@ class CourseService {
               'rating': review.rating,
               'review': review.review,
             }
-          ])
+          ]),
+          'ratings_sum': FieldValue.increment(review.rating),
         })
         .then((value) => print("Review Added"))
         .catchError((error) => print("Failed to add review: $error"));
@@ -53,7 +56,8 @@ class CourseService {
               'rating': oldReview.rating,
               'review': oldReview.review,
             }
-          ])
+          ]),
+          'ratings_sum': FieldValue.increment(-newReview.rating),
         })
         .then((value) => print("Review Removed"))
         .catchError((error) => print("Failed to remove review: $error"))
@@ -66,7 +70,8 @@ class CourseService {
                   'rating': newReview.rating,
                   'review': newReview.review,
                 }
-              ])
+              ]),
+              'ratings_sum': FieldValue.increment(newReview.rating),
             })
             .then((value) => print("Review Added"))
             .catchError((error) => print("Failed to add review: $error")));
@@ -82,7 +87,8 @@ class CourseService {
               'rating': review.rating,
               'review': review.review,
             }
-          ])
+          ]),
+          'ratings_sum': FieldValue.increment(-review.rating),
         })
         .then((value) => print("Review Deleted"))
         .catchError((error) => print("Failed to delete review: $error"));
