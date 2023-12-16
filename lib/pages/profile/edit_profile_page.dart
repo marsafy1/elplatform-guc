@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:guc_swiss_knife/components/profile/form_input_field.dart';
 import 'package:guc_swiss_knife/models/user.dart';
 import 'package:guc_swiss_knife/providers/auth_provider.dart';
+import 'package:guc_swiss_knife/utils_functions/profile.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
@@ -104,14 +105,7 @@ class _EditProfileState extends State<EditProfile> {
         child: Stack(
           alignment: Alignment.center,
           children: [
-            CircleAvatar(
-              radius: 50,
-              backgroundImage:
-                  user.photoUrl != null && user.photoUrl!.isNotEmpty
-                      ? NetworkImage(user.photoUrl!)
-                      : const AssetImage('assets/default_profile_picture.png')
-                          as ImageProvider<Object>?,
-            ),
+            generateAvatar(context, user, radius: 100),
             Positioned(
               bottom: 0,
               right: 0,

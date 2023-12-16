@@ -8,7 +8,7 @@ class Comment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget userAvatar = generateAvatar(comment.user!);
+    Widget userAvatar = generateAvatar(context, comment.user!);
     return ListTile(
       leading: userAvatar,
       title: Text(comment.user!.firstName),

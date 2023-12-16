@@ -55,7 +55,7 @@ class _PostState extends State<PostWidget> {
   }
 
   Widget _buildHeader() {
-    Widget userAvatar = generateAvatar(widget.post.user!);
+    Widget userAvatar = generateAvatar(context, widget.post.user!);
 
     return Row(
       children: [

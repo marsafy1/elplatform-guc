@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:guc_swiss_knife/configs/constants.dart';
 import 'package:guc_swiss_knife/providers/auth_provider.dart';
+import 'package:guc_swiss_knife/utils_functions/profile.dart';
 import 'package:provider/provider.dart';
 
 class MainDrawer extends StatefulWidget {
@@ -77,8 +78,7 @@ class _MainDrawerState extends State<MainDrawer> {
           Column(
             children: [
               ListTile(
-                leading:
-                    const CircleAvatar(), // TODO: add current user profile image
+                leading: generateAvatar(context, _authProvider.user!),
                 title: const Text("Profile"),
                 onTap: () {
                   Navigator.of(context).pushNamed('/profile');

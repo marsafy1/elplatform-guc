@@ -2,8 +2,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:guc_swiss_knife/configs/constants.dart';
 import 'package:guc_swiss_knife/firebase_options.dart';
+import 'package:guc_swiss_knife/models/user.dart';
 import 'package:guc_swiss_knife/pages/auth/login_page.dart';
 import 'package:guc_swiss_knife/pages/auth/register_page.dart';
+import 'package:guc_swiss_knife/pages/profile/change_password.dart';
 import 'package:guc_swiss_knife/pages/profile/edit_profile_page.dart';
 import 'package:guc_swiss_knife/pages/profile/profile_page.dart';
 import 'package:guc_swiss_knife/providers/auth_provider.dart';
@@ -19,7 +21,6 @@ import 'pages/extra_pages/courses.dart';
 import 'pages/extra_pages/instructors.dart';
 import 'pages/extra_pages/navigation.dart';
 import 'themes/dark_theme.dart';
-import 'themes/light_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,7 +41,10 @@ class MyApp extends StatelessWidget {
         home: Consumer<AuthProvider>(
           builder: (context, authProvider, _) {
             if (authProvider.isAuthenticated) {
-              return const TabsControllerScreen();
+              bool isAdmin = authProvider.user!.userType == UserType.admin;
+              return isAdmin
+                  ? const AdminPublishRequests()
+                  : const TabsControllerScreen();
             } else {
               return const LoginPage();
             }
@@ -67,6 +71,7 @@ class MyApp extends StatelessWidget {
               const PublishRequestsDetails(),
           '/profile': (dummyCtx) => const Profile(),
           '/editProfile': (dummyCtx) => const EditProfile(),
+          '/changePassword': (dummyCtx) => const ChangePassword(),
           '/login': (dummyCtx) => const LoginPage(),
           '/register': (dummyCtx) => const RegisterPage(),
         },
