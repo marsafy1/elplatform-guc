@@ -17,4 +17,12 @@ class ContactService {
     });
     return fetchedContacts;
   }
+
+  Future<void> addContact(Contact contact) async {
+    await _firestore.collection("contacts").add(contact.toMap());
+  }
+
+  Future<void> deleteContact(String id) async {
+    await _firestore.collection("contacts").doc(id).delete();
+  }
 }

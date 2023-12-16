@@ -6,6 +6,7 @@ class FormInputField extends StatelessWidget {
   final TextEditingController controller;
   final bool? isPassword;
   final String? Function(String?)? validator;
+  final TextInputType? keyboardType;
 
   const FormInputField(
       {super.key,
@@ -13,7 +14,8 @@ class FormInputField extends StatelessWidget {
       required this.icon,
       required this.controller,
       this.isPassword,
-      this.validator});
+      this.validator,
+      this.keyboardType});
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +34,7 @@ class FormInputField extends StatelessWidget {
       obscureText: isPassword ?? false,
       validator: validator ?? (value) => null,
       autovalidateMode: AutovalidateMode.onUserInteraction,
+      keyboardType: keyboardType ?? TextInputType.text,
     );
   }
 }

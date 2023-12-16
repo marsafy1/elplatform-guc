@@ -29,8 +29,22 @@ class _ContactsState extends State<Contacts> {
               itemBuilder: (context, index) {
                 return Card(
                   child: ListTile(
+                    trailing: IconButton(
+                      icon: Icon(Icons.delete),
+                      color: Colors.red,
+                      onPressed: () {
+                        contactService
+                            .deleteContact(snapshot.data![index].id ?? "");
+                      },
+                    ),
                     leading: Column(
                       children: [
+                        Icon(
+                          IconData(
+                            snapshot.data![index].iconCodePoint,
+                            fontFamily: snapshot.data![index].iconFontFamily,
+                          ),
+                        ),
                         Text(snapshot.data![index].name),
                       ],
                     ),
@@ -44,7 +58,7 @@ class _ContactsState extends State<Contacts> {
             ),
             floatingActionButton: FloatingActionButton(
               onPressed: () {
-                Navigator.of(context).pushNamed('/add_contact');
+                Navigator.of(context).pushNamed('/addContact');
               },
               shape: const CircleBorder(),
               child: const Icon(Icons.add),

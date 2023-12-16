@@ -2,20 +2,22 @@ class Contact {
   String? id;
   String name;
   String phoneNumber;
-  String icon;
+  int iconCodePoint;
+  String iconFontFamily;
 
   Contact(
       {this.id = "",
       required this.name,
       required this.phoneNumber,
-      required this.icon});
+      required this.iconCodePoint,
+      required this.iconFontFamily});
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
       'name': name,
       'phone_number': phoneNumber,
-      'icon': icon,
+      'icon_code_point': iconCodePoint,
+      'icon_font_family': iconFontFamily,
     };
   }
 
@@ -24,7 +26,8 @@ class Contact {
       id: id,
       name: map['name'],
       phoneNumber: map['phone_number'],
-      icon: map['icon'],
+      iconCodePoint: map['icon_code_point'],
+      iconFontFamily: map['icon_font_family'],
     );
   }
 }
