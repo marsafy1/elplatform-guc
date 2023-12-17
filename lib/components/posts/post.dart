@@ -26,7 +26,7 @@ class PostWidget extends StatefulWidget {
 class _PostState extends State<PostWidget> {
   bool isLikedByUser = false;
   bool isLikedByUserUI = false;
-
+  int interactionsCount = 0;
   @override
   void initState() {
     super.initState();
@@ -38,6 +38,9 @@ class _PostState extends State<PostWidget> {
       isLikedByUser = widget.post.likedByUsers!.contains(currentUserId);
       isLikedByUserUI = isLikedByUser;
     }
+
+    interactionsCount =
+        widget.post.likedByUsers != null ? widget.post.likedByUsers!.length : 0;
   }
 
   Map<String, IconData> collectionToInteractionIcon = {
@@ -147,14 +150,15 @@ class _PostState extends State<PostWidget> {
     String interactionComment =
         collectionToComment[widget.collection] ?? "Comments";
 
+    interactionAction =
+        interactionsCount != 1 ? "${interactionAction}s" : interactionAction;
     return Column(
       children: [
         const Divider(),
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Text('1,441 ${interactionAction}s'),
-            Text('213 $interactionComment')
+            Text('$interactionsCount $interactionAction'),
           ],
         ),
         const SizedBox(height: 10),
@@ -197,6 +201,7 @@ class _PostState extends State<PostWidget> {
 
                     setState(() {
                       isLikedByUserUI = false;
+                      interactionsCount -= 1;
                     });
                   } else {
                     print("will like");
@@ -204,6 +209,7 @@ class _PostState extends State<PostWidget> {
                         widget.collection, widget.post.id, currentUserId);
                     setState(() {
                       isLikedByUserUI = true;
+                      interactionsCount += 1;
                     });
                   }
                 },
