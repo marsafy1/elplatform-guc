@@ -5,13 +5,14 @@ class CategoryElement extends StatefulWidget {
   final int index;
   final Category category;
   final bool asFilter;
+  final VoidCallback? updateSheet; // Optional callback function
 
-  const CategoryElement({
-    super.key,
-    required this.index,
-    required this.category,
-    required this.asFilter,
-  });
+  const CategoryElement(
+      {super.key,
+      required this.index,
+      required this.category,
+      required this.asFilter,
+      this.updateSheet});
 
   @override
   State<CategoryElement> createState() => _CategoryElementState();
@@ -45,6 +46,9 @@ class _CategoryElementState extends State<CategoryElement> {
           widget.category.selected = true;
           if (widget.category.selected) {
             widget.category.addCategory(widget.category, widget.asFilter);
+          }
+          if (widget.updateSheet != null) {
+            widget.updateSheet!();
           }
           // else {
           //   widget.category.removeCategory(widget.category, widget.asFilter);
