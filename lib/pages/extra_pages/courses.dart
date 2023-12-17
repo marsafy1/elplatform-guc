@@ -14,7 +14,7 @@ class Courses extends StatefulWidget {
 class _CoursesState extends State<Courses> {
   late Future<List<Course>> futureCourses;
   TextEditingController searchController = TextEditingController();
-
+  String SearchTerm = "";
   @override
   void initState() {
     super.initState();
@@ -56,9 +56,9 @@ class _CoursesState extends State<Courses> {
                         .toLowerCase()
                         .contains(searchController.text.toLowerCase()))
                     .toList();
-                for (int i = 0; i < 10; i++) {
-                  filteredCourses.add(filteredCourses[0]);
-                }
+                // for (int i = 0; i < 10; i++) {
+                //   filteredCourses.add(filteredCourses[0]);
+                // }
                 return Column(children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -67,7 +67,9 @@ class _CoursesState extends State<Courses> {
                       child: TextField(
                         controller: searchController,
                         onChanged: (value) {
-                          // Implement your search logic here
+                          setState(() {
+                            SearchTerm = value;
+                          });
                         },
                         decoration: const InputDecoration(
                           hintText: 'Search courses...',
@@ -77,11 +79,11 @@ class _CoursesState extends State<Courses> {
                     ),
                   ),
                   SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.8,
+                    height: MediaQuery.of(context).size.height * 0.3,
                     child: ListView.builder(
-                      itemCount: filteredCourses.length,
+                      itemCount: filteredCourses!.length,
                       itemBuilder: (context, index) {
-                        return CourseCard(course: filteredCourses[index]);
+                        return CourseCard(course: filteredCourses![index]);
                       },
                     ),
                   ),
