@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:guc_swiss_knife/providers/auth_provider.dart';
+import 'package:provider/provider.dart';
 import '../../models/post.dart';
 import '../utils/images_slider.dart';
 import '../utils/chip.dart';
 import '../utils/verified_check.dart';
 import '../comments/comments.dart';
 import '../../utils_functions/profile.dart';
+import '../../services/posts_service.dart';
 
 class PostWidget extends StatefulWidget {
+  final PostsService _postsService = PostsService();
   final Post post;
   final String collection;
-  const PostWidget({Key? key, required this.post, required this.collection})
+  PostWidget({Key? key, required this.post, required this.collection})
       : super(key: key);
 
   @override
@@ -19,6 +23,22 @@ class PostWidget extends StatefulWidget {
 }
 
 class _PostState extends State<PostWidget> {
+  bool isLikedByUser = false;
+  bool isLikedByUserUI = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    final userAuth = Provider.of<AuthProvider>(context, listen: false);
+    String currentUserId = userAuth.user!.id;
+
+    if (widget.post.likedByUsers != null) {
+      isLikedByUser = widget.post.likedByUsers!.contains(currentUserId);
+      isLikedByUserUI = isLikedByUser;
+    }
+  }
+
   Map<String, IconData> collectionToInteractionIcon = {
     "feed": FontAwesomeIcons.thumbsUp,
     "questions": FontAwesomeIcons.arrowUp,
@@ -118,6 +138,7 @@ class _PostState extends State<PostWidget> {
         collectionToInteractionAction[widget.collection] ?? "Like";
     String interactionComment =
         collectionToComment[widget.collection] ?? "Comments";
+
     return Column(
       children: [
         const Divider(),
@@ -125,7 +146,7 @@ class _PostState extends State<PostWidget> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text('1,441 ${interactionAction}s'),
-            Text('213 $interactionComment'),
+            Text('213 $interactionComment')
           ],
         ),
         const SizedBox(height: 10),
@@ -144,7 +165,13 @@ class _PostState extends State<PostWidget> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      FaIcon(interactionIcon, size: 17),
+                      FaIcon(
+                        interactionIcon,
+                        size: 17,
+                        color: isLikedByUserUI
+                            ? Theme.of(context).colorScheme.primary
+                            : Colors.white,
+                      ),
                       const SizedBox(
                         width: 8,
                       ),
@@ -152,7 +179,26 @@ class _PostState extends State<PostWidget> {
                     ],
                   ),
                 ),
-                onTap: () {},
+                onTap: () {
+                  final userAuth =
+                      Provider.of<AuthProvider>(context, listen: false);
+                  String currentUserId = userAuth.user!.id;
+                  if (isLikedByUserUI) {
+                    widget._postsService.unlikePost(
+                        widget.collection, widget.post.id, currentUserId);
+
+                    setState(() {
+                      isLikedByUserUI = false;
+                    });
+                  } else {
+                    print("will like");
+                    widget._postsService.likePost(
+                        widget.collection, widget.post.id, currentUserId);
+                    setState(() {
+                      isLikedByUserUI = true;
+                    });
+                  }
+                },
               ),
             ),
             const SizedBox(width: 10),

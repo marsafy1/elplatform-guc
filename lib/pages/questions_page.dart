@@ -10,6 +10,8 @@ import '../components/categories/categories.dart';
 import '../services/posts_service.dart';
 import '../components/toast/toast.dart';
 
+import '../components/utils/no_content.dart';
+
 class QuestionsPage extends StatefulWidget {
   const QuestionsPage({super.key});
 
@@ -180,9 +182,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
             ],
           );
         } else {
-          return const Center(
-            child: Text("No Confessions Available"),
-          );
+          return const NoContent(text: "No Questions Available");
         }
       },
     );

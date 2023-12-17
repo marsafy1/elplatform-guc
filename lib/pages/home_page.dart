@@ -5,6 +5,7 @@ import '../components/posts/posts.dart';
 
 import '../services/posts_service.dart';
 import '../components/toast/toast.dart';
+import '../components/utils/no_content.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -79,9 +80,7 @@ class _HomePageState extends State<HomePage> {
             ],
           );
         } else {
-          return const Center(
-            child: Text("No Posts Available"),
-          );
+          return const NoContent(text: "No Posts Available");
         }
       },
     );
