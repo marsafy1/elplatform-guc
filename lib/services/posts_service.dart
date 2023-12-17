@@ -50,7 +50,7 @@ class PostsService {
 
   Future<void> likePost(String collection, String postId, String userId) async {
     DocumentReference postRef = _firestore.collection(collection).doc(postId);
-
+    print("Collection $collection");
     await _firestore.runTransaction((transaction) async {
       DocumentSnapshot snapshot = await transaction.get(postRef);
 
