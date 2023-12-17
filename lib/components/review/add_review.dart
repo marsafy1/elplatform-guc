@@ -86,34 +86,43 @@ class _AddReview extends State<AddReview> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        TextButton(
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AddReviewDialog(
-                  initialReview: null,
-                  onSubmit: _onSubmit,
-                  onDelete: _onDelete,
-                );
-              },
-            );
-          },
-          child: const Text(
-            'Review Course ',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
+        Row(children: [
+          TextButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AddReviewDialog(
+                    initialReview: null,
+                    onSubmit: _onSubmit,
+                    onDelete: _onDelete,
+                  );
+                },
+              );
+            },
+            style: ButtonStyle(
+              padding: MaterialStateProperty.all(EdgeInsets.zero),
+            ),
+            child: const Padding(
+              padding: EdgeInsets.only(left: 10, right: 4),
+              child: Text(
+                'Review Course',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
             ),
           ),
-        ),
+        ]),
         const Padding(
-          padding: EdgeInsets.only(left: 12),
+          padding: EdgeInsets.only(left: 10),
           child: Text(
             'Your review will help other students know more about this course.',
             style: TextStyle(
               fontSize: 12,
             ),
+            textAlign: TextAlign.center,
           ),
         ),
       ],

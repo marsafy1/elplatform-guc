@@ -7,7 +7,6 @@ class ReviewsList extends StatelessWidget {
   const ReviewsList({super.key, required this.reviews});
   @override
   Widget build(BuildContext context) {
-    //get the number of reviews with review not equal null
     int reviewsCount = 0;
     for (Review review in reviews) {
       if (review.review != null && review.review!.isNotEmpty) {
@@ -17,16 +16,18 @@ class ReviewsList extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-          child: Text(
-            'Reviews ($reviewsCount)',
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
+        Row(children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+            child: Text(
+              'Reviews ($reviewsCount)',
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
             ),
-          ),
-        ),
+          )
+        ]),
         const SizedBox(height: 10),
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
