@@ -101,12 +101,15 @@ class _AddContactState extends State<AddContact> {
                     onPressed: () {
                       // Add your save logic here
                       if (_formKey.currentState!.validate()) {
-                        contactService.addContact(Contact(
+                        contactService.addContact(
+                          Contact(
                             name: fields['name']!.controller.text,
                             phoneNumber:
                                 fields['phone_number']!.controller.text,
                             iconCodePoint: _iconCodePoint,
-                            iconFontFamily: _iconFontFamily));
+                            iconFontFamily: _iconFontFamily,
+                          ),
+                        );
                         Navigator.pop(context);
                       }
                     },
