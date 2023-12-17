@@ -115,15 +115,8 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
                             ),
                             if (inConfessions)
                               Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  FaIcon(
-                                    FontAwesomeIcons.ghost,
-                                    color:
-                                        localAnon ? Colors.yellow : Colors.grey,
-                                  ),
-                                  const SizedBox(
-                                    width: 3,
-                                  ),
                                   const Text("Post Anonymously"),
                                   const SizedBox(
                                     width: 5,
@@ -142,13 +135,28 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
                               ),
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                  backgroundColor:
-                                      Theme.of(context).primaryColor,
+                                  backgroundColor: !localAnon
+                                      ? Theme.of(context).primaryColor
+                                      : Colors.amberAccent[700],
                                   minimumSize: const Size(double.infinity, 36),
-                                  shape: const RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.zero))),
-                              child: Text(action.split(" ")[0]),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(5))),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(action.split(" ")[0],
+                                      style: localAnon
+                                          ? const TextStyle(color: Colors.white)
+                                          : const TextStyle()),
+                                  if (localAnon)
+                                    const SizedBox(
+                                      width: 3,
+                                    ),
+                                  if (localAnon)
+                                    const FaIcon(FontAwesomeIcons.ghost,
+                                        size: 20, color: Colors.white),
+                                ],
+                              ),
                               onPressed: () {
                                 String title = titleController.text.trim();
                                 String description =
