@@ -22,7 +22,7 @@ class RatingsSummary extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+          padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
           child: Text(
             'Ratings ($total)',
             style: const TextStyle(
@@ -55,20 +55,34 @@ class RatingsSummary extends StatelessWidget {
         height: MediaQuery.of(context).size.width * 0.2,
         child: Column(
           children: [
-            Text(
-              average.toStringAsFixed(1),
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 30,
+            if (average.isNaN)
+              const Padding(
+                padding: EdgeInsets.only(top: 12),
+                child: Text(
+                  'No ratings yet',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              )
+            else
+              Text(
+                average.toStringAsFixed(1),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 30,
+                ),
               ),
-            ),
-            const Text(
-              'out of 5',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 15,
+            if (!average.isNaN)
+              const Text(
+                'out of 5',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                ),
               ),
-            ),
           ],
         ),
       ),
@@ -89,17 +103,29 @@ class RatingsSummary extends StatelessWidget {
           itemSize: 20.0,
           direction: Axis.horizontal,
         ),
-        Padding(
-          padding: const EdgeInsets.only(left: 12),
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.4,
-            height: 5,
-            child: LinearProgressIndicator(
-              value: count / total,
-              valueColor: const AlwaysStoppedAnimation<Color>(Colors.amber),
+        if (total > 0)
+          Padding(
+            padding: const EdgeInsets.only(left: 12),
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.4,
+              height: 5,
+              child: LinearProgressIndicator(
+                value: count / total,
+                valueColor: const AlwaysStoppedAnimation<Color>(Colors.amber),
+              ),
             ),
-          ),
-        ),
+          )
+        else
+          Padding(
+              padding: const EdgeInsets.only(left: 12),
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width * 0.4,
+                height: 5,
+                child: const LinearProgressIndicator(
+                  value: 0,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.amber),
+                ),
+              )),
       ],
     );
   }
