@@ -29,7 +29,7 @@ class _ReviewCardState extends State<ReviewCard> {
         width: MediaQuery.of(context).size.width * 0.85,
         height: (widget.review.review == null || widget.review.review!.isEmpty)
             ? MediaQuery.of(context).size.height * 0.07
-            : MediaQuery.of(context).size.height * 0.16,
+            : MediaQuery.of(context).size.height * 0.17,
         child: FutureBuilder(
           future: futureUser,
           builder: (context, AsyncSnapshot<User> snapshot) {
