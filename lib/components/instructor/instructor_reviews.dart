@@ -4,16 +4,17 @@ import 'package:guc_swiss_knife/components/review/add_review.dart';
 import 'package:guc_swiss_knife/components/review/reviews_list.dart';
 import 'package:guc_swiss_knife/models/review.dart';
 
-class CourseReviews extends StatefulWidget {
+class InstructorReviews extends StatefulWidget {
   List<Review> reviews;
-  final String courseId;
-  CourseReviews({super.key, required this.reviews, required this.courseId});
+  final String instructorId;
+  InstructorReviews(
+      {super.key, required this.reviews, required this.instructorId});
 
   @override
-  State<CourseReviews> createState() => _CourseReviews();
+  State<InstructorReviews> createState() => _InstructorReviews();
 }
 
-class _CourseReviews extends State<CourseReviews> {
+class _InstructorReviews extends State<InstructorReviews> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -22,8 +23,8 @@ class _CourseReviews extends State<CourseReviews> {
         ReviewsList(reviews: widget.reviews),
         AddReview(
           reviews: widget.reviews,
-          courseId: widget.courseId,
-          instructorId: null,
+          courseId: null,
+          instructorId: widget.instructorId,
           setReviews: setReviews,
         ),
       ],

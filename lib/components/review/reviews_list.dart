@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:guc_swiss_knife/components/review/review_card.dart';
 import 'package:guc_swiss_knife/models/review.dart';
 
-class CourseReviewsList extends StatelessWidget {
+class ReviewsList extends StatelessWidget {
   final List<Review> reviews;
-  const CourseReviewsList({super.key, required this.reviews});
+  const ReviewsList({super.key, required this.reviews});
   @override
   Widget build(BuildContext context) {
     //get the number of reviews with review not equal null

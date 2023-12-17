@@ -8,21 +8,23 @@ import 'package:guc_swiss_knife/providers/auth_provider.dart';
 import 'package:guc_swiss_knife/services/course_service.dart';
 import 'package:provider/provider.dart';
 
-class ReviewCourse extends StatefulWidget {
+class AddReview extends StatefulWidget {
   final List<Review> reviews;
-  final String courseId;
+  final String? courseId;
+  final String? instructorId;
   final Function setReviews;
-  const ReviewCourse(
+  const AddReview(
       {super.key,
       required this.reviews,
       required this.courseId,
-      required this.setReviews});
+      required this.setReviews,
+      this.instructorId});
 
   @override
-  State<ReviewCourse> createState() => _ReviewCourse();
+  State<AddReview> createState() => _AddReview();
 }
 
-class _ReviewCourse extends State<ReviewCourse> {
+class _AddReview extends State<AddReview> {
   late final AuthProvider _authProvider;
   late User user;
 
@@ -62,7 +64,7 @@ class _ReviewCourse extends State<ReviewCourse> {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    return ReviewCourseDialog(
+                    return AddReviewDialog(
                       initialReview: oldReview,
                       onSubmit: _onSubmit,
                       onDelete: _onDelete,
@@ -89,7 +91,7 @@ class _ReviewCourse extends State<ReviewCourse> {
             showDialog(
               context: context,
               builder: (BuildContext context) {
-                return ReviewCourseDialog(
+                return AddReviewDialog(
                   initialReview: null,
                   onSubmit: _onSubmit,
                   onDelete: _onDelete,

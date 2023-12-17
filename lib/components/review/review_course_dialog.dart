@@ -2,22 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:guc_swiss_knife/models/review.dart';
 
-class ReviewCourseDialog extends StatefulWidget {
+class AddReviewDialog extends StatefulWidget {
   final Review? initialReview;
   final Function(String review, int rating) onSubmit;
   final Function() onDelete;
 
-  const ReviewCourseDialog(
+  const AddReviewDialog(
       {super.key,
       this.initialReview,
       required this.onSubmit,
       required this.onDelete});
 
   @override
-  _ReviewCourseDialog createState() => _ReviewCourseDialog();
+  _AddReviewDialog createState() => _AddReviewDialog();
 }
 
-class _ReviewCourseDialog extends State<ReviewCourseDialog> {
+class _AddReviewDialog extends State<AddReviewDialog> {
   late TextEditingController _controller;
   int _rating = 0;
   @override

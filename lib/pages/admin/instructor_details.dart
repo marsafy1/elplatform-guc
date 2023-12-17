@@ -1,5 +1,6 @@
 import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:guc_swiss_knife/components/instructor/instructor_reviews.dart';
 import 'package:guc_swiss_knife/models/user.dart';
 
 import '../../utils_functions/profile.dart';
@@ -29,6 +30,8 @@ class InstructorDetails extends StatelessWidget {
                   _buildInfoTile(
                       'Publisher', instructor.isPublisher ? 'Yes' : 'No'),
                   _buildInfoTile('Bio', instructor.bio ?? ''),
+                  InstructorReviews(
+                      reviews: const [], instructorId: instructor.id)
                 ],
               )
             ],
