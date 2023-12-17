@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:guc_swiss_knife/services/route_observer_service.dart';
 import '../models/category.dart';
 import '../models/post.dart';
 import '../managers/categories_manager.dart';
@@ -35,6 +36,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
 
   @override
   void initState() {
+    RouteObserverService().logUserActivity('/questions');
     super.initState();
     categories = categoriesMap.entries.map((entry) {
       return Category(
