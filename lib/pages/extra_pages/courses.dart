@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:guc_swiss_knife/configs/constants.dart';
 import 'package:guc_swiss_knife/models/course.dart';
 import 'package:guc_swiss_knife/services/course_service.dart';
-
 import '../../components/course/course_card.dart';
 
 class Courses extends StatefulWidget {
@@ -14,7 +13,8 @@ class Courses extends StatefulWidget {
 class _CoursesState extends State<Courses> {
   late Future<List<Course>> futureCourses;
   TextEditingController searchController = TextEditingController();
-  String SearchTerm = "";
+  String searchTerm = "";
+  double containerHeight = 200;
   @override
   void initState() {
     super.initState();
@@ -23,6 +23,7 @@ class _CoursesState extends State<Courses> {
 
   @override
   Widget build(BuildContext context) {
+    var keyBoardHeight = MediaQuery.of(context).viewInsets.bottom;
     return Scaffold(
         appBar: AppBar(
           title: const Text("$appName - Courses"),
@@ -56,9 +57,9 @@ class _CoursesState extends State<Courses> {
                         .toLowerCase()
                         .contains(searchController.text.toLowerCase()))
                     .toList();
-                // for (int i = 0; i < 10; i++) {
-                //   filteredCourses.add(filteredCourses[0]);
-                // }
+                for (var i = 0; i < 10; i++) {
+                  filteredCourses.add(filteredCourses[0]);
+                }
                 return Column(children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -68,7 +69,7 @@ class _CoursesState extends State<Courses> {
                         controller: searchController,
                         onChanged: (value) {
                           setState(() {
-                            SearchTerm = value;
+                            searchTerm = value;
                           });
                         },
                         decoration: const InputDecoration(
@@ -79,14 +80,16 @@ class _CoursesState extends State<Courses> {
                     ),
                   ),
                   SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.3,
-                    child: ListView.builder(
-                      itemCount: filteredCourses!.length,
-                      itemBuilder: (context, index) {
-                        return CourseCard(course: filteredCourses![index]);
-                      },
-                    ),
-                  ),
+                      height: MediaQuery.of(context).size.height * 0.8 -
+                          keyBoardHeight,
+                      child: ListView.builder(
+                        itemCount: filteredCourses.length,
+                        shrinkWrap: true,
+                        padding: const EdgeInsets.only(top: 10, bottom: 10),
+                        itemBuilder: (context, index) {
+                          return CourseCard(course: filteredCourses[index]);
+                        },
+                      ))
                 ]);
               }
             },
