@@ -31,7 +31,6 @@ class _PostState extends State<PostWidget> {
     super.initState();
 
     final userAuth = Provider.of<AuthProvider>(context, listen: false);
-
     String currentUserId = userAuth.user!.id;
 
     if (widget.post.likedByUsers != null) {
@@ -181,17 +180,20 @@ class _PostState extends State<PostWidget> {
                   ),
                 ),
                 onTap: () {
+                  final userAuth =
+                      Provider.of<AuthProvider>(context, listen: false);
+                  String currentUserId = userAuth.user!.id;
                   if (isLikedByUserUI) {
-                    // widget._postsService.unlikePost(
-                    //     widget.collection, widget.post.id, currentUserId);
+                    widget._postsService.unlikePost(
+                        widget.collection, widget.post.id, currentUserId);
 
                     setState(() {
                       isLikedByUserUI = false;
                     });
                   } else {
                     print("will like");
-                    // widget._postsService.likePost(
-                    //     widget.collection, widget.post.id, currentUserId);
+                    widget._postsService.likePost(
+                        widget.collection, widget.post.id, currentUserId);
                     setState(() {
                       isLikedByUserUI = true;
                     });
