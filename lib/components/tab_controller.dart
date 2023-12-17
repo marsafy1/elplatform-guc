@@ -44,6 +44,7 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
   List<Category> categoriesChoices = [];
   List<Category> selectedCategoriesChoices = [];
   var selectedTabIndex = 0;
+  bool anon = false;
   void switchPage(int index) {
     setState(() {
       selectedTabIndex = index;
@@ -53,112 +54,138 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
   void showBottomSheetForNewPost(BuildContext context) {
     final TextEditingController titleController = TextEditingController();
     final TextEditingController descriptionController = TextEditingController();
+
     final Map<String, String> collectionToAction = {
       "feed": "Add Post",
       "confessions": "Add Confession",
       "questions": "Add Question",
       "lost_and_founds": "Look For",
     };
+
     String collection = indexToCollection[selectedTabIndex] ?? "feed";
     String action = collectionToAction[collection] ?? "post";
     final userAuth = Provider.of<AuthProvider>(context, listen: false);
     String userId = userAuth.user!.id;
+    bool localAnon = anon; // Local variable for anon state in the bottom sheet
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.black,
       builder: (BuildContext bc) {
-        return SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(bc).viewInsets.bottom,
-            ),
-            child: Wrap(
-              children: [
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(action,
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              )),
-                        ),
-                        Categories(
-                            key: UniqueKey(),
-                            categories: categoriesChoices,
-                            asFilter: false),
-                        TextFieldInput(
-                          inputPlaceholder: "Title",
-                          controller: titleController,
-                          minLines: 1,
-                          maxLines: 2,
-                        ),
-                        TextFieldInput(
-                          inputPlaceholder: "Add more details here...",
-                          controller: descriptionController,
-                          minLines: 10,
-                          maxLines: 12,
-                        ),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: Theme.of(context).primaryColor,
-                              minimumSize: const Size(double.infinity, 36)),
-                          child: Text(action.split(" ")[0]),
-                          onPressed: () {
-                            String title = titleController.text.trim();
-                            String description =
-                                descriptionController.text.trim();
-                            String category =
-                                selectedCategoriesChoices.isNotEmpty
-                                    ? selectedCategoriesChoices[0]
-                                        .name
-                                        .toLowerCase()
-                                    : "all";
-
-                            if (title.isEmpty) {
-                              Toast.show(
-                                  context, "Please enter a title", "error");
-                              return; // Stop the execution if validation fails
-                            }
-
-                            if (description.isEmpty) {
-                              Toast.show(context, "Please enter a description",
-                                  "error");
-                              return; // Stop the execution if validation fails
-                            }
-
-                            if (category.isEmpty) {
-                              Toast.show(
-                                  context, "Please choose a category", "error");
-                              return; // Stop the execution if validation fails
-                            }
-
-                            // If all validations pass, proceed to create a new question
-                            DateTime dateTime = DateTime.now();
-                            Post newQuestion = Post(
-                                title: title,
-                                userId: userId,
-                                category: category,
-                                description: description,
-                                photosUrls: [],
-                                dateCreated: dateTime);
-                            _postsService.addPost(collection, newQuestion);
-                            Navigator.pop(
-                                context); // Close the bottom sheet upon success
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setModalState) {
+            return SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(bc).viewInsets.bottom,
                 ),
-              ],
-            ),
-          ),
+                child: Wrap(
+                  children: [
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(action,
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  )),
+                            ),
+                            Categories(
+                                key: UniqueKey(),
+                                categories: categoriesChoices,
+                                asFilter: false),
+                            TextFieldInput(
+                              inputPlaceholder: "Title",
+                              controller: titleController,
+                              minLines: 1,
+                              maxLines: 2,
+                            ),
+                            TextFieldInput(
+                              inputPlaceholder: "Add more details here...",
+                              controller: descriptionController,
+                              minLines: 10,
+                              maxLines: 12,
+                            ),
+                            Row(
+                              children: [
+                                const Text("Post Anonymously"),
+                                Switch(
+                                  value: localAnon,
+                                  activeColor:
+                                      Theme.of(context).colorScheme.primary,
+                                  onChanged: (bool value) {
+                                    setModalState(() {
+                                      localAnon = value;
+                                    });
+                                  },
+                                ),
+                              ],
+                            ),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      Theme.of(context).primaryColor,
+                                  minimumSize: const Size(double.infinity, 36),
+                                  shape: const RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.zero))),
+                              child: Text(action.split(" ")[0]),
+                              onPressed: () {
+                                String title = titleController.text.trim();
+                                String description =
+                                    descriptionController.text.trim();
+                                String category =
+                                    selectedCategoriesChoices.isNotEmpty
+                                        ? selectedCategoriesChoices[0]
+                                            .name
+                                            .toLowerCase()
+                                        : "all";
+
+                                if (title.isEmpty) {
+                                  Toast.show(
+                                      context, "Please enter a title", "error");
+                                  return;
+                                }
+
+                                if (description.isEmpty) {
+                                  Toast.show(context,
+                                      "Please enter a description", "error");
+                                  return;
+                                }
+
+                                if (category.isEmpty) {
+                                  Toast.show(context,
+                                      "Please choose a category", "error");
+                                  return;
+                                }
+
+                                DateTime dateTime = DateTime.now();
+                                Post newQuestion = Post(
+                                    title: title,
+                                    userId: userId,
+                                    anon: localAnon,
+                                    category: category,
+                                    description: description,
+                                    photosUrls: [],
+                                    dateCreated: dateTime);
+                                _postsService.addPost(collection, newQuestion);
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
         );
       },
     );
