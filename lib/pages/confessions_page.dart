@@ -5,6 +5,7 @@ import '../components/posts/posts.dart';
 
 import '../services/posts_service.dart';
 import '../components/toast/toast.dart';
+import '../components/utils/no_content.dart';
 
 class ConfessionsPage extends StatefulWidget {
   const ConfessionsPage({super.key});
@@ -79,9 +80,7 @@ class _ConfessionsPageState extends State<ConfessionsPage> {
             ],
           );
         } else {
-          return const Center(
-            child: Text("No Confessions Available"),
-          );
+          return const NoContent(text: "No Confessions Available");
         }
       },
     );
