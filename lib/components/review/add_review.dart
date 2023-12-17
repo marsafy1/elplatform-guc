@@ -6,6 +6,7 @@ import 'package:guc_swiss_knife/models/review.dart';
 import 'package:guc_swiss_knife/models/user.dart';
 import 'package:guc_swiss_knife/providers/auth_provider.dart';
 import 'package:guc_swiss_knife/services/course_service.dart';
+import 'package:guc_swiss_knife/services/instructor_service.dart';
 import 'package:provider/provider.dart';
 
 class AddReview extends StatefulWidget {
@@ -103,11 +104,13 @@ class _AddReview extends State<AddReview> {
             style: ButtonStyle(
               padding: MaterialStateProperty.all(EdgeInsets.zero),
             ),
-            child: const Padding(
-              padding: EdgeInsets.only(left: 10, right: 4),
+            child: Padding(
+              padding: const EdgeInsets.only(left: 10, right: 4),
               child: Text(
-                'Review Course',
-                style: TextStyle(
+                widget.instructorId == null
+                    ? 'Review Course'
+                    : "Review Instructor",
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
                 ),
@@ -115,14 +118,16 @@ class _AddReview extends State<AddReview> {
             ),
           ),
         ]),
-        const Padding(
-          padding: EdgeInsets.only(left: 10),
+        Padding(
+          padding: const EdgeInsets.only(left: 10, bottom: 10),
           child: Text(
-            'Your review will help other students know more about this course.',
-            style: TextStyle(
+            widget.instructorId == null
+                ? 'Your review will help other students know more about this course.'
+                : 'Your review will help other students know more about this instructor.',
+            style: const TextStyle(
               fontSize: 12,
             ),
-            textAlign: TextAlign.center,
+            textAlign: TextAlign.start,
           ),
         ),
       ],
@@ -145,10 +150,19 @@ class _AddReview extends State<AddReview> {
       review: review,
     );
     if (_getOldReview() == null) {
-      await CourseService.addReview(widget.courseId, reviewObj);
+      if (widget.courseId != null) {
+        await CourseService.addReview(widget.courseId, reviewObj);
+      } else {
+        await InstructorService.addReview(widget.instructorId, reviewObj);
+      }
     } else {
-      await CourseService.updateReview(
-          widget.courseId, _getOldReview(), reviewObj);
+      if (widget.courseId != null) {
+        await CourseService.updateReview(
+            widget.courseId, _getOldReview(), reviewObj);
+      } else {
+        await InstructorService.updateReview(
+            widget.instructorId, _getOldReview(), reviewObj);
+      }
     }
     setState(() {
       widget.reviews.removeWhere((element) => element.userId == user.id);
@@ -158,7 +172,12 @@ class _AddReview extends State<AddReview> {
   }
 
   void _onDelete() async {
-    await CourseService.deleteReview(widget.courseId, _getOldReview());
+    if (widget.courseId != null) {
+      await CourseService.deleteReview(widget.courseId, _getOldReview());
+    } else {
+      await InstructorService.deleteReview(
+          widget.instructorId, _getOldReview());
+    }
     setState(() {
       widget.reviews.removeWhere((element) => element.userId == user.id);
       widget.setReviews(widget.reviews);

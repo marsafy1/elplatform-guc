@@ -31,7 +31,7 @@ class InstructorDetails extends StatelessWidget {
                       'Publisher', instructor.isPublisher ? 'Yes' : 'No'),
                   _buildInfoTile('Bio', instructor.bio ?? ''),
                   InstructorReviews(
-                      reviews: const [], instructorId: instructor.id)
+                      reviews: instructor.reviews!, instructorId: instructor.id)
                 ],
               )
             ],

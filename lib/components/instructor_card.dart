@@ -15,7 +15,8 @@ class InstructorCard extends StatelessWidget {
           child: Icon(Icons.person),
         ),
         title: Text(instructor.firstName),
-        subtitle: Text("${instructor.rating} ⭐"),
+        subtitle: Text(
+            "${isNotNumber(instructor.rating!) ? 5.0 : instructor.rating} ⭐"),
         trailing: const Icon(Icons.arrow_forward_ios),
         onTap: () {
           Navigator.pushNamed(context, '/instructorDetails',
@@ -23,5 +24,9 @@ class InstructorCard extends StatelessWidget {
         },
       ),
     );
+  }
+
+  bool isNotNumber(num number) {
+    return number.isNaN || number.isInfinite || number.isNegative;
   }
 }

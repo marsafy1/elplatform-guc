@@ -12,11 +12,10 @@ class Instructors extends StatefulWidget {
 }
 
 class _InstructorsState extends State<Instructors> {
-  InstructorService instructorService = InstructorService();
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: instructorService.fetchInstructors(),
+      stream: InstructorService.fetchInstructors(),
       builder: (context, AsyncSnapshot<List<User>> snapshot) {
         if (snapshot.hasData) {
           return Scaffold(
