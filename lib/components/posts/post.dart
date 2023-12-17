@@ -96,7 +96,8 @@ class _PostState extends State<PostWidget> {
                 children: [
                   Text(displayedName,
                       style: const TextStyle(fontWeight: FontWeight.bold)),
-                  if (widget.post.user!.isPublisher) const VerifiedCheck(),
+                  if (widget.post.user!.isPublisher && !widget.post.anon)
+                    const VerifiedCheck(),
                 ],
               ),
               if (!widget.post.anon)
