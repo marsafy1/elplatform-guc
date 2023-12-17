@@ -14,7 +14,8 @@ class InstructorCard extends StatelessWidget {
           backgroundColor: Colors.grey,
           child: Icon(Icons.person),
         ),
-        title: Text(instructor.firstName),
+        title: Text(
+            "${instructor.firstName.toLowerCase()} ${instructor.lastName.toLowerCase()}"),
         subtitle: Text(
             "${isNotNumber(instructor.rating!) ? 5.0 : instructor.rating} ⭐"),
         trailing: const Icon(Icons.arrow_forward_ios),

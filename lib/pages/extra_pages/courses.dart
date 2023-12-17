@@ -12,9 +12,6 @@ class Courses extends StatefulWidget {
 
 class _CoursesState extends State<Courses> {
   late Future<List<Course>> futureCourses;
-  TextEditingController searchController = TextEditingController();
-  String searchTerm = "";
-  double containerHeight = 200;
   @override
   void initState() {
     super.initState();
@@ -52,42 +49,26 @@ class _CoursesState extends State<Courses> {
                 return Text('Error: ${snapshot.error}');
               } else {
                 List<Course>? courses = snapshot.data;
-                List<Course>? filteredCourses = courses!
-                    .where((course) => course.title
-                        .toLowerCase()
-                        .contains(searchController.text.toLowerCase()))
-                    .toList();
-                for (var i = 0; i < 10; i++) {
-                  filteredCourses.add(filteredCourses[0]);
-                }
                 return Column(children: [
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.7,
-                      child: TextField(
-                        controller: searchController,
-                        onChanged: (value) {
-                          setState(() {
-                            searchTerm = value;
-                          });
-                        },
-                        decoration: const InputDecoration(
-                          hintText: 'Search courses...',
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
+                    padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+                    child: SearchAnchor.bar(
+                      barHintText: 'Search courses',
+                      suggestionsBuilder:
+                          (BuildContext context, SearchController controller) {
+                        return getSuggestions(controller, courses!);
+                      },
                     ),
                   ),
                   SizedBox(
                       height: MediaQuery.of(context).size.height * 0.8 -
                           keyBoardHeight,
                       child: ListView.builder(
-                        itemCount: filteredCourses.length,
+                        itemCount: courses!.length,
                         shrinkWrap: true,
                         padding: const EdgeInsets.only(top: 10, bottom: 10),
                         itemBuilder: (context, index) {
-                          return CourseCard(course: filteredCourses[index]);
+                          return CourseCard(course: courses[index]);
                         },
                       ))
                 ]);
@@ -95,5 +76,20 @@ class _CoursesState extends State<Courses> {
             },
           ),
         ]));
+  }
+
+  Iterable<Widget> getSuggestions(
+      SearchController controller, List<Course> courses) {
+    final String input = controller.value.text.toLowerCase();
+    return courses
+        .where((Course course) => course.title.toLowerCase().contains(input))
+        .map(
+          (Course filteredCourse) => CourseCard(course: filteredCourse),
+        );
+  }
+
+  void handleSelection(Course selectedCourse) {
+    Navigator.of(context)
+        .pushNamed('/courseDetails', arguments: {'instructor': selectedCourse});
   }
 }
