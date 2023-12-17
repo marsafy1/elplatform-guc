@@ -68,6 +68,8 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
     String userId = userAuth.user!.id;
     bool localAnon = anon; // Local variable for anon state in the bottom sheet
 
+    bool inConfessions = indexToCollection[selectedTabIndex] == "confessions";
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -111,21 +113,33 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
                               minLines: 10,
                               maxLines: 12,
                             ),
-                            Row(
-                              children: [
-                                const Text("Post Anonymously"),
-                                Switch(
-                                  value: localAnon,
-                                  activeColor:
-                                      Theme.of(context).colorScheme.primary,
-                                  onChanged: (bool value) {
-                                    setModalState(() {
-                                      localAnon = value;
-                                    });
-                                  },
-                                ),
-                              ],
-                            ),
+                            if (inConfessions)
+                              Row(
+                                children: [
+                                  FaIcon(
+                                    FontAwesomeIcons.ghost,
+                                    color:
+                                        localAnon ? Colors.yellow : Colors.grey,
+                                  ),
+                                  const SizedBox(
+                                    width: 3,
+                                  ),
+                                  const Text("Post Anonymously"),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+                                  Switch(
+                                    value: localAnon,
+                                    activeColor:
+                                        Theme.of(context).colorScheme.primary,
+                                    onChanged: (bool value) {
+                                      setModalState(() {
+                                        localAnon = value;
+                                      });
+                                    },
+                                  ),
+                                ],
+                              ),
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                   backgroundColor:
