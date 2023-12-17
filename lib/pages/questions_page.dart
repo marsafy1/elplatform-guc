@@ -181,7 +181,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
           );
         } else {
           return const Center(
-            child: Text("No Confessions Available"),
+            child: Text("No Questions Available"),
           );
         }
       },
