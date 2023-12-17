@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:guc_swiss_knife/components/review/review_card.dart';
-import 'package:guc_swiss_knife/components/review/review_course_dialog.dart';
+import 'package:guc_swiss_knife/components/review/add_review_dialog.dart';
 import 'package:guc_swiss_knife/models/review.dart';
 import 'package:guc_swiss_knife/models/user.dart';
 import 'package:guc_swiss_knife/providers/auth_provider.dart';
