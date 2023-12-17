@@ -47,4 +47,43 @@ class PostsService {
   Future<void> addPost(String collection, Post post) async {
     await _firestore.collection(collection).add(post.toMap());
   }
+
+  Future<void> likePost(String collection, String postId, String userId) async {
+    DocumentReference postRef = _firestore.collection(collection).doc(postId);
+
+    await _firestore.runTransaction((transaction) async {
+      DocumentSnapshot snapshot = await transaction.get(postRef);
+
+      if (!snapshot.exists) {
+        throw Exception("Post does not exist!");
+      }
+
+      List<String> likedByUsers =
+          List<String>.from(snapshot['likedByUsers'] ?? []);
+      if (!likedByUsers.contains(userId)) {
+        likedByUsers.add(userId);
+      }
+
+      transaction.update(postRef, {'likedByUsers': likedByUsers});
+    });
+  }
+
+  Future<void> unlikePost(
+      String collection, String postId, String userId) async {
+    DocumentReference postRef = _firestore.collection(collection).doc(postId);
+
+    await _firestore.runTransaction((transaction) async {
+      DocumentSnapshot snapshot = await transaction.get(postRef);
+
+      if (!snapshot.exists) {
+        throw Exception("Post does not exist!");
+      }
+
+      List<String> likedByUsers =
+          List<String>.from(snapshot['likedByUsers'] ?? []);
+      likedByUsers.remove(userId);
+
+      transaction.update(postRef, {'likedByUsers': likedByUsers});
+    });
+  }
 }

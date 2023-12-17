@@ -8,7 +8,7 @@ class Post {
   final String description;
   final DateTime dateCreated;
   final List<dynamic>? photosUrls;
-  final Set<String> likedByUsers; // New field to track likes
+  final List<String>? likedByUsers; // New field to track likes
   User? user;
 
   Post(
@@ -20,11 +20,15 @@ class Post {
       required this.dateCreated,
       this.photosUrls,
       this.user,
-      this.likedByUsers = const {} // Default to empty set
-      });
+      this.likedByUsers});
 
   factory Post.fromMap(Map<String, dynamic> map, String documentId,
       {User? user}) {
+    List<String>? likedByUsers;
+    if (map['likedByUsers'] != null) {
+      likedByUsers = List<String>.from(map['likedByUsers'] as List<dynamic>);
+    }
+
     return Post(
       id: documentId,
       title: map['title'] ?? "Title",
@@ -36,8 +40,7 @@ class Post {
           ? map['dateCreated'].toDate()
           : DateTime.now(),
       user: user,
-      likedByUsers:
-          Set<String>.from(map['likedByUsers'] ?? []), // Extract likes
+      likedByUsers: likedByUsers,
     );
   }
 
@@ -49,7 +52,7 @@ class Post {
       'description': description,
       'photosUrls': photosUrls,
       'dateCreated': dateCreated,
-      'likedByUsers': likedByUsers.toList(), // Convert to list for storage
+      'likedByUsers': likedByUsers,
     };
   }
 }
