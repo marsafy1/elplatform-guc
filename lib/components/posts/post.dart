@@ -9,6 +9,7 @@ import '../utils/chip.dart';
 import '../utils/verified_check.dart';
 import '../comments/comments.dart';
 import '../../utils_functions/profile.dart';
+import '../../utils_functions/ghost.dart';
 import '../../services/posts_service.dart';
 
 class PostWidget extends StatefulWidget {
@@ -76,6 +77,12 @@ class _PostState extends State<PostWidget> {
 
   Widget _buildHeader() {
     Widget userAvatar = generateAvatar(context, widget.post.user!);
+    String displayedName =
+        "${widget.post.user!.firstName} ${widget.post.user!.lastName}";
+    if (widget.post.anon) {
+      userAvatar = generateGhostAvatar();
+      displayedName = "Ghost";
+    }
 
     return Row(
       children: [
@@ -87,14 +94,14 @@ class _PostState extends State<PostWidget> {
             children: [
               Row(
                 children: [
-                  Text(
-                      "${widget.post.user!.firstName} ${widget.post.user!.lastName}",
+                  Text(displayedName,
                       style: const TextStyle(fontWeight: FontWeight.bold)),
                   if (widget.post.user!.isPublisher) const VerifiedCheck(),
                 ],
               ),
-              const Text('5th year student',
-                  style: TextStyle(color: Colors.grey)),
+              if (!widget.post.anon)
+                const Text('5th year student',
+                    style: TextStyle(color: Colors.grey)),
             ],
           ),
         ),
