@@ -13,6 +13,8 @@ class Courses extends StatefulWidget {
 
 class _CoursesState extends State<Courses> {
   late Future<List<Course>> futureCourses;
+  TextEditingController searchController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -49,14 +51,41 @@ class _CoursesState extends State<Courses> {
                 return Text('Error: ${snapshot.error}');
               } else {
                 List<Course>? courses = snapshot.data;
-                return Expanded(
-                  child: ListView.builder(
-                    itemCount: courses!.length,
-                    itemBuilder: (context, index) {
-                      return CourseCard(course: courses[index]);
-                    },
+                List<Course>? filteredCourses = courses!
+                    .where((course) => course.title
+                        .toLowerCase()
+                        .contains(searchController.text.toLowerCase()))
+                    .toList();
+                for (int i = 0; i < 10; i++) {
+                  filteredCourses.add(filteredCourses[0]);
+                }
+                return Column(children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.7,
+                      child: TextField(
+                        controller: searchController,
+                        onChanged: (value) {
+                          // Implement your search logic here
+                        },
+                        decoration: const InputDecoration(
+                          hintText: 'Search courses...',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ),
                   ),
-                );
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.8,
+                    child: ListView.builder(
+                      itemCount: filteredCourses.length,
+                      itemBuilder: (context, index) {
+                        return CourseCard(course: filteredCourses[index]);
+                      },
+                    ),
+                  ),
+                ]);
               }
             },
           ),
