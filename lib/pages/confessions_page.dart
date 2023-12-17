@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:guc_swiss_knife/services/route_observer_service.dart';
 import '../models/post.dart';
 import '../components/posts/posts.dart';
 
@@ -21,6 +22,13 @@ class _ConfessionsPageState extends State<ConfessionsPage> {
   bool hasNewPosts = false;
 
   final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    RouteObserverService().logUserActivity('/confessions');
+    super.initState();
+  }
+
   @override
   void dispose() {
     _scrollController.dispose(); // Important to dispose the controller

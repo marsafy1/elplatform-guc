@@ -12,6 +12,7 @@ import 'package:guc_swiss_knife/pages/profile/profile_page.dart';
 import 'package:guc_swiss_knife/pages/utils/loading_page.dart';
 import 'package:guc_swiss_knife/providers/auth_provider.dart';
 import 'package:guc_swiss_knife/services/analytics_service.dart';
+import 'package:guc_swiss_knife/services/route_observer_service.dart';
 import 'package:provider/provider.dart';
 import 'package:guc_swiss_knife/pages/admin/instructor_details.dart';
 import 'package:guc_swiss_knife/pages/admin/admin_publish_requests_page.dart';
@@ -63,7 +64,10 @@ class MyApp extends StatelessWidget {
         darkTheme: darkTheme,
         themeMode: ThemeMode.system,
         // themeMode: ThemeMode.dark,
-        navigatorObservers: [AnalyticsService.getAnalyticsObserver()],
+        navigatorObservers: [
+          AnalyticsService.getAnalyticsObserver(),
+          RouteObserverService()
+        ],
         routes: {
           '/home': (dummyCtx) => const TabsControllerScreen(),
           '/contacts': (dummyCtx) => const Contacts(),
