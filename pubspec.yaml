@@ -40,6 +40,8 @@ dependencies:
   flutter_iconpicker: ^3.2.4
   flutter_rating_bar: ^4.0.1
   font_awesome_flutter: ^10.6.0
+  geodesy: ^0.10.2
+  geolocator: ^10.1.0
   google_fonts: ^6.1.0
   image_picker: ^1.0.4
   intl: ^0.17.0

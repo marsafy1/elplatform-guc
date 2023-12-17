@@ -86,7 +86,11 @@ class _NavigationState extends State<Navigation> {
                                   ),
                                   title: Text(snapshot.data![index].name ?? "",
                                       overflow: TextOverflow.ellipsis),
-                                  onTap: () {},
+                                  onTap: () {
+                                    Navigator.of(context).pushNamed(
+                                        '/locationDetails',
+                                        arguments: snapshot.data![index]);
+                                  },
                                 ),
                               );
                             },

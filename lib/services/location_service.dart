@@ -10,12 +10,15 @@ class LocationService {
         .snapshots()
         .asyncMap((snapshot) async {
       List<Location> locations = [];
+
       for (var doc in snapshot.docs) {
         Location location = Location.fromMap(doc.data(), doc.id);
+
         if (location.name.toString().contains(searchTerm.toString())) {
           locations.add(location);
         }
       }
+
       return locations;
     });
     return fetchedRequests;

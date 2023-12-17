@@ -3,6 +3,7 @@
     "ARGB",
     "Autovalidate",
     "firestore",
+    "Geolocator",
     "LTRB"
   ]
 }
