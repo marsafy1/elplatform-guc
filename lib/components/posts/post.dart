@@ -26,6 +26,8 @@ class PostWidget extends StatefulWidget {
 class _PostState extends State<PostWidget> {
   bool isLikedByUser = false;
   bool isLikedByUserUI = false;
+  bool isResolved = false;
+  bool isResolvedUI = false;
   int interactionsCount = 0;
   @override
   void initState() {
@@ -38,7 +40,8 @@ class _PostState extends State<PostWidget> {
       isLikedByUser = widget.post.likedByUsers!.contains(currentUserId);
       isLikedByUserUI = isLikedByUser;
     }
-
+    isResolved = widget.post.resolved;
+    isResolvedUI = isResolved;
     interactionsCount =
         widget.post.likedByUsers != null ? widget.post.likedByUsers!.length : 0;
   }
@@ -57,6 +60,15 @@ class _PostState extends State<PostWidget> {
   Map<String, String> collectionToComment = {
     "questions": "Answers",
     "confessions": "Comments"
+  };
+
+  Map<String, String> collectionToResolvedOption = {
+    "questions": "Answered",
+    "lost_and_founds": "Found"
+  };
+  Map<String, String> collectionToResolveOption = {
+    "questions": "Mark as Answered",
+    "lost_and_founds": "Mark as Found"
   };
   @override
   Widget build(BuildContext context) {
@@ -154,6 +166,25 @@ class _PostState extends State<PostWidget> {
 
     String interactionActionText =
         interactionsCount != 1 ? "${interactionAction}s" : interactionAction;
+
+    bool showResolveOption = widget.collection == "questions" ||
+        widget.collection == "lost_and_founds";
+
+    String resolvedString = "Resolved";
+    String resolveString = "Resolve";
+    String displayedResolveOption = "Resolve";
+    if (showResolveOption) {
+      resolvedString =
+          collectionToResolvedOption[widget.collection] ?? resolvedString;
+      resolveString =
+          collectionToResolveOption[widget.collection] ?? resolveString;
+      if (isResolvedUI) {
+        displayedResolveOption = resolvedString;
+      } else {
+        displayedResolveOption = resolveString;
+      }
+    }
+
     return Column(
       children: [
         const Divider(),
@@ -243,6 +274,60 @@ class _PostState extends State<PostWidget> {
             ),
           ],
         ),
+        if (showResolveOption)
+          const SizedBox(
+            height: 10,
+          ),
+        if (showResolveOption)
+          Row(
+            children: [
+              Expanded(
+                child: InkWell(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        FaIcon(
+                          FontAwesomeIcons.check,
+                          size: 17,
+                          color: isResolvedUI ? Colors.green : Colors.white,
+                        ),
+                        const SizedBox(
+                          width: 8,
+                        ),
+                        Text(displayedResolveOption)
+                      ],
+                    ),
+                  ),
+                  onTap: () {
+                    final userAuth =
+                        Provider.of<AuthProvider>(context, listen: false);
+                    String currentUserId = userAuth.user!.id;
+                    if (isResolvedUI) {
+                      // widget._postsService.unlikePost(
+                      //     widget.collection, widget.post.id, currentUserId);
+
+                      setState(() {
+                        isResolvedUI = false;
+                      });
+                    } else {
+                      // widget._postsService.likePost(
+                      //     widget.collection, widget.post.id, currentUserId);
+                      setState(() {
+                        isResolvedUI = true;
+                      });
+                    }
+                  },
+                ),
+              ),
+            ],
+          )
       ],
     );
   }
