@@ -286,11 +286,33 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
             showBottomSheetForNewPost(context);
           }
         },
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        child: const FaIcon(
-          FontAwesomeIcons.plus,
-          color: Colors.white,
-        ), // The '+' icon is typical for an "Add" action
+        backgroundColor: Colors.transparent, // Make FAB background transparent
+        elevation: 0, // Remove elevation
+        child: Ink(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: LinearGradient(
+              colors: [
+                Theme.of(context).colorScheme.primary,
+                Theme.of(context).colorScheme.secondary,
+                // Add more colors if needed
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+          child: Container(
+            constraints: const BoxConstraints.expand(
+              height: 56.0, // Standard FAB height
+              width: 56.0, // Standard FAB width
+            ),
+            alignment: Alignment.center, // Align the icon inside the container
+            child: const FaIcon(
+              FontAwesomeIcons.plus,
+              color: Colors.white,
+            ),
+          ),
+        ),
       ),
       bottomNavigationBar: GlassMorphicBottomNavigationBar(
         selectedIndex: selectedTabIndex,
