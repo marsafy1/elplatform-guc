@@ -297,7 +297,7 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
                                     Toast.show(context, "Please enter a title",
                                         "error");
                                     setModalState(() {
-                                      loadingSubmission = true;
+                                      loadingSubmission = false;
                                     });
                                     return;
                                   }
@@ -306,7 +306,7 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
                                     Toast.show(context,
                                         "Please enter a description", "error");
                                     setModalState(() {
-                                      loadingSubmission = true;
+                                      loadingSubmission = false;
                                     });
                                     return;
                                   }
@@ -315,7 +315,7 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
                                     Toast.show(context,
                                         "Please choose a category", "error");
                                     setModalState(() {
-                                      loadingSubmission = true;
+                                      loadingSubmission = false;
                                     });
                                     return;
                                   }
@@ -375,8 +375,12 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
                                     const SizedBox(
                                       width: 3,
                                     ),
-                                    const FaIcon(FontAwesomeIcons.spinner,
-                                        size: 20, color: Colors.white),
+                                    const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                          color: Colors.white),
+                                    ),
                                   ],
                                 ),
                                 onPressed: () {},
