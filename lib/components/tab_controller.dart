@@ -128,6 +128,11 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
 
     bool inConfessions = indexToCollection[selectedTabIndex] == "confessions";
     bool inQuestions = indexToCollection[selectedTabIndex] == "questions";
+    bool inFeed = indexToCollection[selectedTabIndex] == "feed";
+
+    bool postingImagesAllowed = inQuestions || inFeed;
+
+    bool loadingSubmission = false;
 
     setState(() {
       photosFiles = [];
@@ -182,47 +187,50 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
                               minLines: 10,
                               maxLines: 12,
                             ),
-                            Container(
-                              margin: const EdgeInsets.all(5),
-                              child: Row(
-                                children: [
-                                  ElevatedButton(
-                                    onPressed: () async {
-                                      File? image =
-                                          await pickImage(); // or ImageSource.camera
-                                      if (image != null) {
-                                        setModalState(() {
-                                          localPhotosFiles.add(image);
-                                        });
-                                      }
-                                    },
-                                    child: const Text('Pick Image'),
-                                  ),
-                                  const SizedBox(width: 10),
-                                  // Display selected images
-                                  Expanded(
-                                    child: SizedBox(
-                                      height: 100, // Adjust the size as needed
-                                      child: ListView.builder(
-                                        scrollDirection: Axis.horizontal,
-                                        itemCount: localPhotosFiles.length,
-                                        itemBuilder: (context, index) {
-                                          return Padding(
-                                            padding: const EdgeInsets.all(4.0),
-                                            child: Image.file(
-                                              localPhotosFiles[index],
-                                              width: 100, // Thumbnail width
-                                              height: 100, // Thumbnail height
-                                              fit: BoxFit.cover,
-                                            ),
-                                          );
-                                        },
+                            if (postingImagesAllowed)
+                              Container(
+                                margin: const EdgeInsets.all(5),
+                                child: Row(
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: () async {
+                                        File? image =
+                                            await pickImage(); // or ImageSource.camera
+                                        if (image != null) {
+                                          setModalState(() {
+                                            localPhotosFiles.add(image);
+                                          });
+                                        }
+                                      },
+                                      child: const Text('Pick Image'),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    // Display selected images
+                                    Expanded(
+                                      child: SizedBox(
+                                        height:
+                                            100, // Adjust the size as needed
+                                        child: ListView.builder(
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount: localPhotosFiles.length,
+                                          itemBuilder: (context, index) {
+                                            return Padding(
+                                              padding:
+                                                  const EdgeInsets.all(4.0),
+                                              child: Image.file(
+                                                localPhotosFiles[index],
+                                                width: 100, // Thumbnail width
+                                                height: 100, // Thumbnail height
+                                                fit: BoxFit.cover,
+                                              ),
+                                            );
+                                          },
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
                             if (inConfessions)
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -243,86 +251,140 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
                                   ),
                                 ],
                               ),
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  backgroundColor: !localAnon
-                                      ? Theme.of(context).primaryColor
-                                      : Colors.amberAccent[700],
-                                  minimumSize: const Size(double.infinity, 36),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(5))),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(action.split(" ")[0],
-                                      style: localAnon
-                                          ? const TextStyle(color: Colors.white)
-                                          : const TextStyle()),
-                                  if (localAnon)
+                            if (!loadingSubmission)
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: !localAnon
+                                        ? Theme.of(context).primaryColor
+                                        : Colors.amberAccent[700],
+                                    minimumSize:
+                                        const Size(double.infinity, 36),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(5))),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(action.split(" ")[0],
+                                        style: localAnon
+                                            ? const TextStyle(
+                                                color: Colors.white)
+                                            : const TextStyle()),
+                                    if (localAnon)
+                                      const SizedBox(
+                                        width: 3,
+                                      ),
+                                    if (localAnon)
+                                      const FaIcon(FontAwesomeIcons.ghost,
+                                          size: 20, color: Colors.white),
+                                  ],
+                                ),
+                                onPressed: () async {
+                                  setModalState(() {
+                                    loadingSubmission = true;
+                                  });
+                                  String title = titleController.text.trim();
+                                  String description =
+                                      descriptionController.text.trim();
+                                  String category =
+                                      selectedCategoriesChoices.isNotEmpty
+                                          ? selectedCategoriesChoices[0]
+                                              .name
+                                              .toLowerCase()
+                                          : "all";
+
+                                  if (title.isEmpty) {
+                                    Toast.show(context, "Please enter a title",
+                                        "error");
+                                    setModalState(() {
+                                      loadingSubmission = false;
+                                    });
+                                    return;
+                                  }
+
+                                  if (description.isEmpty) {
+                                    Toast.show(context,
+                                        "Please enter a description", "error");
+                                    setModalState(() {
+                                      loadingSubmission = false;
+                                    });
+                                    return;
+                                  }
+
+                                  if (category.isEmpty) {
+                                    Toast.show(context,
+                                        "Please choose a category", "error");
+                                    setModalState(() {
+                                      loadingSubmission = false;
+                                    });
+                                    return;
+                                  }
+                                  List<String> uploadedUrls = [];
+                                  for (File imgFile in localPhotosFiles) {
+                                    print("Going to call upload IMAGE");
+                                    String? uploadedImageUrl =
+                                        await _postsService
+                                            .uploadImage(imgFile);
+                                    if (uploadedImageUrl != null) {
+                                      print("GOT AN IMAGE");
+                                      print("URL $uploadedImageUrl");
+                                      uploadedUrls.add(uploadedImageUrl);
+                                    }
+                                  }
+                                  setModalState(() {
+                                    localPhotosUrls.addAll(uploadedUrls);
+                                  });
+                                  DateTime dateTime = DateTime.now();
+                                  Post newPost = Post(
+                                      title: title,
+                                      userId: userId,
+                                      resolved: false,
+                                      anon: localAnon,
+                                      category: category,
+                                      description: description,
+                                      photosUrls: localPhotosUrls,
+                                      dateCreated: dateTime);
+                                  try {
+                                    await _postsService.addPost(
+                                        collection, newPost);
+                                    Navigator.pop(context);
+                                  } catch (e) {
+                                    Toast.show(
+                                        context, "Error Occurred", "error");
+                                  }
+                                  setModalState(() {
+                                    loadingSubmission = false;
+                                  });
+                                },
+                              ),
+                            if (loadingSubmission)
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.grey,
+                                    minimumSize:
+                                        const Size(double.infinity, 36),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(5))),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(action.split(" ")[0],
+                                        style: const TextStyle(
+                                            color: Colors.white)),
                                     const SizedBox(
                                       width: 3,
                                     ),
-                                  if (localAnon)
-                                    const FaIcon(FontAwesomeIcons.ghost,
-                                        size: 20, color: Colors.white),
-                                ],
+                                    const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                          color: Colors.white),
+                                    ),
+                                  ],
+                                ),
+                                onPressed: () {},
                               ),
-                              onPressed: () async {
-                                String title = titleController.text.trim();
-                                String description =
-                                    descriptionController.text.trim();
-                                String category =
-                                    selectedCategoriesChoices.isNotEmpty
-                                        ? selectedCategoriesChoices[0]
-                                            .name
-                                            .toLowerCase()
-                                        : "all";
-
-                                if (title.isEmpty) {
-                                  Toast.show(
-                                      context, "Please enter a title", "error");
-                                  return;
-                                }
-
-                                if (description.isEmpty) {
-                                  Toast.show(context,
-                                      "Please enter a description", "error");
-                                  return;
-                                }
-
-                                if (category.isEmpty) {
-                                  Toast.show(context,
-                                      "Please choose a category", "error");
-                                  return;
-                                }
-                                List<String> uploadedUrls = [];
-                                for (File imgFile in localPhotosFiles) {
-                                  print("Going to call upload IMAGE");
-                                  String? uploadedImageUrl =
-                                      await _postsService.uploadImage(imgFile);
-                                  if (uploadedImageUrl != null) {
-                                    print("GOT AN IMAGE");
-                                    print("URL $uploadedImageUrl");
-                                    uploadedUrls.add(uploadedImageUrl);
-                                  }
-                                }
-                                setModalState(() {
-                                  localPhotosUrls.addAll(uploadedUrls);
-                                });
-                                DateTime dateTime = DateTime.now();
-                                Post newPost = Post(
-                                    title: title,
-                                    userId: userId,
-                                    resolved: false,
-                                    anon: localAnon,
-                                    category: category,
-                                    description: description,
-                                    photosUrls: localPhotosUrls,
-                                    dateCreated: dateTime);
-                                _postsService.addPost(collection, newPost);
-                                Navigator.pop(context);
-                              },
-                            ),
                           ],
                         ),
                       ),
