@@ -132,6 +132,8 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
 
     bool postingImagesAllowed = inQuestions || inFeed;
 
+    bool loadingSubmission = false;
+
     setState(() {
       photosFiles = [];
     });
@@ -249,86 +251,136 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
                                   ),
                                 ],
                               ),
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  backgroundColor: !localAnon
-                                      ? Theme.of(context).primaryColor
-                                      : Colors.amberAccent[700],
-                                  minimumSize: const Size(double.infinity, 36),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(5))),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(action.split(" ")[0],
-                                      style: localAnon
-                                          ? const TextStyle(color: Colors.white)
-                                          : const TextStyle()),
-                                  if (localAnon)
+                            if (!loadingSubmission)
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: !localAnon
+                                        ? Theme.of(context).primaryColor
+                                        : Colors.amberAccent[700],
+                                    minimumSize:
+                                        const Size(double.infinity, 36),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(5))),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(action.split(" ")[0],
+                                        style: localAnon
+                                            ? const TextStyle(
+                                                color: Colors.white)
+                                            : const TextStyle()),
+                                    if (localAnon)
+                                      const SizedBox(
+                                        width: 3,
+                                      ),
+                                    if (localAnon)
+                                      const FaIcon(FontAwesomeIcons.ghost,
+                                          size: 20, color: Colors.white),
+                                  ],
+                                ),
+                                onPressed: () async {
+                                  setModalState(() {
+                                    loadingSubmission = true;
+                                  });
+                                  String title = titleController.text.trim();
+                                  String description =
+                                      descriptionController.text.trim();
+                                  String category =
+                                      selectedCategoriesChoices.isNotEmpty
+                                          ? selectedCategoriesChoices[0]
+                                              .name
+                                              .toLowerCase()
+                                          : "all";
+
+                                  if (title.isEmpty) {
+                                    Toast.show(context, "Please enter a title",
+                                        "error");
+                                    setModalState(() {
+                                      loadingSubmission = true;
+                                    });
+                                    return;
+                                  }
+
+                                  if (description.isEmpty) {
+                                    Toast.show(context,
+                                        "Please enter a description", "error");
+                                    setModalState(() {
+                                      loadingSubmission = true;
+                                    });
+                                    return;
+                                  }
+
+                                  if (category.isEmpty) {
+                                    Toast.show(context,
+                                        "Please choose a category", "error");
+                                    setModalState(() {
+                                      loadingSubmission = true;
+                                    });
+                                    return;
+                                  }
+                                  List<String> uploadedUrls = [];
+                                  for (File imgFile in localPhotosFiles) {
+                                    print("Going to call upload IMAGE");
+                                    String? uploadedImageUrl =
+                                        await _postsService
+                                            .uploadImage(imgFile);
+                                    if (uploadedImageUrl != null) {
+                                      print("GOT AN IMAGE");
+                                      print("URL $uploadedImageUrl");
+                                      uploadedUrls.add(uploadedImageUrl);
+                                    }
+                                  }
+                                  setModalState(() {
+                                    localPhotosUrls.addAll(uploadedUrls);
+                                  });
+                                  DateTime dateTime = DateTime.now();
+                                  Post newPost = Post(
+                                      title: title,
+                                      userId: userId,
+                                      resolved: false,
+                                      anon: localAnon,
+                                      category: category,
+                                      description: description,
+                                      photosUrls: localPhotosUrls,
+                                      dateCreated: dateTime);
+                                  try {
+                                    await _postsService.addPost(
+                                        collection, newPost);
+                                    Navigator.pop(context);
+                                  } catch (e) {
+                                    Toast.show(
+                                        context, "Error Occurred", "error");
+                                  }
+                                  setModalState(() {
+                                    loadingSubmission = false;
+                                  });
+                                },
+                              ),
+                            if (loadingSubmission)
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.grey,
+                                    minimumSize:
+                                        const Size(double.infinity, 36),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(5))),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(action.split(" ")[0],
+                                        style: const TextStyle(
+                                            color: Colors.white)),
                                     const SizedBox(
                                       width: 3,
                                     ),
-                                  if (localAnon)
-                                    const FaIcon(FontAwesomeIcons.ghost,
+                                    const FaIcon(FontAwesomeIcons.spinner,
                                         size: 20, color: Colors.white),
-                                ],
+                                  ],
+                                ),
+                                onPressed: () {},
                               ),
-                              onPressed: () async {
-                                String title = titleController.text.trim();
-                                String description =
-                                    descriptionController.text.trim();
-                                String category =
-                                    selectedCategoriesChoices.isNotEmpty
-                                        ? selectedCategoriesChoices[0]
-                                            .name
-                                            .toLowerCase()
-                                        : "all";
-
-                                if (title.isEmpty) {
-                                  Toast.show(
-                                      context, "Please enter a title", "error");
-                                  return;
-                                }
-
-                                if (description.isEmpty) {
-                                  Toast.show(context,
-                                      "Please enter a description", "error");
-                                  return;
-                                }
-
-                                if (category.isEmpty) {
-                                  Toast.show(context,
-                                      "Please choose a category", "error");
-                                  return;
-                                }
-                                List<String> uploadedUrls = [];
-                                for (File imgFile in localPhotosFiles) {
-                                  print("Going to call upload IMAGE");
-                                  String? uploadedImageUrl =
-                                      await _postsService.uploadImage(imgFile);
-                                  if (uploadedImageUrl != null) {
-                                    print("GOT AN IMAGE");
-                                    print("URL $uploadedImageUrl");
-                                    uploadedUrls.add(uploadedImageUrl);
-                                  }
-                                }
-                                setModalState(() {
-                                  localPhotosUrls.addAll(uploadedUrls);
-                                });
-                                DateTime dateTime = DateTime.now();
-                                Post newPost = Post(
-                                    title: title,
-                                    userId: userId,
-                                    resolved: false,
-                                    anon: localAnon,
-                                    category: category,
-                                    description: description,
-                                    photosUrls: localPhotosUrls,
-                                    dateCreated: dateTime);
-                                _postsService.addPost(collection, newPost);
-                                Navigator.pop(context);
-                              },
-                            ),
                           ],
                         ),
                       ),
