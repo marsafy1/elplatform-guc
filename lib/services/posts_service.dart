@@ -48,6 +48,14 @@ class PostsService {
     await _firestore.collection(collection).add(post.toMap());
   }
 
+  Future<void> deletePost(String collection, String postId) async {
+    DocumentReference postRef = _firestore.collection(collection).doc(postId);
+
+    await postRef.delete().catchError((error) {
+      throw Exception("Error deleting post: $error");
+    });
+  }
+
   Future<void> likePost(String collection, String postId, String userId) async {
     DocumentReference postRef = _firestore.collection(collection).doc(postId);
     print("Collection $collection");
