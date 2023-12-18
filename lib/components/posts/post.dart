@@ -46,10 +46,12 @@ class _PostState extends State<PostWidget> {
   Map<String, IconData> collectionToInteractionIcon = {
     "feed": FontAwesomeIcons.thumbsUp,
     "questions": FontAwesomeIcons.arrowUp,
+    "lost_and_founds": FontAwesomeIcons.arrowUp,
     "confessions": FontAwesomeIcons.heart
   };
   Map<String, String> collectionToInteractionAction = {
     "questions": "Upvote",
+    "lost_and_founds": "Upvote",
     "confessions": "Like"
   };
   Map<String, String> collectionToComment = {
@@ -150,7 +152,7 @@ class _PostState extends State<PostWidget> {
     String interactionComment =
         collectionToComment[widget.collection] ?? "Comments";
 
-    interactionAction =
+    String interactionActionText =
         interactionsCount != 1 ? "${interactionAction}s" : interactionAction;
     return Column(
       children: [
@@ -187,7 +189,7 @@ class _PostState extends State<PostWidget> {
                       const SizedBox(
                         width: 8,
                       ),
-                      Text(interactionAction)
+                      Text(interactionActionText)
                     ],
                   ),
                 ),
