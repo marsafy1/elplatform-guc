@@ -29,6 +29,7 @@ class Comments extends StatelessWidget {
         dateCreated: DateTime.now(),
       );
       // Add the comment to Firestore
+      print(collectionName);
       commentService.addComment(newComment, collectionName, postId).then((_) {
         print('Comment added successfully.');
         commentController.clear(); // Clear the text field after submission

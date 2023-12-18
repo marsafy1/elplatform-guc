@@ -5,17 +5,25 @@ import 'package:guc_swiss_knife/services/user_service.dart';
 import '../models/notification_model.dart';
 
 class NotificationService {
-  final String collectionName = "notifications";
+  static final Map<String, String> _collectionsToNotifications = {
+    'feed': 'post',
+    'confessions': 'confession',
+    'questions': 'question',
+    "lost_and_founds": 'lost and found post',
+  };
   static void sendLikeNotification(
       String likerId, String postId, String collection, String ownerId) async {
     User liker = await UserService.getUserById(likerId);
+    String action =
+        ['feed', 'confessions'].contains(collection) ? "liked" : "upvoted";
     NotificationModel notification = NotificationModel(
       'Like',
-      '${liker.firstName} ${liker.lastName} liked your $collection',
+      '${liker.firstName} ${liker.lastName} $action your ${_collectionsToNotifications[collection]}',
       '/topics/$ownerId',
       'like',
       {'postId': postId, 'collection': collection},
     );
+
     await FirebaseFirestore.instance.collection('notifications').add(
           notification.toMap(),
         );
@@ -24,13 +32,15 @@ class NotificationService {
   static void sendCommentNotification(String commenterId, String postId,
       String collection, String ownerId) async {
     User commenter = await UserService.getUserById(commenterId);
+    String action = collection != "questions" ? "commented on" : "answered";
     NotificationModel notification = NotificationModel(
-      'Comment',
-      '${commenter.firstName} ${commenter.lastName} commented on your $collection',
-      '/topics/$postId',
-      'comment',
+      'Like',
+      '${commenter.firstName} ${commenter.lastName} $action your ${_collectionsToNotifications[collection]}',
+      '/topics/$ownerId',
+      'like',
       {'postId': postId, 'collection': collection},
     );
+    print(notification.toMap());
     await FirebaseFirestore.instance.collection('notifications').add(
           notification.toMap(),
         );

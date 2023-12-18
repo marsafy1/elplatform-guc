@@ -15,6 +15,7 @@ class FirebaseApi {
     'like': handlePostInteraction,
     'comment': handlePostInteraction,
   };
+
   Future<void> initNotifications() async {
     await _firebaseMessaging.requestPermission(
       alert: true,

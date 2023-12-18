@@ -72,7 +72,6 @@ class MyApp extends StatelessWidget {
         theme: darkTheme,
         darkTheme: darkTheme,
         themeMode: ThemeMode.system,
-        // themeMode: ThemeMode.dark,
         navigatorObservers: [
           AnalyticsService.getAnalyticsObserver(),
           RouteObserverService()

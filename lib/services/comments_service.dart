@@ -53,10 +53,13 @@ class CommentService {
       CommentModel comment, String collectionName, String postId) async {
     await _firestore.runTransaction((transaction) async {
       await _firestore.collection(collectionName).add(comment.toMap());
-      DocumentSnapshot snapshot =
-          await PostsService().getPostById(postId, collectionName);
+      DocumentSnapshot snapshot = await PostsService()
+          .getPostById(postId, collectionName.replaceAll("comments_", ""));
       NotificationService.sendCommentNotification(
-          comment.userId, comment.postId, collectionName, snapshot['userId']);
+          comment.userId,
+          comment.postId,
+          collectionName.replaceAll("comments_", ""),
+          snapshot['userId']);
     });
   }
 }
