@@ -457,8 +457,9 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
         onPressed: () {
           final userAuth = Provider.of<AuthProvider>(context, listen: false);
           bool isPublisher = userAuth.user!.isPublisher;
-
-          if (!isPublisher) {
+          bool inFeed = indexToCollection[selectedTabIndex] == "feed";
+          if (!isPublisher && inFeed) {
+            Toast.show(context, "You need to be a publisher", "warning");
             if (userAuth.user!.isPending ?? false) {
               Toast.show(context, "Your request is pending", "ifo");
               return;

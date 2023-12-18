@@ -23,7 +23,8 @@ class Posts extends StatelessWidget {
       scrollDirection: Axis.vertical,
       child: Column(
         children: posts.map((post) {
-          return PostWidget(post: post, collection: collection);
+          return PostWidget(
+              key: ValueKey(post.id), post: post, collection: collection);
         }).toList(),
       ),
     );
