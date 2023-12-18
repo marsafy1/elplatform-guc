@@ -23,7 +23,8 @@ class CourseCard extends StatelessWidget {
           padding: const EdgeInsets.all(4),
           child: InkWell(
             onTap: () {
-              Navigator.pushNamed(context, '/courseDetails', arguments: course);
+              Navigator.pushNamed(context, '/courseDetails',
+                  arguments: {'course': course});
             },
             child: Row(
               children: [
