@@ -12,9 +12,7 @@ class FirebaseApi {
       criticalAlert: false,
       provisional: false,
       sound: true,
-    );
-    final fcmToken = await _firebaseMessaging.getToken();
-    print("token: $fcmToken");
+    );    
     await initPushNotifications();
   }
 

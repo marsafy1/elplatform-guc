@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:guc_swiss_knife/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:guc_swiss_knife/services/analytics_service.dart';
@@ -18,6 +19,7 @@ class AuthProvider with ChangeNotifier {
       } else {
         UserService.getUserById(user.uid).then((value) async {
           _user = value;
+          FirebaseMessaging.instance.subscribeToTopic(_user!.id);
           await AnalyticsService.setUserProperties(
             userId: user.uid,
             userType: _user!.userType,
@@ -100,6 +102,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   void logout() {
+    FirebaseMessaging.instance.unsubscribeFromTopic(_user!.id);
     _auth.signOut();
     AnalyticsService.logLogout();
   }
