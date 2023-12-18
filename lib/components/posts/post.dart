@@ -169,7 +169,9 @@ class _PostState extends State<PostWidget> {
 
     bool showResolveOption = widget.collection == "questions" ||
         widget.collection == "lost_and_founds";
-
+    final userAuth = Provider.of<AuthProvider>(context, listen: false);
+    String currentUserId = userAuth.user!.id;
+    bool userOwnsPost = widget.post.userId == currentUserId;
     String resolvedString = "Resolved";
     String resolveString = "Resolve";
     String displayedResolveOption = "Resolve";
@@ -274,11 +276,11 @@ class _PostState extends State<PostWidget> {
             ),
           ],
         ),
-        if (showResolveOption)
+        if (showResolveOption && userOwnsPost)
           const SizedBox(
             height: 10,
           ),
-        if (showResolveOption)
+        if (showResolveOption && userOwnsPost)
           Row(
             children: [
               Expanded(
@@ -306,9 +308,6 @@ class _PostState extends State<PostWidget> {
                     ),
                   ),
                   onTap: () {
-                    // final userAuth =
-                    //     Provider.of<AuthProvider>(context, listen: false);
-                    // String currentUserId = userAuth.user!.id;
                     if (isResolvedUI) {
                       widget._postsService.changeResolveStatusPost(
                           widget.collection, widget.post.id, false);
