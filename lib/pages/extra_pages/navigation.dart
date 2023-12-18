@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:guc_swiss_knife/components/utils/no_content.dart';
 import 'package:guc_swiss_knife/configs/constants.dart';
 import 'package:guc_swiss_knife/models/location.dart';
 import 'package:guc_swiss_knife/services/location_service.dart';
@@ -71,7 +72,7 @@ class _NavigationState extends State<Navigation> {
               builder: (context, AsyncSnapshot<List<Location>> snapshot) {
                 if (snapshot.hasData) {
                   return snapshot.data!.isEmpty
-                      ? const Center(child: Text("No Data Available"))
+                      ? const NoContent(text: "No Data Available")
                       : SizedBox(
                           height: MediaQuery.of(context).size.height - 200,
                           child: ListView.builder(

@@ -25,57 +25,59 @@ class _CoursesState extends State<Courses> {
         appBar: AppBar(
           title: const Text("$appName - Courses"),
         ),
-        body: Column(children: [
-          FutureBuilder(
-            future: futureCourses,
-            builder: (context, AsyncSnapshot<List<Course>> snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(height: 100),
-                      SizedBox(
-                        height: 100,
-                        width: 100,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 5.0,
+        body: SingleChildScrollView(
+          child: Column(children: [
+            FutureBuilder(
+              future: futureCourses,
+              builder: (context, AsyncSnapshot<List<Course>> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(height: 100),
+                        SizedBox(
+                          height: 100,
+                          width: 100,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 5.0,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                );
-              } else if (snapshot.hasError) {
-                return Text('Error: ${snapshot.error}');
-              } else {
-                List<Course>? courses = snapshot.data;
-                return Column(children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
-                    child: SearchAnchor.bar(
-                      barHintText: 'Search courses',
-                      suggestionsBuilder:
-                          (BuildContext context, SearchController controller) {
-                        return getSuggestions(controller, courses!);
-                      },
+                      ],
                     ),
-                  ),
-                  SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.8 -
-                          keyBoardHeight,
-                      child: ListView.builder(
-                        itemCount: courses!.length,
-                        shrinkWrap: true,
-                        padding: const EdgeInsets.only(top: 10, bottom: 10),
-                        itemBuilder: (context, index) {
-                          return CourseCard(course: courses[index]);
+                  );
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  List<Course>? courses = snapshot.data;
+                  return Column(children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+                      child: SearchAnchor.bar(
+                        barHintText: 'Search courses',
+                        suggestionsBuilder: (BuildContext context,
+                            SearchController controller) {
+                          return getSuggestions(controller, courses!);
                         },
-                      ))
-                ]);
-              }
-            },
-          ),
-        ]));
+                      ),
+                    ),
+                    SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.8 -
+                            keyBoardHeight,
+                        child: ListView.builder(
+                          itemCount: courses!.length,
+                          shrinkWrap: true,
+                          padding: const EdgeInsets.only(top: 10, bottom: 10),
+                          itemBuilder: (context, index) {
+                            return CourseCard(course: courses[index]);
+                          },
+                        ))
+                  ]);
+                }
+              },
+            ),
+          ]),
+        ));
   }
 
   Iterable<Widget> getSuggestions(

@@ -1,34 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:guc_swiss_knife/components/app_bar_widget.dart';
-import 'package:guc_swiss_knife/components/drawer_widget.dart';
 import 'package:guc_swiss_knife/models/publish_request.dart';
 import 'package:guc_swiss_knife/models/user.dart';
 import 'package:guc_swiss_knife/services/publish_requests_service.dart';
-import 'package:guc_swiss_knife/services/user_service.dart';
+import 'package:guc_swiss_knife/utils_functions/profile.dart';
 
-class PublishRequestsDetails extends StatefulWidget {
+class PublishRequestsDetails extends StatelessWidget {
   const PublishRequestsDetails({super.key});
-
-  @override
-  State<PublishRequestsDetails> createState() => _PublishRequestsDetailsState();
-}
-
-class _PublishRequestsDetailsState extends State<PublishRequestsDetails> {
-  User? user;
-  PublishRequest? publishRequest;
-  PublishRequestsService publishRequestsService = PublishRequestsService();
-  Future<void> fetchUser() async {
-    User? fetchedUser = await UserService.getUserById(publishRequest!.userId!);
-    setState(() {
-      user = fetchedUser;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    publishRequest =
-        ModalRoute.of(context)!.settings.arguments as PublishRequest;
-    fetchUser();
+    Map<String, dynamic> args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    User user = args['user'] as User;
+
+    PublishRequest publishRequest = args['publish_request'] as PublishRequest;
+
+    PublishRequestsService publishRequestsService = PublishRequestsService();
+
     const sizedBoxSpaceV = SizedBox(
       height: 30,
     );
@@ -37,7 +25,6 @@ class _PublishRequestsDetailsState extends State<PublishRequestsDetails> {
     );
     return Scaffold(
       appBar: MyAppBar(),
-      drawer: const MainDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -45,14 +32,11 @@ class _PublishRequestsDetailsState extends State<PublishRequestsDetails> {
           children: [
             Card(
               child: ListTile(
-                leading: const CircleAvatar(
-                  radius: 50,
-                  backgroundColor: Colors.grey,
-                  child: Icon(Icons.person),
+                leading: generateAvatar(context, user),
+                title: Text(
+                  user.firstName,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                title: user == null
-                    ? const Text("Anonymous")
-                    : Text(user!.firstName),
                 subtitle: const Text("Publish Request"),
               ),
             ),
@@ -69,9 +53,11 @@ class _PublishRequestsDetailsState extends State<PublishRequestsDetails> {
                 border: Border.all(color: Colors.grey),
                 borderRadius: BorderRadius.circular(8.0),
               ),
-              child: Text(
-                publishRequest!.content,
-                style: const TextStyle(fontSize: 16.0),
+              child: SingleChildScrollView(
+                child: Text(
+                  publishRequest!.content,
+                  style: const TextStyle(fontSize: 16.0),
+                ),
               ),
             ),
             sizedBoxSpaceV,
