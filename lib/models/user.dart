@@ -14,8 +14,7 @@ class User {
   final String? faculty;
   final String? photoUrl;
   final String? gucId;
-  final double? rating;
-  final List<Review>? reviews;
+  
   User({
     required this.id,
     required this.firstName,
@@ -28,8 +27,6 @@ class User {
     this.faculty,
     this.photoUrl,
     this.gucId,
-    this.rating = 0.0,
-    this.reviews,
   });
   static User get defaultUser => User(
         id: 'default_id',
@@ -44,8 +41,6 @@ class User {
         faculty: 'Default faculty',
         photoUrl: null,
         gucId: 'default_gucid',
-        rating: 0.0,
-        reviews: [],
       );
   factory User.fromMap(Map<String, dynamic> map, String documentId) {
     return User(
@@ -60,11 +55,6 @@ class User {
       faculty: map['faculty'] as String?,
       photoUrl: map['photo_url'] as String?,
       gucId: map['guc_id'] as String?,
-      rating: (map['ratings_sum'] as num? ?? 0.0) /
-          ((map['reviews'] as List<dynamic>?)?.length.toDouble() ?? 1),
-      reviews: (map['reviews'] as List<dynamic>?)
-          ?.map((e) => Review.fromMap(e as Map<String, dynamic>))
-          .toList(),
     );
   }
 
@@ -81,8 +71,6 @@ class User {
       'faculty': faculty,
       'photo_url': photoUrl,
       'guc_id': gucId,
-      'ratings_sum': rating! * reviews!.length.toDouble(),
-      'reviews': reviews?.map((e) => e.toMap()).toList(),
     };
   }
 }

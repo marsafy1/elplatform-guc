@@ -13,20 +13,7 @@ Widget generateAvatar(BuildContext context, User user,
       backgroundImage: NetworkImage(user.photoUrl!),
     );
   } else {
-    var rand = Random();
-    List<MaterialColor> avatarBg = [
-      Colors.red,
-      Colors.blue,
-      Colors.purple,
-      Colors.orange,
-    ];
-    avatar = CircleAvatar(
-      backgroundColor: avatarBg[rand.nextInt(avatarBg.length)],
-      child: Text(
-        avatarChar,
-        style: TextStyle(fontSize: (radius ?? 35) / 2),
-      ),
-    );
+    avatar = generateColoredAvatar(avatarChar: avatarChar, radius: radius);
   }
 
   avatar = GestureDetector(
@@ -40,4 +27,21 @@ Widget generateAvatar(BuildContext context, User user,
           SizedBox(height: radius ?? 40, width: radius ?? 40, child: avatar));
 
   return avatar;
+}
+
+Widget generateColoredAvatar({String avatarChar = '', double? radius}) {
+  var rand = Random();
+  List<MaterialColor> avatarBg = [
+    Colors.red,
+    Colors.blue,
+    Colors.purple,
+    Colors.orange,
+  ];
+  return CircleAvatar(
+    backgroundColor: avatarBg[rand.nextInt(avatarBg.length)],
+    child: Text(
+      avatarChar,
+      style: TextStyle(fontSize: (radius ?? 35) / 2),
+    ),
+  );
 }

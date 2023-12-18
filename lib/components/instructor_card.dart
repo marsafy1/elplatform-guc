@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:guc_swiss_knife/models/user.dart';
+import 'package:guc_swiss_knife/models/instructor_review.dart';
 import 'package:guc_swiss_knife/providers/auth_provider.dart';
-import 'package:guc_swiss_knife/services/user_service.dart';
+import 'package:guc_swiss_knife/services/instructor_review_service.dart';
 import 'package:guc_swiss_knife/utils_functions/confirm_action.dart';
 import 'package:provider/provider.dart';
 
 class InstructorCard extends StatelessWidget {
-  User instructor;
-  InstructorCard({Key? key, required this.instructor}) : super(key: key);
+  InstructorReview instructorReview;
+  InstructorCard({Key? key, required this.instructorReview}) : super(key: key);
+  final InstructorReviewService _instructorReviewService =
+      InstructorReviewService();
   @override
   Widget build(BuildContext context) {
     bool isAdmin = Provider.of<AuthProvider>(context, listen: false).isAdmin;
@@ -21,10 +23,13 @@ class InstructorCard extends StatelessWidget {
                 onPressed: () {
                   ConfirmAction.showConfirmationDialog(
                     context: context,
-                    onConfirm: () {},
+                    onConfirm: () {
+                      _instructorReviewService
+                          .deleteInstructorReview(instructorReview.id!);
+                    },
                     title: 'Delete Instructor',
                     message:
-                        'Are you sure you want to delete ${instructor.firstName.toLowerCase()} ${instructor.lastName.toLowerCase()}?',
+                        'Are you sure you want to delete ${instructorReview.firstName.toLowerCase()} ${instructorReview.lastName.toLowerCase()}?',
                     confirmButton: 'Delete',
                   );
                 },
@@ -35,12 +40,12 @@ class InstructorCard extends StatelessWidget {
           child: Icon(Icons.person),
         ),
         title: Text(
-            "${instructor.firstName.toLowerCase()} ${instructor.lastName.toLowerCase()}"),
+            "${instructorReview.firstName.toLowerCase()} ${instructorReview.lastName.toLowerCase()}"),
         subtitle: Text(
-            "${isNotNumber(instructor.rating!) ? 5.0 : instructor.rating} ⭐"),
+            "${isNotNumber(instructorReview.rating!) ? 5.0 : instructorReview.rating} ⭐"),
         onTap: () {
           Navigator.pushNamed(context, '/instructorDetails',
-              arguments: instructor);
+              arguments: instructorReview);
         },
       ),
     );

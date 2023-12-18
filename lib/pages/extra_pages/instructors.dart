@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:guc_swiss_knife/components/instructor_card.dart';
 import 'package:guc_swiss_knife/components/utils/no_content.dart';
 import 'package:guc_swiss_knife/configs/constants.dart';
+import 'package:guc_swiss_knife/models/instructor_review.dart';
 import 'package:guc_swiss_knife/models/user.dart';
 import 'package:guc_swiss_knife/providers/auth_provider.dart';
-import 'package:guc_swiss_knife/services/instructor_service.dart';
+import 'package:guc_swiss_knife/services/instructor_review_service.dart';
 import 'package:provider/provider.dart';
 
 class Instructors extends StatefulWidget {
@@ -27,13 +28,16 @@ class _InstructorsState extends State<Instructors> {
     super.initState();
   }
 
+  final InstructorReviewService instructorReviewService =
+      InstructorReviewService();
+
   @override
   Widget build(BuildContext context) {
     var keyBoardHeight = MediaQuery.of(context).viewInsets.bottom;
 
     return StreamBuilder(
-      stream: InstructorService.fetchInstructors(),
-      builder: (context, AsyncSnapshot<List<User>> snapshot) {
+      stream: instructorReviewService.fetchInstructorReview(),
+      builder: (context, AsyncSnapshot<List<InstructorReview>> snapshot) {
         if (snapshot.hasData) {
           return Scaffold(
             appBar: AppBar(
@@ -62,7 +66,7 @@ class _InstructorsState extends State<Instructors> {
                           padding: const EdgeInsets.only(top: 10, bottom: 10),
                           itemBuilder: (context, index) {
                             return InstructorCard(
-                              instructor: snapshot.data![index],
+                              instructorReview: snapshot.data![index],
                             );
                           },
                         ),
@@ -87,17 +91,17 @@ class _InstructorsState extends State<Instructors> {
   }
 
   Iterable<Widget> getSuggestions(
-      SearchController controller, List<User> instructors) {
+      SearchController controller, List<InstructorReview> instructors) {
     final String input = controller.value.text.toLowerCase();
     return instructors
-        .where((User instructor) =>
+        .where((InstructorReview instructor) =>
             instructor.firstName.toLowerCase().contains(input) ||
             instructor.lastName.toLowerCase().contains(input) ||
             ("${instructor.firstName.toLowerCase()} ${instructor.lastName.toLowerCase()}")
                 .contains(input))
         .map(
-          (User filteredInstructor) =>
-              InstructorCard(instructor: filteredInstructor),
+          (InstructorReview filteredInstructor) =>
+              InstructorCard(instructorReview: filteredInstructor),
         );
   }
 
