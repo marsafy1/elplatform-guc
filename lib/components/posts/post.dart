@@ -49,9 +49,15 @@ class _PostState extends State<PostWidget> {
 
   Map<String, IconData> collectionToInteractionIcon = {
     "feed": FontAwesomeIcons.thumbsUp,
-    "questions": FontAwesomeIcons.arrowUp,
-    "lost_and_founds": FontAwesomeIcons.arrowUp,
+    "questions": FontAwesomeIcons.circleUp,
+    "lost_and_founds": FontAwesomeIcons.circleUp,
     "confessions": FontAwesomeIcons.heart
+  };
+  Map<String, IconData> collectionToInteractedIcon = {
+    "feed": FontAwesomeIcons.solidThumbsUp,
+    "questions": FontAwesomeIcons.solidCircleUp,
+    "lost_and_founds": FontAwesomeIcons.solidCircleUp,
+    "confessions": FontAwesomeIcons.solidHeart
   };
   Map<String, String> collectionToInteractionAction = {
     "questions": "Upvote",
@@ -168,6 +174,12 @@ class _PostState extends State<PostWidget> {
   Widget _buildFooter(context) {
     IconData interactionIcon = collectionToInteractionIcon[widget.collection] ??
         FontAwesomeIcons.heart;
+    IconData interactedIcon = collectionToInteractedIcon[widget.collection] ??
+        FontAwesomeIcons.solidHeart;
+    IconData interactionIconBtn = interactionIcon;
+    if (isLikedByUserUI) {
+      interactionIconBtn = interactedIcon;
+    }
     String interactionAction =
         collectionToInteractionAction[widget.collection] ?? "Like";
     String interactionComment =
@@ -222,7 +234,7 @@ class _PostState extends State<PostWidget> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       FaIcon(
-                        interactionIcon,
+                        interactionIconBtn,
                         size: 17,
                         color: isLikedByUserUI
                             ? Theme.of(context).colorScheme.primary
