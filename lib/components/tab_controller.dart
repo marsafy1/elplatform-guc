@@ -363,7 +363,8 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
                                     print("Going to call upload IMAGE");
                                     String? uploadedImageUrl =
                                         await ImageUploadService.uploadImage(
-                                            imgFile);
+                                            imgFile,
+                                            directoryName: 'post_images');
                                     if (uploadedImageUrl != null) {
                                       print("GOT AN IMAGE");
                                       print("URL $uploadedImageUrl");
