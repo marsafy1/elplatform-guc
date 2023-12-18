@@ -147,7 +147,7 @@ class _RegisterPageState extends State<RegisterPage> {
           style: ElevatedButton.styleFrom(
             shape: const StadiumBorder(),
             padding: const EdgeInsets.symmetric(vertical: 16),
-            backgroundColor: Theme.of(context).primaryColor,
+            backgroundColor: Theme.of(context).colorScheme.background,
           ),
           child: const Text(
             "Register",

@@ -165,7 +165,7 @@ class _EditProfileState extends State<EditProfile> {
     final header = fields["header"]!.controller.text;
     final gucId = fields["guc_id"]!.controller.text;
     final bio = fields["bio"]!.controller.text;
-    late final String? profilePictureUrl;
+    String? profilePictureUrl;
 
     if (_pickedImage != null) {
       profilePictureUrl = await ImageUploadService.uploadImage(_pickedImage!,
