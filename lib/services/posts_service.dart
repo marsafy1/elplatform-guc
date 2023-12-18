@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:path/path.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +51,9 @@ class PostsService {
   }
 
   Future<void> addPost(String collection, Post post) async {
-    await _firestore.collection(collection).add(post.toMap());
+    DocumentReference doc =
+        await _firestore.collection(collection).add(post.toMap());
+    await FirebaseMessaging.instance.subscribeToTopic(doc.id);
   }
 
   Future<void> deletePost(String collection, String postId) async {
@@ -77,8 +80,7 @@ class PostsService {
         likedByUsers.add(userId);
       }
       transaction.update(postRef, {'likedByUsers': likedByUsers});
-      NotificationService.sendLikeNotification(
-          userId, snapshot['userId'], postId);
+      NotificationService.sendLikeNotification(userId, postId);
     });
   }
 

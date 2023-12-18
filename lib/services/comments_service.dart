@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/widgets.dart';
+import 'package:guc_swiss_knife/services/notifications_service.dart';
 import '../models/comment.dart';
 import '../models/user.dart';
 
@@ -47,5 +49,6 @@ class CommentService {
 
   Future<void> addComment(CommentModel comment, String collectionName) async {
     await _firestore.collection(collectionName).add(comment.toMap());
+    NotificationService.sendCommentNotification(comment.userId, comment.postId);
   }
 }
