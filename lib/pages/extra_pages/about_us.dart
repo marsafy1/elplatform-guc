@@ -76,7 +76,7 @@ class AboutUs extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              Text('- Mohamed Khalid', style: TextStyle(fontSize: 16)),
+              Text('- Mohamed Almarsafy', style: TextStyle(fontSize: 16)),
               Text('- Abdelarhman Elsalh', style: TextStyle(fontSize: 16)),
               Text('- Ahmed Nasser', style: TextStyle(fontSize: 16)),
               Text('- Ziad Sadek', style: TextStyle(fontSize: 16)),
