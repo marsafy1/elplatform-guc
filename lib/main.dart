@@ -4,6 +4,8 @@ import 'package:guc_swiss_knife/configs/constants.dart';
 import 'package:guc_swiss_knife/firebase_options.dart';
 import 'package:guc_swiss_knife/models/user.dart';
 import 'package:guc_swiss_knife/pages/admin/add_contact.dart';
+import 'package:guc_swiss_knife/pages/admin/add_course.dart';
+import 'package:guc_swiss_knife/pages/admin/add_instructor.dart';
 import 'package:guc_swiss_knife/pages/admin/add_location.dart';
 import 'package:guc_swiss_knife/pages/auth/login_page.dart';
 import 'package:guc_swiss_knife/pages/auth/register_page.dart';
@@ -92,6 +94,8 @@ class MyApp extends StatelessWidget {
           '/addLocation': (dummyCtx) => const AddLocation(),
           '/locationDetails': (dummyCtx) => const LocationDetails(),
           '/gucMap': (dummyCtx) => const GucMap(),
+          '/addCourse': (dummyCtx) => const AddCourse(),
+          '/addInstructor': (dummyCtx) => const AddInstructor(),
         },
       ),
     );

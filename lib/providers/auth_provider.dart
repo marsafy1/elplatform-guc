@@ -30,7 +30,7 @@ class AuthProvider with ChangeNotifier {
 
   bool get isAuthenticated => _auth.currentUser != null;
   User? get user => _user;
-
+  bool get isAdmin => isAuthenticated && _user?.userType == UserType.admin;
   Future<firebase_auth.User?> signIn({
     required String email,
     required String password,

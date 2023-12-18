@@ -102,4 +102,12 @@ class CourseService {
         .then((value) => print("Review Deleted"))
         .catchError((error) => print("Failed to delete review: $error"));
   }
+
+  static void deleteCourse(String id) {
+    _coursesCollectionReference.doc(id).delete();
+  }
+
+  static void addCourse(Course course) {
+    _coursesCollectionReference.add(course.toMap());
+  }
 }
