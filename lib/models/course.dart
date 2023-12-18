@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:guc_swiss_knife/models/review.dart';
 
 class Course {

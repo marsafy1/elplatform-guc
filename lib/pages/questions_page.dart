@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:guc_swiss_knife/services/route_observer_service.dart';
 import '../models/category.dart';
 import '../models/post.dart';
 import '../managers/categories_manager.dart';
@@ -9,6 +10,8 @@ import '../components/categories/categories.dart';
 
 import '../services/posts_service.dart';
 import '../components/toast/toast.dart';
+
+import '../components/utils/no_content.dart';
 
 class QuestionsPage extends StatefulWidget {
   const QuestionsPage({super.key});
@@ -33,6 +36,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
 
   @override
   void initState() {
+    RouteObserverService().logUserActivity('/questions');
     super.initState();
     categories = categoriesMap.entries.map((entry) {
       return Category(
@@ -180,9 +184,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
             ],
           );
         } else {
-          return const Center(
-            child: Text("No Confessions Available"),
-          );
+          return const NoContent(text: "No Questions Available");
         }
       },
     );

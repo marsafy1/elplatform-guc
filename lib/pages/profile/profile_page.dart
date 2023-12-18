@@ -109,7 +109,7 @@ class _ProfileState extends State<Profile> {
   Widget _header(User user) {
     return Column(
       children: [
-        generateAvatar(context, user, radius: 100),
+        generateAvatar(context, user, radius: 100, isClickable: false),
         const SizedBox(height: 20),
         Text(
           "${user.firstName} ${user.lastName}",

@@ -1,28 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:guc_swiss_knife/components/review/review_card.dart';
-import 'package:guc_swiss_knife/components/review/review_course_dialog.dart';
+import 'package:guc_swiss_knife/components/review/add_review_dialog.dart';
 import 'package:guc_swiss_knife/models/review.dart';
 import 'package:guc_swiss_knife/models/user.dart';
 import 'package:guc_swiss_knife/providers/auth_provider.dart';
 import 'package:guc_swiss_knife/services/course_service.dart';
+import 'package:guc_swiss_knife/services/instructor_service.dart';
 import 'package:provider/provider.dart';
 
-class ReviewCourse extends StatefulWidget {
+class AddReview extends StatefulWidget {
   final List<Review> reviews;
-  final String courseId;
+  final String? courseId;
+  final String? instructorId;
   final Function setReviews;
-  const ReviewCourse(
+  const AddReview(
       {super.key,
       required this.reviews,
       required this.courseId,
-      required this.setReviews});
+      required this.setReviews,
+      this.instructorId});
 
   @override
-  State<ReviewCourse> createState() => _ReviewCourse();
+  State<AddReview> createState() => _AddReview();
 }
 
-class _ReviewCourse extends State<ReviewCourse> {
+class _AddReview extends State<AddReview> {
   late final AuthProvider _authProvider;
   late User user;
 
@@ -62,7 +65,7 @@ class _ReviewCourse extends State<ReviewCourse> {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    return ReviewCourseDialog(
+                    return AddReviewDialog(
                       initialReview: oldReview,
                       onSubmit: _onSubmit,
                       onDelete: _onDelete,
@@ -84,34 +87,47 @@ class _ReviewCourse extends State<ReviewCourse> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        TextButton(
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return ReviewCourseDialog(
-                  initialReview: null,
-                  onSubmit: _onSubmit,
-                  onDelete: _onDelete,
-                );
-              },
-            );
-          },
-          child: const Text(
-            'Review Course ',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
+        Row(children: [
+          TextButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AddReviewDialog(
+                    initialReview: null,
+                    onSubmit: _onSubmit,
+                    onDelete: _onDelete,
+                  );
+                },
+              );
+            },
+            style: ButtonStyle(
+              padding: MaterialStateProperty.all(EdgeInsets.zero),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.only(left: 10, right: 4),
+              child: Text(
+                widget.instructorId == null
+                    ? 'Review Course'
+                    : "Review Instructor",
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
             ),
           ),
-        ),
-        const Padding(
-          padding: EdgeInsets.only(left: 12),
+        ]),
+        Padding(
+          padding: const EdgeInsets.only(left: 10, bottom: 10),
           child: Text(
-            'Your review will help other students know more about this course.',
-            style: TextStyle(
+            widget.instructorId == null
+                ? 'Your review will help other students know more about this course.'
+                : 'Your review will help other students know more about this instructor.',
+            style: const TextStyle(
               fontSize: 12,
             ),
+            textAlign: TextAlign.start,
           ),
         ),
       ],
@@ -134,10 +150,19 @@ class _ReviewCourse extends State<ReviewCourse> {
       review: review,
     );
     if (_getOldReview() == null) {
-      await CourseService.addReview(widget.courseId, reviewObj);
+      if (widget.courseId != null) {
+        await CourseService.addReview(widget.courseId, reviewObj);
+      } else {
+        await InstructorService.addReview(widget.instructorId, reviewObj);
+      }
     } else {
-      await CourseService.updateReview(
-          widget.courseId, _getOldReview(), reviewObj);
+      if (widget.courseId != null) {
+        await CourseService.updateReview(
+            widget.courseId, _getOldReview(), reviewObj);
+      } else {
+        await InstructorService.updateReview(
+            widget.instructorId, _getOldReview(), reviewObj);
+      }
     }
     setState(() {
       widget.reviews.removeWhere((element) => element.userId == user.id);
@@ -147,7 +172,12 @@ class _ReviewCourse extends State<ReviewCourse> {
   }
 
   void _onDelete() async {
-    await CourseService.deleteReview(widget.courseId, _getOldReview());
+    if (widget.courseId != null) {
+      await CourseService.deleteReview(widget.courseId, _getOldReview());
+    } else {
+      await InstructorService.deleteReview(
+          widget.instructorId, _getOldReview());
+    }
     setState(() {
       widget.reviews.removeWhere((element) => element.userId == user.id);
       widget.setReviews(widget.reviews);

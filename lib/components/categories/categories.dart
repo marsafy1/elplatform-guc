@@ -5,8 +5,14 @@ import './category.dart';
 class Categories extends StatelessWidget {
   final List<Category> categories;
   final bool asFilter;
-  const Categories(
-      {super.key, required this.categories, required this.asFilter});
+  final VoidCallback? updateSheet; // Optional callback function
+
+  const Categories({
+    super.key,
+    required this.categories,
+    required this.asFilter,
+    this.updateSheet, // Add it here as an optional parameter
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -16,9 +22,11 @@ class Categories extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: categories
             .map((category) => CategoryElement(
-                index: categories.indexOf(category),
-                category: category,
-                asFilter: asFilter))
+                  index: categories.indexOf(category),
+                  category: category,
+                  asFilter: asFilter,
+                  updateSheet: updateSheet, // Pass it to each CategoryElement
+                ))
             .toList(),
       ),
     );

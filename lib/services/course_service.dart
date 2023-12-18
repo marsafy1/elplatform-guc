@@ -28,7 +28,10 @@ class CourseService {
     });
   }
 
-  static Future<void> addReview(String courseId, Review review) {
+  static Future<void> addReview(String? courseId, Review review) {
+    if (courseId == null) {
+      return Future.error('Course ID is null');
+    }
     return _coursesCollectionReference
         .doc(courseId)
         .update({
@@ -46,7 +49,10 @@ class CourseService {
   }
 
   static Future<void> updateReview(
-      String courseId, Review? oldReview, Review newReview) async {
+      String? courseId, Review? oldReview, Review newReview) async {
+    if (courseId == null) {
+      return Future.error('Course ID is null');
+    }
     return _coursesCollectionReference
         .doc(courseId)
         .update({
@@ -77,7 +83,10 @@ class CourseService {
             .catchError((error) => print("Failed to add review: $error")));
   }
 
-  static Future<void> deleteReview(String courseId, Review? review) async {
+  static Future<void> deleteReview(String? courseId, Review? review) async {
+    if (courseId == null) {
+      return Future.error('Course ID is null');
+    }
     return _coursesCollectionReference
         .doc(courseId)
         .update({
