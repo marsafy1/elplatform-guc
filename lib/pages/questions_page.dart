@@ -34,6 +34,8 @@ class _QuestionsPageState extends State<QuestionsPage> {
   DateTime? latestPostTimestamp;
   bool hasNewPosts = false;
 
+  bool answeredOnly = false;
+
   @override
   void initState() {
     RouteObserverService().logUserActivity('/questions');
@@ -73,6 +75,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
   void addCategory(Category c, bool asFilter) {
     setState(() {
       if (asFilter) {
+        selectedCategories.clear();
         if (c.name.toLowerCase() != "all") {
           selectedCategories.add(c);
           print('Added category: ${c.name}');
@@ -81,20 +84,14 @@ class _QuestionsPageState extends State<QuestionsPage> {
           element.selected = false;
         });
         c.selected = true;
-      } else {
-        // Deselect all categories
-        categoriesChoices.forEach((element) {
-          element.selected = false;
-        });
-
-        // Select the chosen category
-        c.selected = true;
-        selectedCategoriesChoices = [c];
       }
     });
 
-    categoriesChoices.forEach((element) {
+    categories.forEach((element) {
       print(element.name + " " + element.selected.toString());
+    });
+    selectedCategories.forEach((element) {
+      print("SS " + element.name + " " + element.selected.toString());
     });
   }
 
@@ -109,8 +106,6 @@ class _QuestionsPageState extends State<QuestionsPage> {
           categories[0].selected = true;
           addCategory(categories[0], asFilter);
         }
-      } else {
-        selectedCategoriesChoices.remove(c);
       }
     });
   }
@@ -167,20 +162,45 @@ class _QuestionsPageState extends State<QuestionsPage> {
                 return selectedCategories.any((category) =>
                     post.category.toLowerCase() == category.name.toLowerCase());
               }).toList();
+        if (answeredOnly) {
+          filteredPosts = filteredPosts.where((post) {
+            return post.resolved == true;
+          }).toList();
+        }
 
         if (snapshot.data!.isNotEmpty) {
           return Column(
             children: [
               Categories(
                   key: UniqueKey(), categories: categories, asFilter: true),
-              Expanded(
-                child: Posts(
-                  posts: filteredPosts,
-                  selectedCategories: selectedCategories,
-                  controller: _scrollController,
-                  collection: "questions",
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const Text("Answered Only",
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  Switch(
+                    value: answeredOnly,
+                    activeColor: Theme.of(context).colorScheme.primary,
+                    onChanged: (bool value) {
+                      setState(() {
+                        answeredOnly = value;
+                      });
+                    },
+                  ),
+                ],
               ),
+              if (filteredPosts.isNotEmpty)
+                Expanded(
+                  child: Posts(
+                    posts: filteredPosts,
+                    selectedCategories: selectedCategories,
+                    controller: _scrollController,
+                    collection: "questions",
+                  ),
+                ),
+              if (!filteredPosts.isNotEmpty)
+                const NoContent(text: "No Questions Available")
             ],
           );
         } else {

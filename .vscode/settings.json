@@ -1,3 +1,10 @@
 {
-  "cSpell.words": ["ARGB", "Autovalidate", "firestore", "LTRB", "rxdart"]
+  "cSpell.words": [
+    "ARGB",
+    "Autovalidate",
+    "firestore",
+    "Geolocator",
+    "LTRB",
+    "rxdart"
+  ]
 }

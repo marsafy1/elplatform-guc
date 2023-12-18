@@ -7,7 +7,7 @@ class FormInputField extends StatelessWidget {
   final bool? isPassword;
   final String? Function(String?)? validator;
   final TextInputType? keyboardType;
-
+  final double? rotateIcon;
   const FormInputField(
       {super.key,
       required this.name,
@@ -15,7 +15,8 @@ class FormInputField extends StatelessWidget {
       required this.controller,
       this.isPassword,
       this.validator,
-      this.keyboardType});
+      this.keyboardType,
+      this.rotateIcon = 0});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +30,8 @@ class FormInputField extends StatelessWidget {
         ),
         fillColor: Theme.of(context).primaryColor.withOpacity(0.1),
         filled: true,
-        prefixIcon: Icon(icon),
+        prefixIcon: Transform.rotate(
+            angle: rotateIcon! * 3.14 / 180, child: Icon(icon)),
       ),
       obscureText: isPassword ?? false,
       validator: validator ?? (value) => null,

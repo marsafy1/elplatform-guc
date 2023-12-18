@@ -21,7 +21,7 @@ class _AddContactState extends State<AddContact> {
   Icon? _icon = const Icon(Icons.phone);
 
   late final GlobalKey<FormState> _formKey;
-  late final Map<String, FormInputField> fields;
+  late final Map<String, dynamic> fields;
 
   @override
   void initState() {
@@ -39,6 +39,7 @@ class _AddContactState extends State<AddContact> {
           return null;
         },
       ),
+      "sized_box1": const SizedBox(height: 20),
       "phone_number": FormInputField(
         keyboardType: TextInputType.number,
         name: "Phone Number",
@@ -77,47 +78,53 @@ class _AddContactState extends State<AddContact> {
         // add icon picker and two text fields for name and phone number
         body: SingleChildScrollView(
           child: Center(
-            child: Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ElevatedButton(
-                        onPressed: _pickIcon,
-                        child: Row(
-                          children: [
-                            const Text('Icon: '),
-                            _icon ?? const Icon(Icons.apps),
-                          ],
+            child: Card(
+              elevation: 2.0,
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                          onPressed: _pickIcon,
+                          child: Row(
+                            children: [
+                              const Text('Icon: '),
+                              _icon ?? const Icon(Icons.apps),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 20),
+                      ],
+                    ),
+                    ...fields.values,
+                    ElevatedButton(
+                      onPressed: () {
+                        // Add your save logic here
+                        if (_formKey.currentState!.validate()) {
+                          contactService.addContact(
+                            Contact(
+                              name: fields['name']!.controller.text,
+                              phoneNumber:
+                                  fields['phone_number']!.controller.text,
+                              iconCodePoint: _iconCodePoint,
+                              iconFontFamily: _iconFontFamily,
+                            ),
+                          );
+                          Navigator.pop(context);
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      const SizedBox(width: 20),
-                    ],
-                  ),
-                  ...fields.values,
-                  ElevatedButton(
-                    onPressed: () {
-                      // Add your save logic here
-                      if (_formKey.currentState!.validate()) {
-                        contactService.addContact(Contact(
-                            name: fields['name']!.controller.text,
-                            phoneNumber:
-                                fields['phone_number']!.controller.text,
-                            iconCodePoint: _iconCodePoint,
-                            iconFontFamily: _iconFontFamily));
-                        Navigator.pop(context);
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: const Text('Save', style: TextStyle(fontSize: 14)),
-                  )
-                ],
+                      child: const Text('Save', style: TextStyle(fontSize: 14)),
+                    )
+                  ],
+                ),
               ),
             ),
           ),

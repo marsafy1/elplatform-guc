@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:guc_swiss_knife/components/admin/publish_request_card.dart';
 import 'package:guc_swiss_knife/components/app_bar_widget.dart';
 import 'package:guc_swiss_knife/components/drawer_widget.dart';
+import 'package:guc_swiss_knife/components/utils/no_content.dart';
 import 'package:guc_swiss_knife/models/publish_request.dart';
 import 'package:guc_swiss_knife/providers/auth_provider.dart';
 import 'package:guc_swiss_knife/services/publish_requests_service.dart';
@@ -29,7 +30,7 @@ class _AdminPublishRequestsState extends State<AdminPublishRequests> {
             drawer: const MainDrawer(),
             // generate list of cards in the body
             body: snapshot.data!.isEmpty
-                ? const Center(child: Text("No Data Available"))
+                ? const NoContent(text: "No Data Available")
                 : ListView.builder(
                     itemCount: snapshot.data!.length,
                     itemBuilder: (context, index) {

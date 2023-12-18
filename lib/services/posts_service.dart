@@ -48,6 +48,14 @@ class PostsService {
     await _firestore.collection(collection).add(post.toMap());
   }
 
+  Future<void> deletePost(String collection, String postId) async {
+    DocumentReference postRef = _firestore.collection(collection).doc(postId);
+
+    await postRef.delete().catchError((error) {
+      throw Exception("Error deleting post: $error");
+    });
+  }
+
   Future<void> likePost(String collection, String postId, String userId) async {
     DocumentReference postRef = _firestore.collection(collection).doc(postId);
     print("Collection $collection");
@@ -84,6 +92,18 @@ class PostsService {
       likedByUsers.remove(userId);
 
       transaction.update(postRef, {'likedByUsers': likedByUsers});
+    });
+  }
+
+  Future<void> changeResolveStatusPost(
+      String collection, String postId, bool value) async {
+    DocumentReference postRef = _firestore.collection(collection).doc(postId);
+    await _firestore.runTransaction((transaction) async {
+      DocumentSnapshot snapshot = await transaction.get(postRef);
+      if (!snapshot.exists) {
+        throw Exception("Post does not exist!");
+      }
+      transaction.update(postRef, {'resolved': value});
     });
   }
 }

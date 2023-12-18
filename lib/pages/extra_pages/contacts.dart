@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guc_swiss_knife/components/utils/no_content.dart';
 import 'package:guc_swiss_knife/configs/constants.dart';
 import 'package:guc_swiss_knife/models/contact.dart';
 import 'package:guc_swiss_knife/services/contact_service.dart';
@@ -25,31 +26,38 @@ class _ContactsState extends State<Contacts> {
               title: const Text("$appName - Contacts"),
             ),
             body: snapshot.data!.isEmpty
-                ? const Center(child: Text("No Data Available"))
+                ? const NoContent(text: "No Data Available")
                 : ListView.builder(
                     itemCount: snapshot.data!.length,
                     itemBuilder: (context, index) {
                       return Card(
                         child: ListTile(
                           trailing: IconButton(
-                            icon: Icon(Icons.delete),
+                            icon: const Icon(Icons.delete),
                             color: Colors.red,
                             onPressed: () {
                               contactService.deleteContact(
                                   snapshot.data![index].id ?? "");
                             },
                           ),
-                          leading: Column(
-                            children: [
-                              Icon(
-                                IconData(
-                                  snapshot.data![index].iconCodePoint,
-                                  fontFamily:
-                                      snapshot.data![index].iconFontFamily,
+                          leading: SizedBox(
+                            width: 50,
+                            child: Column(
+                              children: [
+                                Icon(
+                                  IconData(
+                                    snapshot.data![index].iconCodePoint,
+                                    fontFamily:
+                                        snapshot.data![index].iconFontFamily,
+                                  ),
                                 ),
-                              ),
-                              Text(snapshot.data![index].name),
-                            ],
+                                Text(
+                                  snapshot.data![index].name,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            ),
                           ),
                           title: Text(snapshot.data![index].phoneNumber),
                           onTap: () {

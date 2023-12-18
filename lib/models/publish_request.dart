@@ -15,7 +15,6 @@ class PublishRequest {
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
       'title': title,
       'content': content,
       'user_id': userId,
