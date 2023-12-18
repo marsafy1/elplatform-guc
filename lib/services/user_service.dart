@@ -58,6 +58,7 @@ class UserService {
     String? faculty,
     String? gucId,
     String? profilePictureUrl,
+    bool? isPending,
   }) async {
     await _usersCollectionReference.doc(id).update({
       'first_name': firstName,
@@ -67,6 +68,7 @@ class UserService {
       'faculty': faculty,
       'guc_id': gucId,
       'photo_url': profilePictureUrl,
+      'is_pending': isPending,
     });
   }
 }

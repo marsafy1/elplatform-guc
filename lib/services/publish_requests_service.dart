@@ -27,6 +27,7 @@ class PublishRequestsService {
         .update({'approved': 1});
     _firestore.collection("users").doc(publishRequest.userId).update({
       'is_publisher': true,
+      'is_pending': false,
     });
   }
 

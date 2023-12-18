@@ -1,6 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:guc_swiss_knife/models/publish_request.dart';
 import 'package:guc_swiss_knife/services/image_upload_service.dart';
+import 'package:guc_swiss_knife/services/publish_requests_service.dart';
+import 'package:guc_swiss_knife/utils_functions/confirm_action.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -442,6 +445,7 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    PublishRequestsService _publishRequestsService = PublishRequestsService();
     return Scaffold(
       appBar: MyAppBar(),
       drawer: const MainDrawer(),
@@ -456,6 +460,37 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
           bool inFeed = indexToCollection[selectedTabIndex] == "feed";
           if (!isPublisher && inFeed) {
             Toast.show(context, "You need to be a publisher", "warning");
+            if (userAuth.user!.isPending ?? false) {
+              Toast.show(context, "Your request is pending", "ifo");
+              return;
+            }
+            ConfirmAction.showConfirmationDialog(
+                context: context,
+                onConfirm: () async {
+                  await ConfirmAction.showPublishRequestDialog(
+                    context: context,
+                    title: "Request Publish Access",
+                    onConfirm: (publishTitle, publisMessage) {
+                      _publishRequestsService
+                          .addPublishRequest(
+                        PublishRequest(
+                            title: publishTitle,
+                            content: publisMessage,
+                            userId: userAuth.user!.id),
+                      )
+                          .then((value) {
+                        userAuth.updateUser(
+                          isPending: true,
+                        );
+                        Toast.show(context, "Request Sent", "success");
+                      });
+                    },
+                  );
+                },
+                title: "Request Publish Access",
+                message:
+                    "You are not authorized to publish. Do you want to send a request for the admin?",
+                confirmButton: "Request");
           } else {
             showBottomSheetForNewPost(context);
           }
