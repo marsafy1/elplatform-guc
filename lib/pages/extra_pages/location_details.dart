@@ -22,9 +22,16 @@ class _LocationDetailsState extends State<LocationDetails> {
   @override
   void initState() {
     super.initState();
+    _getCurrentLocation();
     _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
       _getCurrentLocation();
     });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
   }
 
   Future<void> _getCurrentLocation() async {
@@ -80,14 +87,59 @@ class _LocationDetailsState extends State<LocationDetails> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              'Target Location: ${location!.name}',
-              style: const TextStyle(fontSize: 16.0),
+            Card(
+              elevation: 2.0,
+              child: Column(children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.location_on,
+                      size: 60.0,
+                      color: Colors.blue,
+                    ),
+                    Text(
+                      '${_distance.toStringAsFixed(2)} m',
+                      style: const TextStyle(fontSize: 20.0),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16.0),
+                Text(
+                  '${location!.name}',
+                  style: const TextStyle(fontSize: 20.0),
+                ),
+                const SizedBox(height: 16.0),
+              ]),
             ),
-            const SizedBox(height: 16.0),
-            Text(
-              'Distance: $_distance meters',
-              style: const TextStyle(fontSize: 16.0),
+            Expanded(
+              child: SizedBox(
+                width: double.infinity,
+                child: Card(
+                  elevation: 2.0,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const ListTile(
+                          leading: Icon(Icons.description),
+                          title: Text('Description'),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            left: 18.0,
+                          ),
+                          child: Text(
+                            location!.description ?? "",
+                            textAlign: TextAlign.left,
+                            style: const TextStyle(fontSize: 18.0),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             ),
           ],
         ),

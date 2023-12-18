@@ -81,17 +81,20 @@ class _AddLocationState extends State<AddLocation> {
       appBar: AppBar(
         title: const Text('Add Location'),
       ),
-      body: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              ...fields.values.map((field) => field),
-              ElevatedButton(
-                onPressed: addLocation,
-                child: const Text('Submit'),
-              ),
-            ],
+      body: Card(
+        elevation: 2.0,
+        child: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                ...fields.values.map((field) => field),
+                ElevatedButton(
+                  onPressed: addLocation,
+                  child: const Text('Submit'),
+                ),
+              ],
+            ),
           ),
         ),
       ),

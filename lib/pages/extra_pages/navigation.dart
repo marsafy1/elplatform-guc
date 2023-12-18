@@ -1,7 +1,6 @@
 import 'dart:async';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:guc_swiss_knife/configs/constants.dart';
 import 'package:guc_swiss_knife/models/location.dart';
 import 'package:guc_swiss_knife/services/location_service.dart';
@@ -20,7 +19,6 @@ class _NavigationState extends State<Navigation> {
   late Stream<List<Location>> _locationsStream;
 
   // theme secondary color
-  Color? themeSecondaryColor = Colors.blueGrey[700];
 
   @override
   void initState() {
@@ -39,6 +37,7 @@ class _NavigationState extends State<Navigation> {
 
   @override
   Widget build(BuildContext context) {
+    Color? themeSecondaryColor = Theme.of(context).cardColor;
     return Scaffold(
       appBar: AppBar(
         title: const Text("$appName - Navigation"),
@@ -80,6 +79,15 @@ class _NavigationState extends State<Navigation> {
                             itemBuilder: (context, index) {
                               return Card(
                                 child: ListTile(
+                                  // delete
+                                  trailing: IconButton(
+                                    icon: const Icon(Icons.delete,
+                                        color: Colors.red),
+                                    onPressed: () async {
+                                      locationService.deleteLocation(
+                                          snapshot.data![index].id ?? "");
+                                    },
+                                  ),
                                   leading: const SizedBox(
                                     width: 50,
                                     child: Icon(Icons.location_on),
@@ -103,12 +111,28 @@ class _NavigationState extends State<Navigation> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).pushNamed('/addLocation');
-        },
-        shape: const CircleBorder(),
-        child: const Icon(Icons.add),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: () {
+              Navigator.of(context).pushNamed('/gucMap');
+            },
+            shape: const CircleBorder(),
+            tooltip: "GUC Map",
+            heroTag: null,
+            child: const FaIcon(FontAwesomeIcons.mapLocation),
+          ),
+          const SizedBox(height: 10),
+          FloatingActionButton(
+            onPressed: () {
+              Navigator.of(context).pushNamed('/addLocation');
+            },
+            shape: const CircleBorder(),
+            heroTag: null,
+            child: const Icon(Icons.add),
+          ),
+        ],
       ),
     );
   }

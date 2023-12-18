@@ -28,4 +28,9 @@ class LocationService {
   Future<void> addLocation(Location Location) async {
     await _firestore.collection(collectionName).add(Location.toMap());
   }
+
+  // delete
+  Future<void> deleteLocation(String id) async {
+    await _firestore.collection(collectionName).doc(id).delete();
+  }
 }

@@ -7,6 +7,7 @@ import 'package:guc_swiss_knife/pages/admin/add_contact.dart';
 import 'package:guc_swiss_knife/pages/admin/add_location.dart';
 import 'package:guc_swiss_knife/pages/auth/login_page.dart';
 import 'package:guc_swiss_knife/pages/auth/register_page.dart';
+import 'package:guc_swiss_knife/pages/extra_pages/guc_map.dart';
 import 'package:guc_swiss_knife/pages/extra_pages/location_details.dart';
 import 'package:guc_swiss_knife/pages/profile/change_password.dart';
 import 'package:guc_swiss_knife/pages/profile/edit_profile_page.dart';
@@ -86,6 +87,7 @@ class MyApp extends StatelessWidget {
           '/addContact': (dummyCtx) => const AddContact(),
           '/addLocation': (dummyCtx) => const AddLocation(),
           '/locationDetails': (dummyCtx) => const LocationDetails(),
+          '/gucMap': (dummyCtx) => const GucMap(),
         },
       ),
     );
