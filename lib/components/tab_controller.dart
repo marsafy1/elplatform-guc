@@ -34,7 +34,6 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
     QuestionsPage(),
     LostAndFoundsPage(),
     NotificationsPage()
-    // Add other page widgets here
   ];
   final Map<int, String> indexToCollection = {
     0: "feed",
@@ -52,9 +51,8 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
     super.initState();
     categoriesChoices = categoriesMap.entries.map((entry) {
       return Category(
-        name: entry.value.name, // Use the name from the CategoryItem in the map
-        icon: CategoryIcon(
-            icon: entry.value.icon), // Use the icon from the CategoryItem
+        name: entry.value.name,
+        icon: CategoryIcon(icon: entry.value.icon),
         addCategory: addCategory,
         removeCategory: removeCategory,
       );
@@ -279,18 +277,38 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
         onPressed: () {
           final userAuth = Provider.of<AuthProvider>(context, listen: false);
           bool isPublisher = userAuth.user!.isPublisher;
-          // Action to take when the FAB is tapped
+
           if (!isPublisher) {
             Toast.show(context, "You need to be a publisher", "warning");
           } else {
             showBottomSheetForNewPost(context);
           }
         },
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        child: const FaIcon(
-          FontAwesomeIcons.plus,
-          color: Colors.white,
-        ), // The '+' icon is typical for an "Add" action
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        child: Ink(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: LinearGradient(
+              colors: [
+                Theme.of(context).colorScheme.primary,
+                Theme.of(context).colorScheme.secondary,
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+          child: Container(
+            constraints: const BoxConstraints.expand(
+              height: 56.0,
+            ),
+            alignment: Alignment.center,
+            child: const FaIcon(
+              FontAwesomeIcons.plus,
+              color: Colors.white,
+            ),
+          ),
+        ),
       ),
       bottomNavigationBar: GlassMorphicBottomNavigationBar(
         selectedIndex: selectedTabIndex,
@@ -298,25 +316,24 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
         listItems: const [
           BottomNavigationBarItem(
             icon: FaIcon(FontAwesomeIcons.house),
-            label: 'Home', // Empty string for label
+            label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: FaIcon(FontAwesomeIcons.solidHeart),
-            label: 'Confessions', // Empty string for label
+            label: 'Confessions',
           ),
           BottomNavigationBarItem(
             icon: FaIcon(FontAwesomeIcons.fileCircleQuestion),
-            label: 'Q/A', // Empty string for label
+            label: 'Q/A',
           ),
           BottomNavigationBarItem(
             icon: FaIcon(FontAwesomeIcons.suitcase),
-            label: 'Lost & Founds', // Empty string for label
+            label: 'Lost & Founds',
           ),
           BottomNavigationBarItem(
             icon: FaIcon(FontAwesomeIcons.solidBell),
-            label: 'Notifications', // Empty string for label
+            label: 'Notifications',
           ),
-          // Add more items as needed
         ],
       ),
     );

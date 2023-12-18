@@ -5,7 +5,7 @@ class CategoryElement extends StatefulWidget {
   final int index;
   final Category category;
   final bool asFilter;
-  final VoidCallback? updateSheet; // Optional callback function
+  final VoidCallback? updateSheet;
 
   const CategoryElement(
       {super.key,
@@ -26,17 +26,25 @@ class _CategoryElementState extends State<CategoryElement> {
         padding: const EdgeInsets.all(8.0),
         margin: const EdgeInsets.all(5.0),
         decoration: BoxDecoration(
+          gradient: widget.category.selected
+              ? LinearGradient(
+                  colors: [
+                    Theme.of(context).colorScheme.primary,
+                    Theme.of(context).colorScheme.secondary,
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                )
+              : null,
           color: widget.category.selected
-              ? Theme.of(context).colorScheme.primary
+              ? null
               : Theme.of(context).secondaryHeaderColor,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Row(
           children: [
             widget.category.icon,
-            const SizedBox(
-              width: 5,
-            ),
+            const SizedBox(width: 5),
             Text(widget.category.name),
           ],
         ),
@@ -44,16 +52,10 @@ class _CategoryElementState extends State<CategoryElement> {
       onTap: () {
         setState(() {
           widget.category.selected = true;
-          if (widget.category.selected) {
-            widget.category.addCategory(widget.category, widget.asFilter);
-          }
+          widget.category.addCategory(widget.category, widget.asFilter);
           if (widget.updateSheet != null) {
             widget.updateSheet!();
           }
-          // else {
-          //   widget.category.removeCategory(widget.category, widget.asFilter);
-          //   print("Removed");
-          // }
         });
       },
     );
