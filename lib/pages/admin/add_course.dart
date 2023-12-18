@@ -87,8 +87,9 @@ class _AddCourseState extends State<AddCourse> {
                   ElevatedButton(
                     onPressed: () async {
                       print("hello");
-                      String? photoUrl =
-                          await ImageUploadService.uploadImage(_pickedImage!);
+                      String? photoUrl = await ImageUploadService.uploadImage(
+                          _pickedImage!,
+                          directoryName: 'course_images');
                       print(photoUrl);
                       if (_formKey.currentState!.validate()) {
                         CourseService.addCourse(Course(

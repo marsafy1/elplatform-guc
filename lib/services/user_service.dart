@@ -24,7 +24,8 @@ class UserService {
             header: userData["header"],
             bio: userData["bio"],
             faculty: userData["faculty"],
-            gucId: userData["guc_id"]);
+            gucId: userData["guc_id"],
+            photoUrl: userData["photo_url"]);
       } else {
         throw Exception("User not found");
       }
@@ -56,6 +57,7 @@ class UserService {
     String? bio,
     String? faculty,
     String? gucId,
+    String? profilePictureUrl,
   }) async {
     await _usersCollectionReference.doc(id).update({
       'first_name': firstName,
@@ -64,6 +66,7 @@ class UserService {
       'bio': bio,
       'faculty': faculty,
       'guc_id': gucId,
+      'photo_url': profilePictureUrl,
     });
   }
 }
