@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:guc_swiss_knife/providers/auth_provider.dart';
@@ -112,7 +113,13 @@ class _PostState extends State<PostWidget> {
         widget.collection == "lost_and_founds";
     String resolvedString =
         collectionToResolvedOption[widget.collection] ?? "Resolved";
-
+    String bio = "";
+    if (widget.post.user != null) {
+      if (widget.post.user!.bio != null) {
+        bio = widget.post.user!.bio!;
+        bio = bio.substring(0, min(bio.length, 20));
+      }
+    }
     return Row(
       children: [
         userAvatar,
@@ -130,8 +137,7 @@ class _PostState extends State<PostWidget> {
                 ],
               ),
               if (!widget.post.anon)
-                const Text('5th year student',
-                    style: TextStyle(color: Colors.grey)),
+                Text(bio, style: const TextStyle(color: Colors.grey)),
             ],
           ),
         ),
