@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:guc_swiss_knife/api/firebase_api.dart';
 import 'package:guc_swiss_knife/configs/constants.dart';
 import 'package:guc_swiss_knife/firebase_options.dart';
 import 'package:guc_swiss_knife/models/user.dart';
@@ -26,11 +27,13 @@ import 'pages/extra_pages/instructors.dart';
 import 'pages/extra_pages/navigation.dart';
 import 'themes/dark_theme.dart';
 
+final navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await FirebaseApi().initNotifications();
   runApp(const MyApp());
 }
 
@@ -68,6 +71,7 @@ class MyApp extends StatelessWidget {
           AnalyticsService.getAnalyticsObserver(),
           RouteObserverService()
         ],
+        navigatorKey: navigatorKey,
         routes: {
           '/home': (dummyCtx) => const TabsControllerScreen(),
           '/contacts': (dummyCtx) => const Contacts(),
