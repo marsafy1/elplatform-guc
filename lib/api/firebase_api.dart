@@ -15,16 +15,29 @@ class FirebaseApi {
     );
     final fcmToken = await _firebaseMessaging.getToken();
     print("token: $fcmToken");
-    initPushNotifications();
+    await initPushNotifications();
   }
 
-  void handleMessage(RemoteMessage? message) {
+  void handleBackGroundMessage(RemoteMessage? message) {
     if (message == null) return;
     navigatorKey.currentState!.pushNamed('/courses');
   }
 
+  void handleForeGroundMessage(RemoteMessage? message) {
+    if (message == null) return;
+    navigatorKey.currentState!.pushNamed('/courses');
+  }
+
+  Future<void> BackgroundHandler(RemoteMessage message) async {
+    navigatorKey.currentState!.pushNamed('/courses');
+  }
+
   Future initPushNotifications() async {
-    FirebaseMessaging.instance.getInitialMessage().then(handleMessage);
-    FirebaseMessaging.onMessageOpenedApp.listen(handleMessage);
+    FirebaseMessaging.instance
+        .getInitialMessage()
+        .then(handleBackGroundMessage);
+    FirebaseMessaging.onMessageOpenedApp.listen(handleBackGroundMessage);
+    FirebaseMessaging.onBackgroundMessage(BackgroundHandler);
+    FirebaseMessaging.onMessage.listen(handleForeGroundMessage);
   }
 }
