@@ -160,7 +160,7 @@ class _PostState extends State<PostWidget> {
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Text('$interactionsCount $interactionAction'),
+            Text('$interactionsCount $interactionActionText'),
           ],
         ),
         const SizedBox(height: 10),
@@ -189,7 +189,7 @@ class _PostState extends State<PostWidget> {
                       const SizedBox(
                         width: 8,
                       ),
-                      Text(interactionActionText)
+                      Text(interactionAction)
                     ],
                   ),
                 ),
