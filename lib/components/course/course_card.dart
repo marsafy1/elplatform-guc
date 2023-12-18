@@ -18,102 +18,108 @@ class CourseCard extends StatelessWidget {
     bool isAdmin = Provider.of<AuthProvider>(context, listen: false).isAdmin;
 
     return Card(
-      margin: const EdgeInsets.fromLTRB(10, 4, 10, 4),
-      child: Padding(
-        padding: const EdgeInsets.all(4),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-              width: 120,
-              height: 120,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  const CircularProgressIndicator(),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(5.0),
-                    child: FadeInImage(
-                      placeholder: const AssetImage('assets/Empty.png'),
-                      image: NetworkImage(course.photoUrl),
-                      fit: BoxFit.cover,
-                      width: 100,
-                      height: 100,
+        margin: const EdgeInsets.fromLTRB(10, 4, 10, 4),
+        child: Padding(
+          padding: const EdgeInsets.all(4),
+          child: InkWell(
+            onTap: () {
+              Navigator.pushNamed(context, '/courseDetails',
+                  arguments: {'course': course});
+            },
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                  width: 120,
+                  height: 120,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      const CircularProgressIndicator(),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(5.0),
+                        child: FadeInImage(
+                          placeholder: const AssetImage('assets/Empty.png'),
+                          image: NetworkImage(course.photoUrl),
+                          fit: BoxFit.cover,
+                          width: 100,
+                          height: 100,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 0.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          course.title,
+                          style: const TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              RatingBar.builder(
+                                initialRating: course.averageRating,
+                                minRating: 1,
+                                direction: Axis.horizontal,
+                                allowHalfRating: true,
+                                itemCount: 5,
+                                itemPadding:
+                                    const EdgeInsets.symmetric(horizontal: 0),
+                                itemBuilder: (context, _) => const Icon(
+                                  Icons.star,
+                                  color: Colors.amber,
+                                ),
+                                itemSize: 15,
+                                onRatingUpdate: (_) {},
+                                ignoreGestures: true,
+                              ),
+                              Text(
+                                course.description,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                ),
+                                textAlign: TextAlign.left,
+                                maxLines: 3,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ]),
+                      ],
                     ),
                   ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 0.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      course.title,
-                      style: const TextStyle(
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.bold,
+                ),
+                if (isAdmin)
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: GestureDetector(
+                      onTap: () {
+                        ConfirmAction.showConfirmationDialog(
+                          context: context,
+                          onConfirm: () {
+                            CourseService.deleteCourse(course.id);
+                          },
+                          title: 'Delete Course',
+                          message:
+                              'Are you sure you want to delete this course?',
+                          confirmButton: 'Delete',
+                        );
+                      },
+                      child: const Icon(
+                        Icons.delete,
+                        color: Colors.red,
                       ),
                     ),
-                    Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          RatingBar.builder(
-                            initialRating: course.averageRating,
-                            minRating: 1,
-                            direction: Axis.horizontal,
-                            allowHalfRating: true,
-                            itemCount: 5,
-                            itemPadding:
-                                const EdgeInsets.symmetric(horizontal: 0),
-                            itemBuilder: (context, _) => const Icon(
-                              Icons.star,
-                              color: Colors.amber,
-                            ),
-                            itemSize: 15,
-                            onRatingUpdate: (_) {},
-                            ignoreGestures: true,
-                          ),
-                          Text(
-                            course.description,
-                            style: const TextStyle(
-                              fontSize: 14,
-                            ),
-                            textAlign: TextAlign.left,
-                            maxLines: 3,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ]),
-                  ],
-                ),
-              ),
-            ),
-            if (isAdmin)
-              Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: GestureDetector(
-                  onTap: () {
-                    ConfirmAction.showConfirmationDialog(
-                      context: context,
-                      onConfirm: () {
-                        CourseService.deleteCourse(course.id);
-                      },
-                      title: 'Delete Course',
-                      message: 'Are you sure you want to delete this course?',
-                      confirmButton: 'Delete',
-                    );
-                  },
-                  child: const Icon(
-                    Icons.delete,
-                    color: Colors.red,
                   ),
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
+              ],
+            ),
+          ),
+        ));
   }
 }
