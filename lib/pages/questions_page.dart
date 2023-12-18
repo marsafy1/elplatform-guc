@@ -34,6 +34,8 @@ class _QuestionsPageState extends State<QuestionsPage> {
   DateTime? latestPostTimestamp;
   bool hasNewPosts = false;
 
+  bool answeredOnly = false;
+
   @override
   void initState() {
     RouteObserverService().logUserActivity('/questions');
@@ -160,12 +162,34 @@ class _QuestionsPageState extends State<QuestionsPage> {
                 return selectedCategories.any((category) =>
                     post.category.toLowerCase() == category.name.toLowerCase());
               }).toList();
+        if (answeredOnly) {
+          filteredPosts = filteredPosts.where((post) {
+            return post.resolved == true;
+          }).toList();
+        }
 
         if (snapshot.data!.isNotEmpty) {
           return Column(
             children: [
               Categories(
                   key: UniqueKey(), categories: categories, asFilter: true),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const Text("Answered Only",
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  Switch(
+                    value: answeredOnly,
+                    activeColor: Theme.of(context).colorScheme.primary,
+                    onChanged: (bool value) {
+                      setState(() {
+                        answeredOnly = value;
+                      });
+                    },
+                  ),
+                ],
+              ),
               if (filteredPosts.isNotEmpty)
                 Expanded(
                   child: Posts(
