@@ -128,7 +128,7 @@ class _LostAndFoundsPageState extends State<LostAndFoundsPage> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: _postsService.getPosts('questions'),
+      stream: _postsService.getPosts('lost_and_founds'),
       builder: (context, AsyncSnapshot<List<Post>> snapshot) {
         if (snapshot.hasData) {
           if (snapshot.data!.isNotEmpty) {
@@ -164,7 +164,7 @@ class _LostAndFoundsPageState extends State<LostAndFoundsPage> {
               }).toList();
         if (answeredOnly) {
           filteredPosts = filteredPosts.where((post) {
-            return post.resolved == true;
+            return post.resolved == false;
           }).toList();
         }
 

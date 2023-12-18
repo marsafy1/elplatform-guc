@@ -20,6 +20,7 @@ import '../pages/questions_page.dart';
 import '../pages/lost_and_founds_page.dart';
 import '../pages/notifications_page.dart';
 import '../managers/categories_manager.dart';
+import '../managers/lost_and_founds_manager.dart';
 
 class TabsControllerScreen extends StatefulWidget {
   const TabsControllerScreen({super.key});
@@ -47,12 +48,13 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
   List<Category> categoriesChoices = [];
   List<Category> selectedCategoriesChoices = [];
   List<File> photosFiles = [];
-  var categoriesMap = CategoryManager().categoriesMap;
+  var categoriesMapQs = CategoryManager().categoriesMap;
+  var categoriesMapLs = LostAndFoundsManager().categoriesMap;
 
   @override
   void initState() {
     super.initState();
-    categoriesChoices = categoriesMap.entries.map((entry) {
+    categoriesChoices = categoriesMapQs.entries.map((entry) {
       return Category(
         name: entry.value.name,
         icon: CategoryIcon(icon: entry.value.icon),
@@ -110,6 +112,40 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
   }
 
   void showBottomSheetForNewPost(BuildContext context) {
+    bool inConfessions = indexToCollection[selectedTabIndex] == "confessions";
+    bool inQuestions = indexToCollection[selectedTabIndex] == "questions";
+    bool inFeed = indexToCollection[selectedTabIndex] == "feed";
+    bool inLosts = indexToCollection[selectedTabIndex] == "lost_and_founds";
+
+    if (inLosts) {
+      setState(() {
+        categoriesChoices = categoriesMapLs.entries.map((entry) {
+          return Category(
+            name: entry.value.name,
+            icon: CategoryIcon(icon: entry.value.icon),
+            addCategory: addCategory,
+            removeCategory: removeCategory,
+          );
+        }).toList();
+      });
+    }
+    if (inQuestions) {
+      setState(() {
+        categoriesChoices = categoriesMapQs.entries.map((entry) {
+          return Category(
+            name: entry.value.name,
+            icon: CategoryIcon(icon: entry.value.icon),
+            addCategory: addCategory,
+            removeCategory: removeCategory,
+          );
+        }).toList();
+      });
+    }
+
+    setState(() {
+      categoriesChoices[0].selected = true;
+    });
+
     final TextEditingController titleController = TextEditingController();
     final TextEditingController descriptionController = TextEditingController();
 
@@ -126,11 +162,7 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
     String userId = userAuth.user!.id;
     bool localAnon = anon; // Local variable for anon state in the bottom sheet
 
-    bool inConfessions = indexToCollection[selectedTabIndex] == "confessions";
-    bool inQuestions = indexToCollection[selectedTabIndex] == "questions";
-    bool inFeed = indexToCollection[selectedTabIndex] == "feed";
-
-    bool postingImagesAllowed = inQuestions || inFeed;
+    bool postingImagesAllowed = inQuestions || inFeed || inLosts;
 
     bool loadingSubmission = false;
 
@@ -167,7 +199,7 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
                                     fontWeight: FontWeight.bold,
                                   )),
                             ),
-                            if (inQuestions)
+                            if (inQuestions || inLosts)
                               Categories(
                                   key: UniqueKey(),
                                   categories: categoriesChoices,
@@ -292,6 +324,12 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
                                               .name
                                               .toLowerCase()
                                           : "all";
+                                  print("Categoryyyy");
+                                  print(selectedCategoriesChoices);
+                                  if (selectedCategoriesChoices.isNotEmpty) {
+                                    print(selectedCategoriesChoices[0].name);
+                                    print("catgory seleccted $category");
+                                  }
 
                                   if (title.isEmpty) {
                                     Toast.show(context, "Please enter a title",
@@ -335,6 +373,7 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
                                     localPhotosUrls.addAll(uploadedUrls);
                                   });
                                   DateTime dateTime = DateTime.now();
+                                  print("Submitting categoey $category");
                                   Post newPost = Post(
                                       title: title,
                                       userId: userId,
