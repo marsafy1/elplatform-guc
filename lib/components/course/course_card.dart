@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:guc_swiss_knife/models/course.dart';
+import 'package:guc_swiss_knife/providers/auth_provider.dart';
+import 'package:guc_swiss_knife/services/course_service.dart';
+import 'package:guc_swiss_knife/utils_functions/confirm_action.dart';
+import 'package:provider/provider.dart';
 
 class CourseCard extends StatelessWidget {
   final Course course;
@@ -45,7 +48,7 @@ class CourseCard extends StatelessWidget {
                 ],
               ),
             ),
-            CourseCardDetails(course: course)
+            CourseCardDetails(course: course),
           ],
         ),
       ),
@@ -56,22 +59,45 @@ class CourseCard extends StatelessWidget {
 class CourseCardDetails extends StatelessWidget {
   final Course course;
   const CourseCardDetails({required this.course, super.key});
-
   @override
   Widget build(BuildContext context) {
+    bool isAdmin = Provider.of<AuthProvider>(context, listen: false).isAdmin;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-            padding: const EdgeInsets.fromLTRB(0, 12, 0, 5),
-            child: Text(
-              course.title,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+          padding: const EdgeInsets.fromLTRB(0, 12, 0, 5),
+          child: Row(
+            children: [
+              Text(
+                course.title,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.left,
               ),
-              textAlign: TextAlign.left,
-            )),
+              if (isAdmin)
+                IconButton(
+                  onPressed: () {
+                    ConfirmAction.showConfirmationDialog(
+                      context: context,
+                      onConfirm: () {
+                        CourseService.deleteCourse(course.id);
+                      },
+                      title: 'Delete Course',
+                      message: 'Are you sure you want to delete this course?',
+                      confirmButton: 'Delete',
+                    );
+                  },
+                  icon: const Icon(
+                    Icons.delete,
+                    color: Colors.red,
+                  ),
+                )
+            ],
+          ),
+        ),
         RatingBar.builder(
           initialRating: course.averageRating,
           minRating: 1,
