@@ -13,22 +13,18 @@ class CourseCard extends StatelessWidget {
     Key? key,
     required this.course,
   }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
+    bool isAdmin = Provider.of<AuthProvider>(context, listen: false).isAdmin;
+
     return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(5),
-      ),
-      margin: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-      child: InkWell(
-        onTap: () => Navigator.of(context)
-            .pushNamed('/courseDetails', arguments: {'course': course}),
+      margin: const EdgeInsets.fromLTRB(10, 4, 10, 4),
+      child: Padding(
+        padding: const EdgeInsets.all(4),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              padding: const EdgeInsets.fromLTRB(10, 15, 10, 15),
+              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
               width: 120,
               height: 120,
               child: Stack(
@@ -48,38 +44,57 @@ class CourseCard extends StatelessWidget {
                 ],
               ),
             ),
-            CourseCardDetails(course: course),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class CourseCardDetails extends StatelessWidget {
-  final Course course;
-  const CourseCardDetails({required this.course, super.key});
-  @override
-  Widget build(BuildContext context) {
-    bool isAdmin = Provider.of<AuthProvider>(context, listen: false).isAdmin;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          padding: const EdgeInsets.fromLTRB(0, 12, 0, 5),
-          child: Row(
-            children: [
-              Text(
-                course.title,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 0.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      course.title,
+                      style: const TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          RatingBar.builder(
+                            initialRating: course.averageRating,
+                            minRating: 1,
+                            direction: Axis.horizontal,
+                            allowHalfRating: true,
+                            itemCount: 5,
+                            itemPadding:
+                                const EdgeInsets.symmetric(horizontal: 0),
+                            itemBuilder: (context, _) => const Icon(
+                              Icons.star,
+                              color: Colors.amber,
+                            ),
+                            itemSize: 15,
+                            onRatingUpdate: (_) {},
+                            ignoreGestures: true,
+                          ),
+                          Text(
+                            course.description,
+                            style: const TextStyle(
+                              fontSize: 14,
+                            ),
+                            textAlign: TextAlign.left,
+                            maxLines: 3,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ]),
+                  ],
                 ),
-                textAlign: TextAlign.left,
               ),
-              if (isAdmin)
-                IconButton(
-                  onPressed: () {
+            ),
+            if (isAdmin)
+              Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: GestureDetector(
+                  onTap: () {
                     ConfirmAction.showConfirmationDialog(
                       context: context,
                       onConfirm: () {
@@ -90,43 +105,15 @@ class CourseCardDetails extends StatelessWidget {
                       confirmButton: 'Delete',
                     );
                   },
-                  icon: const Icon(
+                  child: const Icon(
                     Icons.delete,
                     color: Colors.red,
                   ),
-                )
-            ],
-          ),
+                ),
+              ),
+          ],
         ),
-        RatingBar.builder(
-          initialRating: course.averageRating,
-          minRating: 1,
-          direction: Axis.horizontal,
-          allowHalfRating: true,
-          itemCount: 5,
-          itemPadding: const EdgeInsets.symmetric(horizontal: 0),
-          itemBuilder: (context, _) => const Icon(
-            Icons.star,
-            color: Colors.amber,
-          ),
-          itemSize: 15,
-          onRatingUpdate: (_) {},
-          ignoreGestures: true,
-        ),
-        Container(
-          padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-          width: MediaQuery.of(context).size.width - 140,
-          child: Text(
-            course.description,
-            style: const TextStyle(
-              fontSize: 14,
-            ),
-            textAlign: TextAlign.left,
-            maxLines: 3,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-      ],
+      ),
     );
   }
 }
