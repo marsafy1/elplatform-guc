@@ -1,5 +1,3 @@
-import 'package:guc_swiss_knife/models/review.dart';
-
 enum UserType { student, instructor, admin }
 
 class User {
@@ -14,7 +12,8 @@ class User {
   final String? faculty;
   final String? photoUrl;
   final String? gucId;
-  
+  final bool? isPending;
+
   User({
     required this.id,
     required this.firstName,
@@ -27,6 +26,7 @@ class User {
     this.faculty,
     this.photoUrl,
     this.gucId,
+    this.isPending = false,
   });
   static User get defaultUser => User(
         id: 'default_id',
@@ -41,6 +41,7 @@ class User {
         faculty: 'Default faculty',
         photoUrl: null,
         gucId: 'default_gucid',
+        isPending: false,
       );
   factory User.fromMap(Map<String, dynamic> map, String documentId) {
     return User(
@@ -55,6 +56,7 @@ class User {
       faculty: map['faculty'] as String?,
       photoUrl: map['photo_url'] as String?,
       gucId: map['guc_id'] as String?,
+      isPending: map['is_pending'] as bool? ?? false,
     );
   }
 
@@ -71,6 +73,7 @@ class User {
       'faculty': faculty,
       'photo_url': photoUrl,
       'guc_id': gucId,
+      'is_pending': isPending,
     };
   }
 }

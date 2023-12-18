@@ -112,6 +112,7 @@ class AuthProvider with ChangeNotifier {
     String? faculty,
     String? gucId,
     String? profilePictureUrl,
+    bool? isPending,
   }) async {
     UserService.updateUser(
       id: _user!.id,
@@ -122,6 +123,7 @@ class AuthProvider with ChangeNotifier {
       faculty: faculty ?? _user!.faculty,
       gucId: gucId ?? _user!.gucId,
       profilePictureUrl: profilePictureUrl ?? _user!.photoUrl,
+      isPending: isPending ?? _user!.isPending,
     );
 
     _user = User(
@@ -136,6 +138,7 @@ class AuthProvider with ChangeNotifier {
       faculty: faculty ?? _user!.faculty,
       gucId: gucId ?? _user!.gucId,
       photoUrl: profilePictureUrl ?? _user!.photoUrl,
+      isPending: isPending ?? _user!.isPending,
     );
 
     notifyListeners();

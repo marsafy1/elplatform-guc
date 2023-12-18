@@ -55,7 +55,7 @@ class PublishRequestsDetails extends StatelessWidget {
               ),
               child: SingleChildScrollView(
                 child: Text(
-                  publishRequest!.content,
+                  publishRequest.content,
                   style: const TextStyle(fontSize: 16.0),
                 ),
               ),
