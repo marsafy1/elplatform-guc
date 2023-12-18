@@ -32,7 +32,9 @@ class _AddContactState extends State<AddContact> {
         icon: Icons.info,
         validator: (value) {
           if (value!.isEmpty) {
-            return 'Title is required';
+            return 'name is required';
+          } else if (value.length > 20) {
+            return 'name is too long';
           }
           return null;
         },

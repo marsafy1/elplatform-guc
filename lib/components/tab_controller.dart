@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:guc_swiss_knife/services/image_upload_service.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -361,8 +362,8 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
                                   for (File imgFile in localPhotosFiles) {
                                     print("Going to call upload IMAGE");
                                     String? uploadedImageUrl =
-                                        await _postsService
-                                            .uploadImage(imgFile);
+                                        await ImageUploadService.uploadImage(
+                                            imgFile);
                                     if (uploadedImageUrl != null) {
                                       print("GOT AN IMAGE");
                                       print("URL $uploadedImageUrl");
