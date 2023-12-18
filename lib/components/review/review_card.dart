@@ -27,9 +27,7 @@ class _ReviewCardState extends State<ReviewCard> {
     return Card(
       child: SizedBox(
         width: MediaQuery.of(context).size.width * 0.85,
-        height: (widget.review.review == null || widget.review.review!.isEmpty)
-            ? MediaQuery.of(context).size.height * 0.07
-            : MediaQuery.of(context).size.height * 0.17,
+        height: null,
         child: FutureBuilder(
           future: futureUser,
           builder: (context, AsyncSnapshot<User> snapshot) {
@@ -80,7 +78,8 @@ class _ReviewCardState extends State<ReviewCard> {
                                 direction: Axis.horizontal,
                                 allowHalfRating: true,
                                 itemCount: 5,
-                                itemSize: 20,
+                                itemSize:
+                                    MediaQuery.of(context).size.width * 0.05,
                                 itemPadding:
                                     const EdgeInsets.symmetric(horizontal: 0.1),
                                 itemBuilder: (context, _) => const Icon(

@@ -1,4 +1,7 @@
+import 'dart:io';
+import 'package:path/path.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import '../models/post.dart';
 import '../models/user.dart';
 
@@ -105,5 +108,20 @@ class PostsService {
       }
       transaction.update(postRef, {'resolved': value});
     });
+  }
+
+  Future<String?> uploadImage(File imageFile) async {
+    int timestamp = DateTime.now().millisecondsSinceEpoch;
+
+    // Create a unique file name with timestamp
+    String fileName = '${timestamp}_${basename(imageFile.path)}';
+    Reference storageRef =
+        FirebaseStorage.instance.ref().child('post_images/$fileName');
+    UploadTask uploadTask = storageRef.putFile(imageFile);
+    TaskSnapshot snapshot = await uploadTask;
+    if (snapshot.state == TaskState.success) {
+      return await snapshot.ref.getDownloadURL();
+    }
+    return null;
   }
 }
