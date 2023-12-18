@@ -21,6 +21,8 @@ class _LostAndFoundsPageState extends State<LostAndFoundsPage> {
   DateTime? latestPostTimestamp;
   bool hasNewPosts = false;
 
+  bool lostsOnly = false;
+
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -74,12 +76,40 @@ class _LostAndFoundsPageState extends State<LostAndFoundsPage> {
         }
         // Retrieve posts and filter them based on selected categories
         List<Post> allPosts = snapshot.data ?? [];
+        List<Post> filteredPosts = [];
+        if (lostsOnly) {
+          allPosts.forEach((element) {
+            if (element.resolved == false) {
+              filteredPosts.add(element);
+            }
+          });
+        } else {
+          filteredPosts = allPosts;
+        }
+
         if (snapshot.data!.isNotEmpty) {
           return Column(
             children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const Text("Losts Only",
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  Switch(
+                    value: lostsOnly,
+                    activeColor: Theme.of(context).colorScheme.primary,
+                    onChanged: (bool value) {
+                      setState(() {
+                        lostsOnly = value;
+                      });
+                    },
+                  ),
+                ],
+              ),
               Expanded(
                 child: Posts(
-                  posts: allPosts,
+                  posts: filteredPosts,
                   selectedCategories: const [],
                   controller: _scrollController,
                   collection: "lost_and_founds",
