@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_iconpicker/IconPicker/icons.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:guc_swiss_knife/components/auth/form_input_field.dart';
 import 'package:guc_swiss_knife/models/location.dart';
 import 'package:guc_swiss_knife/services/location_service.dart';

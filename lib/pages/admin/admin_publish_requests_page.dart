@@ -4,9 +4,7 @@ import 'package:guc_swiss_knife/components/app_bar_widget.dart';
 import 'package:guc_swiss_knife/components/drawer_widget.dart';
 import 'package:guc_swiss_knife/components/utils/no_content.dart';
 import 'package:guc_swiss_knife/models/publish_request.dart';
-import 'package:guc_swiss_knife/providers/auth_provider.dart';
 import 'package:guc_swiss_knife/services/publish_requests_service.dart';
-import 'package:provider/provider.dart';
 
 class AdminPublishRequests extends StatefulWidget {
   const AdminPublishRequests({super.key});
