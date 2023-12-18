@@ -372,6 +372,7 @@ class _PostState extends State<PostWidget> {
                     });
                   } else {
                     print("will like");
+                    //TODO: notification
                     widget._postsService.likePost(
                         widget.collection, widget.post.id, currentUserId);
                     setState(() {

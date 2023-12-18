@@ -1,4 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/widgets.dart';
+import 'package:guc_swiss_knife/models/post.dart';
+import 'package:guc_swiss_knife/services/notifications_service.dart';
+import 'package:guc_swiss_knife/services/posts_service.dart';
 import '../models/comment.dart';
 import '../models/user.dart';
 
@@ -45,7 +49,17 @@ class CommentService {
     return fetchedComments;
   }
 
-  Future<void> addComment(CommentModel comment, String collectionName) async {
-    await _firestore.collection(collectionName).add(comment.toMap());
+  Future<void> addComment(
+      CommentModel comment, String collectionName, String postId) async {
+    await _firestore.runTransaction((transaction) async {
+      await _firestore.collection(collectionName).add(comment.toMap());
+      DocumentSnapshot snapshot = await PostsService()
+          .getPostById(postId, collectionName.replaceAll("comments_", ""));
+      NotificationService.sendCommentNotification(
+          comment.userId,
+          comment.postId,
+          collectionName.replaceAll("comments_", ""),
+          snapshot['userId']);
+    });
   }
 }

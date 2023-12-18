@@ -4,6 +4,7 @@
     "Autovalidate",
     "firestore",
     "Geolocator",
-    "LTRB"
+    "LTRB",
+    "rxdart"
   ]
 }

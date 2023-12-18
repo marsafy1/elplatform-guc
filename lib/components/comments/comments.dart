@@ -18,7 +18,7 @@ class Comments extends StatelessWidget {
       required this.commentsDisplayedName});
 
   void handleCommentSubmission(String comment, BuildContext context,
-      TextEditingController commentController) {
+      TextEditingController commentController, String postId) {
     CommentService commentService = CommentService();
     final userAuth = Provider.of<AuthProvider>(context, listen: false);
     if (comment.trim().isNotEmpty) {
@@ -29,7 +29,8 @@ class Comments extends StatelessWidget {
         dateCreated: DateTime.now(),
       );
       // Add the comment to Firestore
-      commentService.addComment(newComment, collectionName).then((_) {
+      print(collectionName);
+      commentService.addComment(newComment, collectionName, postId).then((_) {
         print('Comment added successfully.');
         commentController.clear(); // Clear the text field after submission
         // Navigator.pop(
@@ -99,7 +100,7 @@ class Comments extends StatelessWidget {
                           textInputAction: TextInputAction.send,
                           onSubmitted: (value) {
                             handleCommentSubmission(
-                                value, context, commentController);
+                                value, context, commentController, postId);
                           },
                           decoration: InputDecoration(
                             hintText: "What's on your mind?",
@@ -118,7 +119,7 @@ class Comments extends StatelessWidget {
                         icon: const Icon(Icons.send),
                         onPressed: () {
                           handleCommentSubmission(commentController.text,
-                              context, commentController);
+                              context, commentController, postId);
                         },
                       ),
                     ],

@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:guc_swiss_knife/api/firebase_api.dart';
 import 'package:guc_swiss_knife/configs/constants.dart';
 import 'package:guc_swiss_knife/firebase_options.dart';
 import 'package:guc_swiss_knife/models/user.dart';
@@ -11,6 +12,7 @@ import 'package:guc_swiss_knife/pages/auth/login_page.dart';
 import 'package:guc_swiss_knife/pages/auth/register_page.dart';
 import 'package:guc_swiss_knife/pages/extra_pages/guc_map.dart';
 import 'package:guc_swiss_knife/pages/extra_pages/location_details.dart';
+import 'package:guc_swiss_knife/pages/notification_details_page.dart';
 import 'package:guc_swiss_knife/pages/profile/change_password.dart';
 import 'package:guc_swiss_knife/pages/profile/edit_profile_page.dart';
 import 'package:guc_swiss_knife/pages/profile/profile_page.dart';
@@ -31,11 +33,13 @@ import 'pages/extra_pages/instructors.dart';
 import 'pages/extra_pages/navigation.dart';
 import 'themes/dark_theme.dart';
 
+final navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await FirebaseApi().initNotifications();
   runApp(const MyApp());
 }
 
@@ -68,11 +72,11 @@ class MyApp extends StatelessWidget {
         theme: darkTheme,
         darkTheme: darkTheme,
         themeMode: ThemeMode.system,
-        // themeMode: ThemeMode.dark,
         navigatorObservers: [
           AnalyticsService.getAnalyticsObserver(),
           RouteObserverService()
         ],
+        navigatorKey: navigatorKey,
         routes: {
           '/home': (dummyCtx) => const TabsControllerScreen(),
           '/contacts': (dummyCtx) => const Contacts(),
@@ -96,6 +100,7 @@ class MyApp extends StatelessWidget {
           '/gucMap': (dummyCtx) => const GucMap(),
           '/addCourse': (dummyCtx) => const AddCourse(),
           '/addInstructor': (dummyCtx) => const AddInstructor(),
+          '/notificationDetails': (dummyCtx) => const NotificationDetailsPage(),
         },
       ),
     );
