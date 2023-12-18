@@ -145,12 +145,7 @@ class _PostState extends State<PostWidget> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            if (!showResolveOption && showCategory)
-              ChipElement(category: widget.post.category),
-            if (showResolveOption && isResolvedUI)
-              statusChip(resolvedString, Colors.green),
-            if (showResolveOption && !isResolvedUI)
-              statusChip("", Colors.transparent),
+            if (showResolveOption) ChipElement(category: widget.post.category),
             Text(timeago.format(widget.post.dateCreated),
                 style: const TextStyle(color: Colors.grey)),
           ],
@@ -323,9 +318,13 @@ class _PostState extends State<PostWidget> {
       children: [
         const Divider(),
         Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text('$interactionsCount $interactionActionText'),
+            if (showResolveOption && isResolvedUI)
+              statusChip(resolvedString, Colors.green),
+            if (showResolveOption && !isResolvedUI)
+              statusChip("", Colors.transparent),
           ],
         ),
         const SizedBox(height: 10),
