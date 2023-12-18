@@ -8,6 +8,7 @@ class Post {
   final String description;
   final DateTime dateCreated;
   final bool anon;
+  final bool resolved;
   final List<dynamic>? photosUrls;
   final List<String>? likedByUsers; // New field to track likes
   User? user;
@@ -20,6 +21,7 @@ class Post {
       required this.description,
       required this.dateCreated,
       required this.anon,
+      required this.resolved,
       this.photosUrls,
       this.user,
       this.likedByUsers});
@@ -35,6 +37,7 @@ class Post {
       id: documentId,
       title: map['title'] ?? "Title",
       userId: map['userId'] ?? "Default",
+      resolved: map['resolved'] ?? false,
       anon: map['anon'] ?? false,
       category: map['category'] ?? "all",
       description: map['description'] ?? "Description",
@@ -51,6 +54,7 @@ class Post {
     return {
       'title': title,
       'userId': userId,
+      'resolved': resolved,
       'anon': anon,
       'category': category,
       'description': description,

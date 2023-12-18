@@ -242,6 +242,7 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
                                 Post newQuestion = Post(
                                     title: title,
                                     userId: userId,
+                                    resolved: false,
                                     anon: localAnon,
                                     category: category,
                                     description: description,

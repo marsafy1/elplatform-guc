@@ -10,6 +10,7 @@ import '../utils/verified_check.dart';
 import '../comments/comments.dart';
 import '../../utils_functions/profile.dart';
 import '../../utils_functions/ghost.dart';
+import '../../utils_functions/success_chip.dart';
 import '../../services/posts_service.dart';
 
 class PostWidget extends StatefulWidget {
@@ -26,6 +27,8 @@ class PostWidget extends StatefulWidget {
 class _PostState extends State<PostWidget> {
   bool isLikedByUser = false;
   bool isLikedByUserUI = false;
+  bool isResolved = false;
+  bool isResolvedUI = false;
   int interactionsCount = 0;
   @override
   void initState() {
@@ -38,7 +41,8 @@ class _PostState extends State<PostWidget> {
       isLikedByUser = widget.post.likedByUsers!.contains(currentUserId);
       isLikedByUserUI = isLikedByUser;
     }
-
+    isResolved = widget.post.resolved;
+    isResolvedUI = isResolved;
     interactionsCount =
         widget.post.likedByUsers != null ? widget.post.likedByUsers!.length : 0;
   }
@@ -57,6 +61,15 @@ class _PostState extends State<PostWidget> {
   Map<String, String> collectionToComment = {
     "questions": "Answers",
     "confessions": "Comments"
+  };
+
+  Map<String, String> collectionToResolvedOption = {
+    "questions": "Answered",
+    "lost_and_founds": "Found"
+  };
+  Map<String, String> collectionToResolveOption = {
+    "questions": "Mark as Answered",
+    "lost_and_founds": "Mark as Found"
   };
   @override
   Widget build(BuildContext context) {
@@ -88,6 +101,10 @@ class _PostState extends State<PostWidget> {
       userAvatar = generateGhostAvatar();
       displayedName = "Ghost";
     }
+    bool showResolveOption = widget.collection == "questions" ||
+        widget.collection == "lost_and_founds";
+    String resolvedString =
+        collectionToResolvedOption[widget.collection] ?? "Resolved";
 
     return Row(
       children: [
@@ -114,7 +131,11 @@ class _PostState extends State<PostWidget> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            ChipElement(category: widget.post.category),
+            if (!showResolveOption) ChipElement(category: widget.post.category),
+            if (showResolveOption && isResolvedUI)
+              statusChip(resolvedString, Colors.green),
+            if (showResolveOption && !isResolvedUI)
+              statusChip("", Colors.transparent),
             Text(timeago.format(widget.post.dateCreated),
                 style: const TextStyle(color: Colors.grey)),
           ],
@@ -154,13 +175,34 @@ class _PostState extends State<PostWidget> {
 
     String interactionActionText =
         interactionsCount != 1 ? "${interactionAction}s" : interactionAction;
+
+    bool showResolveOption = widget.collection == "questions" ||
+        widget.collection == "lost_and_founds";
+    final userAuth = Provider.of<AuthProvider>(context, listen: false);
+    String currentUserId = userAuth.user!.id;
+    bool userOwnsPost = widget.post.userId == currentUserId;
+    String resolvedString = "Resolved";
+    String resolveString = "Resolve";
+    String displayedResolveOption = "Resolve";
+    if (showResolveOption) {
+      resolvedString =
+          collectionToResolvedOption[widget.collection] ?? resolvedString;
+      resolveString =
+          collectionToResolveOption[widget.collection] ?? resolveString;
+      if (isResolvedUI) {
+        displayedResolveOption = resolvedString;
+      } else {
+        displayedResolveOption = resolveString;
+      }
+    }
+
     return Column(
       children: [
         const Divider(),
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Text('$interactionsCount $interactionAction'),
+            Text('$interactionsCount $interactionActionText'),
           ],
         ),
         const SizedBox(height: 10),
@@ -189,7 +231,7 @@ class _PostState extends State<PostWidget> {
                       const SizedBox(
                         width: 8,
                       ),
-                      Text(interactionActionText)
+                      Text(interactionAction)
                     ],
                   ),
                 ),
@@ -243,6 +285,57 @@ class _PostState extends State<PostWidget> {
             ),
           ],
         ),
+        if (showResolveOption && userOwnsPost)
+          const SizedBox(
+            height: 10,
+          ),
+        if (showResolveOption && userOwnsPost)
+          Row(
+            children: [
+              Expanded(
+                child: InkWell(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        FaIcon(
+                          FontAwesomeIcons.check,
+                          size: 17,
+                          color: isResolvedUI ? Colors.green : Colors.white,
+                        ),
+                        const SizedBox(
+                          width: 8,
+                        ),
+                        Text(displayedResolveOption)
+                      ],
+                    ),
+                  ),
+                  onTap: () {
+                    if (isResolvedUI) {
+                      widget._postsService.changeResolveStatusPost(
+                          widget.collection, widget.post.id, false);
+
+                      setState(() {
+                        isResolvedUI = false;
+                      });
+                    } else {
+                      widget._postsService.changeResolveStatusPost(
+                          widget.collection, widget.post.id, true);
+                      setState(() {
+                        isResolvedUI = true;
+                      });
+                    }
+                  },
+                ),
+              ),
+            ],
+          )
       ],
     );
   }
