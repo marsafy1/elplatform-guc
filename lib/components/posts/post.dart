@@ -136,7 +136,7 @@ class _PostState extends State<PostWidget> {
                     const VerifiedCheck(),
                 ],
               ),
-              if (!widget.post.anon)
+              if (!widget.post.anon && bio.isNotEmpty)
                 Text(bio, style: const TextStyle(color: Colors.grey)),
             ],
           ),
