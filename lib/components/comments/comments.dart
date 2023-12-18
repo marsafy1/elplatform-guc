@@ -71,11 +71,16 @@ class Comments extends StatelessWidget {
                   ),
                 if (snapshot.connectionState != ConnectionState.waiting &&
                     allComments.isNotEmpty)
-                  Column(
-                    children: allComments.map((comment) {
-                      return Comment(
-                          key: ValueKey(comment.id), comment: comment);
-                    }).toList(),
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(maxHeight: 450),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: allComments.map((comment) {
+                          return Comment(
+                              key: ValueKey(comment.id), comment: comment);
+                        }).toList(),
+                      ),
+                    ),
                   ),
                 if (snapshot.connectionState != ConnectionState.waiting &&
                     allComments.isEmpty)
