@@ -306,19 +306,19 @@ class _PostState extends State<PostWidget> {
                     ),
                   ),
                   onTap: () {
-                    final userAuth =
-                        Provider.of<AuthProvider>(context, listen: false);
-                    String currentUserId = userAuth.user!.id;
+                    // final userAuth =
+                    //     Provider.of<AuthProvider>(context, listen: false);
+                    // String currentUserId = userAuth.user!.id;
                     if (isResolvedUI) {
-                      // widget._postsService.unlikePost(
-                      //     widget.collection, widget.post.id, currentUserId);
+                      widget._postsService.changeResolveStatusPost(
+                          widget.collection, widget.post.id, false);
 
                       setState(() {
                         isResolvedUI = false;
                       });
                     } else {
-                      // widget._postsService.likePost(
-                      //     widget.collection, widget.post.id, currentUserId);
+                      widget._postsService.changeResolveStatusPost(
+                          widget.collection, widget.post.id, true);
                       setState(() {
                         isResolvedUI = true;
                       });

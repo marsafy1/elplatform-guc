@@ -86,4 +86,16 @@ class PostsService {
       transaction.update(postRef, {'likedByUsers': likedByUsers});
     });
   }
+
+  Future<void> changeResolveStatusPost(
+      String collection, String postId, bool value) async {
+    DocumentReference postRef = _firestore.collection(collection).doc(postId);
+    await _firestore.runTransaction((transaction) async {
+      DocumentSnapshot snapshot = await transaction.get(postRef);
+      if (!snapshot.exists) {
+        throw Exception("Post does not exist!");
+      }
+      transaction.update(postRef, {'resolved': value});
+    });
+  }
 }
