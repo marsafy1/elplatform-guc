@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:guc_swiss_knife/components/app_bar_widget.dart';
 import 'package:guc_swiss_knife/services/posts_service.dart';
@@ -44,6 +46,7 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
   };
   List<Category> categoriesChoices = [];
   List<Category> selectedCategoriesChoices = [];
+  List<File> photosFiles = [];
   var categoriesMap = CategoryManager().categoriesMap;
 
   @override
@@ -96,6 +99,16 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
     });
   }
 
+  Future<File?> pickImage() async {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      photosFiles.add(File(pickedFile.path));
+      return File(pickedFile.path);
+    }
+    return null;
+  }
+
   void showBottomSheetForNewPost(BuildContext context) {
     final TextEditingController titleController = TextEditingController();
     final TextEditingController descriptionController = TextEditingController();
@@ -115,6 +128,12 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
 
     bool inConfessions = indexToCollection[selectedTabIndex] == "confessions";
     bool inQuestions = indexToCollection[selectedTabIndex] == "questions";
+
+    setState(() {
+      photosFiles = [];
+    });
+    List<File> localPhotosFiles = [];
+    List<String> localPhotosUrls = [];
 
     showModalBottomSheet(
       context: context,
@@ -163,6 +182,47 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
                               minLines: 10,
                               maxLines: 12,
                             ),
+                            Container(
+                              margin: const EdgeInsets.all(5),
+                              child: Row(
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () async {
+                                      File? image =
+                                          await pickImage(); // or ImageSource.camera
+                                      if (image != null) {
+                                        setModalState(() {
+                                          localPhotosFiles.add(image);
+                                        });
+                                      }
+                                    },
+                                    child: const Text('Pick Image'),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  // Display selected images
+                                  Expanded(
+                                    child: SizedBox(
+                                      height: 100, // Adjust the size as needed
+                                      child: ListView.builder(
+                                        scrollDirection: Axis.horizontal,
+                                        itemCount: localPhotosFiles.length,
+                                        itemBuilder: (context, index) {
+                                          return Padding(
+                                            padding: const EdgeInsets.all(4.0),
+                                            child: Image.file(
+                                              localPhotosFiles[index],
+                                              width: 100, // Thumbnail width
+                                              height: 100, // Thumbnail height
+                                              fit: BoxFit.cover,
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                             if (inConfessions)
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -207,7 +267,7 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
                                         size: 20, color: Colors.white),
                                 ],
                               ),
-                              onPressed: () {
+                              onPressed: () async {
                                 String title = titleController.text.trim();
                                 String description =
                                     descriptionController.text.trim();
@@ -235,18 +295,31 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
                                       "Please choose a category", "error");
                                   return;
                                 }
-
+                                List<String> uploadedUrls = [];
+                                for (File imgFile in localPhotosFiles) {
+                                  print("Going to call upload IMAGE");
+                                  String? uploadedImageUrl =
+                                      await _postsService.uploadImage(imgFile);
+                                  if (uploadedImageUrl != null) {
+                                    print("GOT AN IMAGE");
+                                    print("URL $uploadedImageUrl");
+                                    uploadedUrls.add(uploadedImageUrl);
+                                  }
+                                }
+                                setModalState(() {
+                                  localPhotosUrls.addAll(uploadedUrls);
+                                });
                                 DateTime dateTime = DateTime.now();
-                                Post newQuestion = Post(
+                                Post newPost = Post(
                                     title: title,
                                     userId: userId,
                                     resolved: false,
                                     anon: localAnon,
                                     category: category,
                                     description: description,
-                                    photosUrls: [],
+                                    photosUrls: localPhotosUrls,
                                     dateCreated: dateTime);
-                                _postsService.addPost(collection, newQuestion);
+                                _postsService.addPost(collection, newPost);
                                 Navigator.pop(context);
                               },
                             ),
