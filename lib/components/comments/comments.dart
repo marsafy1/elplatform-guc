@@ -32,8 +32,8 @@ class Comments extends StatelessWidget {
       commentService.addComment(newComment, collectionName).then((_) {
         print('Comment added successfully.');
         commentController.clear(); // Clear the text field after submission
-        Navigator.pop(
-            context); // Optionally close the bottom sheet after submission
+        // Navigator.pop(
+        //     context);
       }).catchError((error) {
         print('Error adding comment: $error');
       });
@@ -73,7 +73,8 @@ class Comments extends StatelessWidget {
                     allComments.isNotEmpty)
                   Column(
                     children: allComments.map((comment) {
-                      return Comment(comment: comment);
+                      return Comment(
+                          key: ValueKey(comment.id), comment: comment);
                     }).toList(),
                   ),
                 if (snapshot.connectionState != ConnectionState.waiting &&

@@ -9,7 +9,7 @@ class CommentService {
     Stream<List<CommentModel>> fetchedComments = _firestore
         .collection(collection)
         .where("postId", isEqualTo: postId)
-        .orderBy('dateCreated', descending: true)
+        .orderBy('dateCreated', descending: false)
         .snapshots()
         .asyncMap((snapshot) async {
       // Create a list to keep all the posts
