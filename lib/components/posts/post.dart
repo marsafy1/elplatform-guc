@@ -13,6 +13,7 @@ import '../../utils_functions/profile.dart';
 import '../../utils_functions/ghost.dart';
 import '../../utils_functions/success_chip.dart';
 import '../../services/posts_service.dart';
+import '../toast/toast.dart';
 
 class PostWidget extends StatefulWidget {
   final PostsService _postsService = PostsService();
@@ -153,20 +154,65 @@ class _PostState extends State<PostWidget> {
             Text(timeago.format(widget.post.dateCreated),
                 style: const TextStyle(color: Colors.grey)),
           ],
-        )
+        ),
       ],
     );
   }
 
   Widget _buildPostContent() {
+    final userAuth = Provider.of<AuthProvider>(context, listen: false);
+    String currentUserId = userAuth.user!.id;
+    bool userOwnsPost = widget.post.userId == currentUserId;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          widget.post.title,
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
+        SizedBox(
+          width: double.infinity,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                widget.post.title,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              if (userOwnsPost)
+                PopupMenuButton<String>(
+                  onSelected: _handleMenuSelection,
+                  color: Theme.of(context).secondaryHeaderColor,
+                  itemBuilder: (BuildContext context) {
+                    return {'Delete'}.map((String choice) {
+                      return PopupMenuItem<String>(
+                        height: 12,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10.0, vertical: 5.0),
+                        value: choice,
+                        child: Row(
+                          children: [
+                            Icon(
+                                choice == 'Delete'
+                                    ? FontAwesomeIcons.trash
+                                    : null,
+                                size: 13),
+                            const SizedBox(width: 8),
+                            Text(
+                              choice,
+                              style: const TextStyle(fontSize: 14),
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList();
+                  },
+                  icon: const FaIcon(
+                    FontAwesomeIcons.ellipsisVertical,
+                    size: 17,
+                    color: Colors.grey,
+                  ),
+                ),
+            ],
           ),
         ),
         Text(
@@ -177,6 +223,63 @@ class _PostState extends State<PostWidget> {
         ImageSlider(photosUrlsOriginal: widget.post.photosUrls),
       ],
     );
+  }
+
+  void _handleMenuSelection(String choice) {
+    if (choice == 'Delete') {
+      _showDeleteConfirmationBottomSheet();
+    } else {
+      // Handle other menu options here
+    }
+  }
+
+  void _showDeleteConfirmationBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          padding: const EdgeInsets.all(16),
+          child: Wrap(
+            children: <Widget>[
+              const ListTile(
+                leading: Icon(Icons.delete_outline),
+                title: Text('Confirm Deletion'),
+                subtitle: Text('Are you sure you want to delete this post?'),
+              ),
+              ButtonBar(
+                children: <Widget>[
+                  TextButton(
+                    child: const Text('Cancel'),
+                    onPressed: () {
+                      Navigator.of(context).pop(); // Dismiss the bottom sheet
+                    },
+                  ),
+                  TextButton(
+                    child: const Text('Delete'),
+                    onPressed: () {
+                      // Call your deletion function here
+                      _deletePost();
+                      Navigator.of(context).pop(); // Dismiss the bottom sheet
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _deletePost() {
+    try {
+      widget._postsService.deletePost(widget.collection, widget.post.id);
+      Toast.show(context, "Deleted Successfully", "success",
+          onTap: () {}, icon: FontAwesomeIcons.check);
+    } catch (e) {
+      Toast.show(context, "Error Occurred", "error",
+          onTap: () {}, icon: FontAwesomeIcons.xmark);
+    }
   }
 
   Widget _buildFooter(context) {
