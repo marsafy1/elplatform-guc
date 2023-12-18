@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guc_swiss_knife/models/comment.dart';
+import 'package:timeago/timeago.dart' as timeago;
 import '../../utils_functions/profile.dart';
 
 class Comment extends StatelessWidget {
@@ -11,7 +12,14 @@ class Comment extends StatelessWidget {
     Widget userAvatar = generateAvatar(context, comment.user!);
     return ListTile(
       leading: userAvatar,
-      title: Text(comment.user!.firstName),
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(comment.user!.firstName),
+          Text(timeago.format(comment.dateCreated),
+              style: const TextStyle(color: Colors.grey, fontSize: 13)),
+        ],
+      ),
       subtitle: Text(comment.comment),
     );
   }
