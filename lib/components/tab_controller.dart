@@ -128,6 +128,9 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
 
     bool inConfessions = indexToCollection[selectedTabIndex] == "confessions";
     bool inQuestions = indexToCollection[selectedTabIndex] == "questions";
+    bool inFeed = indexToCollection[selectedTabIndex] == "feed";
+
+    bool postingImagesAllowed = inQuestions || inFeed;
 
     setState(() {
       photosFiles = [];
@@ -182,47 +185,50 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
                               minLines: 10,
                               maxLines: 12,
                             ),
-                            Container(
-                              margin: const EdgeInsets.all(5),
-                              child: Row(
-                                children: [
-                                  ElevatedButton(
-                                    onPressed: () async {
-                                      File? image =
-                                          await pickImage(); // or ImageSource.camera
-                                      if (image != null) {
-                                        setModalState(() {
-                                          localPhotosFiles.add(image);
-                                        });
-                                      }
-                                    },
-                                    child: const Text('Pick Image'),
-                                  ),
-                                  const SizedBox(width: 10),
-                                  // Display selected images
-                                  Expanded(
-                                    child: SizedBox(
-                                      height: 100, // Adjust the size as needed
-                                      child: ListView.builder(
-                                        scrollDirection: Axis.horizontal,
-                                        itemCount: localPhotosFiles.length,
-                                        itemBuilder: (context, index) {
-                                          return Padding(
-                                            padding: const EdgeInsets.all(4.0),
-                                            child: Image.file(
-                                              localPhotosFiles[index],
-                                              width: 100, // Thumbnail width
-                                              height: 100, // Thumbnail height
-                                              fit: BoxFit.cover,
-                                            ),
-                                          );
-                                        },
+                            if (postingImagesAllowed)
+                              Container(
+                                margin: const EdgeInsets.all(5),
+                                child: Row(
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: () async {
+                                        File? image =
+                                            await pickImage(); // or ImageSource.camera
+                                        if (image != null) {
+                                          setModalState(() {
+                                            localPhotosFiles.add(image);
+                                          });
+                                        }
+                                      },
+                                      child: const Text('Pick Image'),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    // Display selected images
+                                    Expanded(
+                                      child: SizedBox(
+                                        height:
+                                            100, // Adjust the size as needed
+                                        child: ListView.builder(
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount: localPhotosFiles.length,
+                                          itemBuilder: (context, index) {
+                                            return Padding(
+                                              padding:
+                                                  const EdgeInsets.all(4.0),
+                                              child: Image.file(
+                                                localPhotosFiles[index],
+                                                width: 100, // Thumbnail width
+                                                height: 100, // Thumbnail height
+                                                fit: BoxFit.cover,
+                                              ),
+                                            );
+                                          },
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
                             if (inConfessions)
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
