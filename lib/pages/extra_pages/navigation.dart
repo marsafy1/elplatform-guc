@@ -4,7 +4,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:guc_swiss_knife/components/utils/no_content.dart';
 import 'package:guc_swiss_knife/configs/constants.dart';
 import 'package:guc_swiss_knife/models/location.dart';
+import 'package:guc_swiss_knife/providers/auth_provider.dart';
 import 'package:guc_swiss_knife/services/location_service.dart';
+import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 
 class Navigation extends StatefulWidget {
@@ -18,14 +20,14 @@ class _NavigationState extends State<Navigation> {
   LocationService locationService = LocationService();
   final StreamController<String> _searchController = StreamController<String>();
   late Stream<List<Location>> _locationsStream;
-
-  // theme secondary color
+  late bool isAdmin;
 
   @override
   void initState() {
     _locationsStream = _searchController.stream.switchMap((searchTerm) {
       return locationService.fetchLocations(searchTerm);
     });
+    isAdmin = Provider.of<AuthProvider>(context, listen: false).isAdmin;
     _searchController.add("");
     super.initState();
   }
@@ -38,7 +40,6 @@ class _NavigationState extends State<Navigation> {
 
   @override
   Widget build(BuildContext context) {
-    Color? themeSecondaryColor = Theme.of(context).cardColor;
     return Scaffold(
       appBar: AppBar(
         title: const Text("$appName - Navigation"),
@@ -48,22 +49,25 @@ class _NavigationState extends State<Navigation> {
           children: [
             Center(
               child: Container(
-                width: 300.0, // Adjust the width as needed
-                height: 50.0,
+                width: 310.0, // Adjust the width as needed
+                height: 60.0,
                 margin: const EdgeInsets.symmetric(vertical: 8.0),
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(25.0),
-                  color: themeSecondaryColor, // Set the background color
+                  borderRadius:
+                      BorderRadius.circular(25.0), // Set the background color
                 ),
-                child: TextField(
-                  decoration: const InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(vertical: 0),
-                    border: InputBorder.none, // Remove the default border
-                    label: Text("Search Locations"),
-                    prefixIcon: Icon(Icons.search),
+                child: Card(
+                  elevation: 2.0,
+                  child: TextField(
+                    decoration: const InputDecoration(
+                      contentPadding: EdgeInsets.symmetric(vertical: 10),
+                      border: InputBorder.none, // Remove the default border
+                      label: Text("Search Locations"),
+                      prefixIcon: Icon(Icons.search),
+                    ),
+                    onChanged: (value) => _searchController.add(value),
                   ),
-                  onChanged: (value) => _searchController.add(value),
                 ),
               ),
             ),
@@ -81,14 +85,16 @@ class _NavigationState extends State<Navigation> {
                               return Card(
                                 child: ListTile(
                                   // delete
-                                  trailing: IconButton(
-                                    icon: const Icon(Icons.delete,
-                                        color: Colors.red),
-                                    onPressed: () async {
-                                      locationService.deleteLocation(
-                                          snapshot.data![index].id ?? "");
-                                    },
-                                  ),
+                                  trailing: !isAdmin
+                                      ? null
+                                      : IconButton(
+                                          icon: const Icon(Icons.delete,
+                                              color: Colors.red),
+                                          onPressed: () async {
+                                            locationService.deleteLocation(
+                                                snapshot.data![index].id ?? "");
+                                          },
+                                        ),
                                   leading: const SizedBox(
                                     width: 50,
                                     child: Icon(Icons.location_on),
@@ -124,15 +130,17 @@ class _NavigationState extends State<Navigation> {
             heroTag: null,
             child: const FaIcon(FontAwesomeIcons.mapLocation),
           ),
-          const SizedBox(height: 10),
-          FloatingActionButton(
-            onPressed: () {
-              Navigator.of(context).pushNamed('/addLocation');
-            },
-            shape: const CircleBorder(),
-            heroTag: null,
-            child: const Icon(Icons.add),
-          ),
+          if (isAdmin) ...[
+            const SizedBox(height: 10),
+            FloatingActionButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed('/addLocation');
+              },
+              shape: const CircleBorder(),
+              heroTag: null,
+              child: const Icon(Icons.add),
+            ),
+          ]
         ],
       ),
     );

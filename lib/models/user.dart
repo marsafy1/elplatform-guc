@@ -61,7 +61,7 @@ class User {
       photoUrl: map['photo_url'] as String?,
       gucId: map['guc_id'] as String?,
       rating: (map['ratings_sum'] as num? ?? 0.0) /
-          ((map['reviews'] as List<dynamic>?)!.length.toDouble()),
+          ((map['reviews'] as List<dynamic>?)?.length.toDouble() ?? 1),
       reviews: (map['reviews'] as List<dynamic>?)
           ?.map((e) => Review.fromMap(e as Map<String, dynamic>))
           .toList(),
