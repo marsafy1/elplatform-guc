@@ -37,7 +37,6 @@ dependencies:
   firebase_core: ^2.24.0
   flutter:
     sdk: flutter
-  flutter_iconpicker: ^3.2.4
   flutter_rating_bar: ^4.0.1
   font_awesome_flutter: ^10.6.0
   geodesy: ^0.10.2
@@ -51,7 +50,6 @@ dependencies:
   url_launcher: ^6.2.2
   flutter_iconpicker: ^3.2.4
   firebase_messaging: ^14.7.9
-  rxdart: ^0.27.7
 
 dev_dependencies:
   flutter_lints: ^2.0.0
