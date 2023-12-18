@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guc_swiss_knife/components/utils/no_content.dart';
 import 'package:guc_swiss_knife/configs/constants.dart';
 import 'package:guc_swiss_knife/models/course.dart';
 import 'package:guc_swiss_knife/providers/auth_provider.dart';
@@ -13,91 +14,75 @@ class Courses extends StatefulWidget {
 }
 
 class _CoursesState extends State<Courses> {
-  late Future<List<Course>> futureCourses;
   late AuthProvider _authProvider;
   late bool isAdmin;
 
   @override
   void initState() {
-    super.initState();
     setState(() {
       _authProvider = Provider.of<AuthProvider>(context, listen: false);
       isAdmin = _authProvider.isAdmin;
     });
-    futureCourses = CourseService.getCourses();
+    super.initState();
   }
 
+  final CourseService instructorReviewService = CourseService();
   @override
   Widget build(BuildContext context) {
     var keyBoardHeight = MediaQuery.of(context).viewInsets.bottom;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("$appName - Courses"),
-      ),
-      body: SingleChildScrollView(
-        child: Column(children: [
-          FutureBuilder(
-            future: futureCourses,
-            builder: (context, AsyncSnapshot<List<Course>> snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(height: 100),
-                      SizedBox(
-                        height: 100,
-                        width: 100,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 5.0,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              } else if (snapshot.hasError) {
-                return Text('Error: ${snapshot.error}');
-              } else {
-                List<Course>? courses = snapshot.data;
-                return Column(children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
-                    child: SearchAnchor.bar(
-                      barHintText: 'Search courses',
-                      suggestionsBuilder:
-                          (BuildContext context, SearchController controller) {
-                        return getSuggestions(controller, courses!);
-                      },
-                    ),
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.8 -
-                        keyBoardHeight,
-                    child: ListView.builder(
-                      itemCount: courses!.length,
-                      shrinkWrap: true,
-                      padding: const EdgeInsets.only(top: 10, bottom: 10),
-                      itemBuilder: (context, index) {
-                        return CourseCard(course: courses[index]);
-                      },
-                    ),
-                  )
-                ]);
-              }
-            },
-          ),
-        ]),
-      ),
-      floatingActionButton: !isAdmin
-          ? null
-          : FloatingActionButton(
-              onPressed: () {
-                Navigator.of(context).pushNamed('/addCourse');
-              },
-              shape: const CircleBorder(),
-              child: const Icon(Icons.add),
+    return StreamBuilder(
+      stream: CourseService.getCourses(),
+      builder: (context, AsyncSnapshot<List<Course>> snapshot) {
+        if (snapshot.hasData) {
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text("$appName - Instructors"),
             ),
+            body: SingleChildScrollView(
+              child: Column(children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+                  child: SearchAnchor.bar(
+                    barHintText: 'Search instructors',
+                    suggestionsBuilder:
+                        (BuildContext context, SearchController controller) {
+                      return getSuggestions(controller, snapshot.data!);
+                    },
+                  ),
+                ),
+                snapshot.data!.isEmpty
+                    ? const NoContent(text: "No Data Available")
+                    : SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.8 -
+                            keyBoardHeight,
+                        child: ListView.builder(
+                          itemCount: snapshot.data!.length,
+                          shrinkWrap: true,
+                          padding: const EdgeInsets.only(top: 10, bottom: 10),
+                          itemBuilder: (context, index) {
+                            return CourseCard(
+                              course: snapshot.data![index],
+                            );
+                          },
+                        ),
+                      )
+              ]),
+            ),
+            floatingActionButton: !isAdmin
+                ? null
+                : FloatingActionButton(
+                    onPressed: () {
+                      Navigator.of(context).pushNamed('/addCourse');
+                    },
+                    shape: const CircleBorder(),
+                    child: const Icon(Icons.add),
+                  ),
+          );
+        } else {
+          return const Center(child: CircularProgressIndicator());
+        }
+      },
     );
   }
 

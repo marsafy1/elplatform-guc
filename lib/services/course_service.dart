@@ -6,26 +6,18 @@ class CourseService {
   static final CollectionReference _coursesCollectionReference =
       FirebaseFirestore.instance.collection('courses');
 
-  static Future<List<Course>> getCourses() {
-    return _coursesCollectionReference.get().then((snapshot) {
-      return snapshot.docs.map((doc) {
-        List<Review> reviews = (doc['reviews'] as List<dynamic>)
-            .map((e) => Review(
-                  rating: e['rating'] as int,
-                  review: e['review'],
-                  userId: e['user_id'],
-                ))
-            .toList();
-        return Course(
-            id: doc.id,
-            title: doc['title'],
-            description: doc['description'],
-            photoUrl: doc['photo_url'],
-            reviews: reviews,
-            averageRating:
-                (doc['ratings_sum'] as num) / reviews.length.toDouble());
-      }).toList();
+  static Stream<List<Course>> getCourses() {
+    Stream<List<Course>> fetchedInstructors =
+        _coursesCollectionReference.snapshots().asyncMap((snapshot) async {
+      List<Course> courses = [];
+      for (var doc in snapshot.docs) {
+        Course course =
+            Course.fromMap(doc.data() as Map<String, dynamic>, doc.id);
+        courses.add(course);
+      }
+      return courses;
     });
+    return fetchedInstructors;
   }
 
   static Future<void> addReview(String? courseId, Review review) {
@@ -63,7 +55,7 @@ class CourseService {
               'review': oldReview.review,
             }
           ]),
-          'ratings_sum': FieldValue.increment(-newReview.rating),
+          'ratings_sum': FieldValue.increment(-oldReview.rating),
         })
         .then((value) => print("Review Removed"))
         .catchError((error) => print("Failed to remove review: $error"))

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:guc_swiss_knife/services/image_upload_service.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -20,6 +21,7 @@ import '../pages/questions_page.dart';
 import '../pages/lost_and_founds_page.dart';
 import '../pages/notifications_page.dart';
 import '../managers/categories_manager.dart';
+import '../managers/lost_and_founds_manager.dart';
 
 class TabsControllerScreen extends StatefulWidget {
   const TabsControllerScreen({super.key});
@@ -47,12 +49,13 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
   List<Category> categoriesChoices = [];
   List<Category> selectedCategoriesChoices = [];
   List<File> photosFiles = [];
-  var categoriesMap = CategoryManager().categoriesMap;
+  var categoriesMapQs = CategoryManager().categoriesMap;
+  var categoriesMapLs = LostAndFoundsManager().categoriesMap;
 
   @override
   void initState() {
     super.initState();
-    categoriesChoices = categoriesMap.entries.map((entry) {
+    categoriesChoices = categoriesMapQs.entries.map((entry) {
       return Category(
         name: entry.value.name,
         icon: CategoryIcon(icon: entry.value.icon),
@@ -110,6 +113,40 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
   }
 
   void showBottomSheetForNewPost(BuildContext context) {
+    bool inConfessions = indexToCollection[selectedTabIndex] == "confessions";
+    bool inQuestions = indexToCollection[selectedTabIndex] == "questions";
+    bool inFeed = indexToCollection[selectedTabIndex] == "feed";
+    bool inLosts = indexToCollection[selectedTabIndex] == "lost_and_founds";
+
+    if (inLosts) {
+      setState(() {
+        categoriesChoices = categoriesMapLs.entries.map((entry) {
+          return Category(
+            name: entry.value.name,
+            icon: CategoryIcon(icon: entry.value.icon),
+            addCategory: addCategory,
+            removeCategory: removeCategory,
+          );
+        }).toList();
+      });
+    }
+    if (inQuestions) {
+      setState(() {
+        categoriesChoices = categoriesMapQs.entries.map((entry) {
+          return Category(
+            name: entry.value.name,
+            icon: CategoryIcon(icon: entry.value.icon),
+            addCategory: addCategory,
+            removeCategory: removeCategory,
+          );
+        }).toList();
+      });
+    }
+
+    setState(() {
+      categoriesChoices[0].selected = true;
+    });
+
     final TextEditingController titleController = TextEditingController();
     final TextEditingController descriptionController = TextEditingController();
 
@@ -126,8 +163,9 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
     String userId = userAuth.user!.id;
     bool localAnon = anon; // Local variable for anon state in the bottom sheet
 
-    bool inConfessions = indexToCollection[selectedTabIndex] == "confessions";
-    bool inQuestions = indexToCollection[selectedTabIndex] == "questions";
+    bool postingImagesAllowed = inQuestions || inFeed || inLosts;
+
+    bool loadingSubmission = false;
 
     setState(() {
       photosFiles = [];
@@ -162,7 +200,7 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
                                     fontWeight: FontWeight.bold,
                                   )),
                             ),
-                            if (inQuestions)
+                            if (inQuestions || inLosts)
                               Categories(
                                   key: UniqueKey(),
                                   categories: categoriesChoices,
@@ -182,47 +220,50 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
                               minLines: 10,
                               maxLines: 12,
                             ),
-                            Container(
-                              margin: const EdgeInsets.all(5),
-                              child: Row(
-                                children: [
-                                  ElevatedButton(
-                                    onPressed: () async {
-                                      File? image =
-                                          await pickImage(); // or ImageSource.camera
-                                      if (image != null) {
-                                        setModalState(() {
-                                          localPhotosFiles.add(image);
-                                        });
-                                      }
-                                    },
-                                    child: const Text('Pick Image'),
-                                  ),
-                                  const SizedBox(width: 10),
-                                  // Display selected images
-                                  Expanded(
-                                    child: SizedBox(
-                                      height: 100, // Adjust the size as needed
-                                      child: ListView.builder(
-                                        scrollDirection: Axis.horizontal,
-                                        itemCount: localPhotosFiles.length,
-                                        itemBuilder: (context, index) {
-                                          return Padding(
-                                            padding: const EdgeInsets.all(4.0),
-                                            child: Image.file(
-                                              localPhotosFiles[index],
-                                              width: 100, // Thumbnail width
-                                              height: 100, // Thumbnail height
-                                              fit: BoxFit.cover,
-                                            ),
-                                          );
-                                        },
+                            if (postingImagesAllowed)
+                              Container(
+                                margin: const EdgeInsets.all(5),
+                                child: Row(
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: () async {
+                                        File? image =
+                                            await pickImage(); // or ImageSource.camera
+                                        if (image != null) {
+                                          setModalState(() {
+                                            localPhotosFiles.add(image);
+                                          });
+                                        }
+                                      },
+                                      child: const Text('Pick Image'),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    // Display selected images
+                                    Expanded(
+                                      child: SizedBox(
+                                        height:
+                                            100, // Adjust the size as needed
+                                        child: ListView.builder(
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount: localPhotosFiles.length,
+                                          itemBuilder: (context, index) {
+                                            return Padding(
+                                              padding:
+                                                  const EdgeInsets.all(4.0),
+                                              child: Image.file(
+                                                localPhotosFiles[index],
+                                                width: 100, // Thumbnail width
+                                                height: 100, // Thumbnail height
+                                                fit: BoxFit.cover,
+                                              ),
+                                            );
+                                          },
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
                             if (inConfessions)
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -243,86 +284,148 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
                                   ),
                                 ],
                               ),
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  backgroundColor: !localAnon
-                                      ? Theme.of(context).primaryColor
-                                      : Colors.amberAccent[700],
-                                  minimumSize: const Size(double.infinity, 36),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(5))),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(action.split(" ")[0],
-                                      style: localAnon
-                                          ? const TextStyle(color: Colors.white)
-                                          : const TextStyle()),
-                                  if (localAnon)
+                            if (!loadingSubmission)
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: !localAnon
+                                        ? Theme.of(context).primaryColor
+                                        : Colors.amberAccent[700],
+                                    minimumSize:
+                                        const Size(double.infinity, 36),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(5))),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(action.split(" ")[0],
+                                        style: localAnon
+                                            ? const TextStyle(
+                                                color: Colors.white)
+                                            : const TextStyle()),
+                                    if (localAnon)
+                                      const SizedBox(
+                                        width: 3,
+                                      ),
+                                    if (localAnon)
+                                      const FaIcon(FontAwesomeIcons.ghost,
+                                          size: 20, color: Colors.white),
+                                  ],
+                                ),
+                                onPressed: () async {
+                                  setModalState(() {
+                                    loadingSubmission = true;
+                                  });
+                                  String title = titleController.text.trim();
+                                  String description =
+                                      descriptionController.text.trim();
+                                  String category =
+                                      selectedCategoriesChoices.isNotEmpty
+                                          ? selectedCategoriesChoices[0]
+                                              .name
+                                              .toLowerCase()
+                                          : "all";
+                                  print("Categoryyyy");
+                                  print(selectedCategoriesChoices);
+                                  if (selectedCategoriesChoices.isNotEmpty) {
+                                    print(selectedCategoriesChoices[0].name);
+                                    print("catgory seleccted $category");
+                                  }
+
+                                  if (title.isEmpty) {
+                                    Toast.show(context, "Please enter a title",
+                                        "error");
+                                    setModalState(() {
+                                      loadingSubmission = false;
+                                    });
+                                    return;
+                                  }
+
+                                  if (description.isEmpty) {
+                                    Toast.show(context,
+                                        "Please enter a description", "error");
+                                    setModalState(() {
+                                      loadingSubmission = false;
+                                    });
+                                    return;
+                                  }
+
+                                  if (category.isEmpty) {
+                                    Toast.show(context,
+                                        "Please choose a category", "error");
+                                    setModalState(() {
+                                      loadingSubmission = false;
+                                    });
+                                    return;
+                                  }
+                                  List<String> uploadedUrls = [];
+                                  for (File imgFile in localPhotosFiles) {
+                                    print("Going to call upload IMAGE");
+                                    String? uploadedImageUrl =
+                                        await ImageUploadService.uploadImage(
+                                            imgFile,
+                                            directoryName: 'post_images');
+                                    if (uploadedImageUrl != null) {
+                                      print("GOT AN IMAGE");
+                                      print("URL $uploadedImageUrl");
+                                      uploadedUrls.add(uploadedImageUrl);
+                                    }
+                                  }
+                                  setModalState(() {
+                                    localPhotosUrls.addAll(uploadedUrls);
+                                  });
+                                  DateTime dateTime = DateTime.now();
+                                  print("Submitting categoey $category");
+                                  Post newPost = Post(
+                                      title: title,
+                                      userId: userId,
+                                      resolved: false,
+                                      anon: localAnon,
+                                      category: category,
+                                      description: description,
+                                      photosUrls: localPhotosUrls,
+                                      dateCreated: dateTime);
+                                  try {
+                                    await _postsService.addPost(
+                                        collection, newPost);
+                                    Navigator.pop(context);
+                                  } catch (e) {
+                                    Toast.show(
+                                        context, "Error Occurred", "error");
+                                  }
+                                  setModalState(() {
+                                    loadingSubmission = false;
+                                  });
+                                },
+                              ),
+                            if (loadingSubmission)
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.grey,
+                                    minimumSize:
+                                        const Size(double.infinity, 36),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(5))),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(action.split(" ")[0],
+                                        style: const TextStyle(
+                                            color: Colors.white)),
                                     const SizedBox(
                                       width: 3,
                                     ),
-                                  if (localAnon)
-                                    const FaIcon(FontAwesomeIcons.ghost,
-                                        size: 20, color: Colors.white),
-                                ],
+                                    const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                          color: Colors.white),
+                                    ),
+                                  ],
+                                ),
+                                onPressed: () {},
                               ),
-                              onPressed: () async {
-                                String title = titleController.text.trim();
-                                String description =
-                                    descriptionController.text.trim();
-                                String category =
-                                    selectedCategoriesChoices.isNotEmpty
-                                        ? selectedCategoriesChoices[0]
-                                            .name
-                                            .toLowerCase()
-                                        : "all";
-
-                                if (title.isEmpty) {
-                                  Toast.show(
-                                      context, "Please enter a title", "error");
-                                  return;
-                                }
-
-                                if (description.isEmpty) {
-                                  Toast.show(context,
-                                      "Please enter a description", "error");
-                                  return;
-                                }
-
-                                if (category.isEmpty) {
-                                  Toast.show(context,
-                                      "Please choose a category", "error");
-                                  return;
-                                }
-                                List<String> uploadedUrls = [];
-                                for (File imgFile in localPhotosFiles) {
-                                  print("Going to call upload IMAGE");
-                                  String? uploadedImageUrl =
-                                      await _postsService.uploadImage(imgFile);
-                                  if (uploadedImageUrl != null) {
-                                    print("GOT AN IMAGE");
-                                    print("URL $uploadedImageUrl");
-                                    uploadedUrls.add(uploadedImageUrl);
-                                  }
-                                }
-                                setModalState(() {
-                                  localPhotosUrls.addAll(uploadedUrls);
-                                });
-                                DateTime dateTime = DateTime.now();
-                                Post newPost = Post(
-                                    title: title,
-                                    userId: userId,
-                                    resolved: false,
-                                    anon: localAnon,
-                                    category: category,
-                                    description: description,
-                                    photosUrls: localPhotosUrls,
-                                    dateCreated: dateTime);
-                                _postsService.addPost(collection, newPost);
-                                Navigator.pop(context);
-                              },
-                            ),
                           ],
                         ),
                       ),

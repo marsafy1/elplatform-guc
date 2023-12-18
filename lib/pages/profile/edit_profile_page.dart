@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:guc_swiss_knife/components/profile/form_input_field.dart';
 import 'package:guc_swiss_knife/models/user.dart';
 import 'package:guc_swiss_knife/providers/auth_provider.dart';
+import 'package:guc_swiss_knife/services/image_upload_service.dart';
 import 'package:guc_swiss_knife/utils_functions/profile.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +20,7 @@ class _EditProfileState extends State<EditProfile> {
   late final AuthProvider _authProvider;
   late User user;
   late ImagePicker _imagePicker;
+  File? _pickedImage;
   late final Map<String, FormInputField> fields;
 
   @override
@@ -58,14 +62,16 @@ class _EditProfileState extends State<EditProfile> {
     super.initState();
   }
 
-  Future<void> _pickImage() async {
-    final XFile? pickedFile =
-        await _imagePicker.pickImage(source: ImageSource.gallery);
-
+  Future<File?> pickImage() async {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
-      // TODO: Implement logic to update user's profile picture
-      // You can use pickedFile.path to get the file path of the selected image
+      setState(() {
+        _pickedImage = File(pickedFile.path);
+      });
+      return File(pickedFile.path);
     }
+    return null;
   }
 
   @override
@@ -101,11 +107,17 @@ class _EditProfileState extends State<EditProfile> {
   Widget _profilePictureSection() {
     return Center(
       child: InkWell(
-        onTap: _pickImage,
+        onTap: pickImage,
         child: Stack(
           alignment: Alignment.center,
           children: [
-            generateAvatar(context, user, radius: 100, isClickable: false),
+            _pickedImage != null
+                ? CircleAvatar(
+                    backgroundImage: FileImage(_pickedImage!),
+                    radius: 50,
+                  )
+                : generateAvatar(context, user,
+                    radius: 100, isClickable: false),
             Positioned(
               bottom: 0,
               right: 0,
@@ -153,6 +165,12 @@ class _EditProfileState extends State<EditProfile> {
     final header = fields["header"]!.controller.text;
     final gucId = fields["guc_id"]!.controller.text;
     final bio = fields["bio"]!.controller.text;
+    String? profilePictureUrl;
+
+    if (_pickedImage != null) {
+      profilePictureUrl = await ImageUploadService.uploadImage(_pickedImage!,
+          directoryName: 'profile_pictures', fileName: '${user.id}.jpg');
+    }
 
     await _authProvider.updateUser(
       firstName: firstName,
@@ -160,6 +178,7 @@ class _EditProfileState extends State<EditProfile> {
       header: header,
       gucId: gucId,
       bio: bio,
+      profilePictureUrl: profilePictureUrl,
     );
     Navigator.of(context).pop();
   }

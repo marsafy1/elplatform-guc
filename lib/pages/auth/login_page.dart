@@ -108,7 +108,7 @@ class _LoginPageState extends State<LoginPage> {
           style: ElevatedButton.styleFrom(
             shape: const StadiumBorder(),
             padding: const EdgeInsets.symmetric(vertical: 16),
-            backgroundColor: Theme.of(context).primaryColor,
+            backgroundColor: Theme.of(context).colorScheme.background,
           ),
           child: const Text(
             "Login",

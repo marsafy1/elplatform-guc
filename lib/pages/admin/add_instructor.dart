@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guc_swiss_knife/components/auth/form_input_field.dart';
-import 'package:guc_swiss_knife/models/user.dart';
-import 'package:guc_swiss_knife/services/user_service.dart';
+import 'package:guc_swiss_knife/models/instructor_review.dart';
+import 'package:guc_swiss_knife/services/instructor_review_service.dart';
 
 const String emailRegex = r'^[a-zA-Z]+\.[a-zA-Z]+@(student\.)?guc\.edu\.eg$';
 
@@ -15,7 +15,8 @@ class AddInstructor extends StatefulWidget {
 class _AddInstructorState extends State<AddInstructor> {
   late final GlobalKey<FormState> _formKey;
   late final Map<String, dynamic> fields;
-
+  final InstructorReviewService _instructorReviewService =
+      InstructorReviewService();
   @override
   void initState() {
     _formKey = GlobalKey<FormState>();
@@ -81,13 +82,13 @@ class _AddInstructorState extends State<AddInstructor> {
                       onPressed: () {
                         // Add your save logic here
                         if (_formKey.currentState!.validate()) {
-                          UserService.createUser(
-                              id: '',
-                              firstName: fields['first_name']!.controller.text,
-                              lastName: fields['last_name']!.controller.text,
-                              email: fields['email']!.controller.text,
-                              userType: UserType.instructor,
-                              isPublisher: false);
+                          _instructorReviewService.addInstructorReview(
+                            InstructorReview(
+                                firstName:
+                                    fields['first_name']!.controller!.text,
+                                lastName: fields['last_name']!.controller!.text,
+                                email: fields['email']!.controller!.text),
+                          );
                           Navigator.pop(context);
                         }
                       },

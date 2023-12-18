@@ -1,37 +1,33 @@
 import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:guc_swiss_knife/components/instructor/instructor_reviews.dart';
-import 'package:guc_swiss_knife/models/user.dart';
-
-import '../../utils_functions/profile.dart';
+import 'package:guc_swiss_knife/models/instructor_review.dart';
+import 'package:guc_swiss_knife/utils_functions/profile.dart';
 
 class InstructorDetails extends StatelessWidget {
   const InstructorDetails({super.key});
 
   @override
   Widget build(BuildContext context) {
-    User instructor = ModalRoute.of(context)!.settings.arguments as User;
+    InstructorReview instructorReview =
+        ModalRoute.of(context)!.settings.arguments as InstructorReview;
 
     return Scaffold(
         appBar: AppBar(
-          title: Text(instructor.firstName),
+          title: Text(instructorReview.firstName),
         ),
         body: SingleChildScrollView(
           child: Column(
             children: [
-              _header(context, instructor),
+              _header(context, instructorReview),
               const Divider(),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildInfoTile('Email', instructor.email),
-                  if (instructor.gucId != null)
-                    _buildInfoTile('GUC ID', instructor.gucId!),
-                  _buildInfoTile(
-                      'Publisher', instructor.isPublisher ? 'Yes' : 'No'),
-                  _buildInfoTile('Bio', instructor.bio ?? ''),
+                  _buildInfoTile('Email', instructorReview.email),
                   InstructorReviews(
-                      reviews: instructor.reviews!, instructorId: instructor.id)
+                      reviews: instructorReview.reviews!,
+                      instructorId: instructorReview.id ?? " ")
                 ],
               )
             ],
@@ -39,13 +35,17 @@ class InstructorDetails extends StatelessWidget {
         ));
   }
 
-  Widget _header(BuildContext context, User user) {
+  Widget _header(BuildContext context, InstructorReview instructorReview) {
     return Column(
       children: [
-        generateAvatar(context, user, radius: 100, isClickable: false),
+        const SizedBox(height: 20),
+        generateColoredAvatar(
+          avatarChar: instructorReview.firstName.characters.first,
+          radius: 50,
+        ),
         const SizedBox(height: 20),
         Text(
-          "${user.firstName} ${user.lastName}",
+          "${instructorReview.firstName} ${instructorReview.lastName}",
           style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -53,15 +53,7 @@ class InstructorDetails extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         Text(
-          "${StringUtils.capitalize(user.userType.toShortString())} @ ${user.faculty ?? "GUC"}",
-          style: const TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 20),
-        Text(
-          user.header ?? "",
+          "${StringUtils.capitalize("instructor")} @ ${instructorReview.faculty ?? "GUC"}",
           style: const TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.bold,

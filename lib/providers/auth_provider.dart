@@ -114,6 +114,7 @@ class AuthProvider with ChangeNotifier {
     String? bio,
     String? faculty,
     String? gucId,
+    String? profilePictureUrl,
   }) async {
     UserService.updateUser(
       id: _user!.id,
@@ -123,6 +124,7 @@ class AuthProvider with ChangeNotifier {
       bio: bio ?? _user!.bio,
       faculty: faculty ?? _user!.faculty,
       gucId: gucId ?? _user!.gucId,
+      profilePictureUrl: profilePictureUrl ?? _user!.photoUrl,
     );
 
     _user = User(
@@ -136,6 +138,7 @@ class AuthProvider with ChangeNotifier {
       bio: bio ?? _user!.bio,
       faculty: faculty ?? _user!.faculty,
       gucId: gucId ?? _user!.gucId,
+      photoUrl: profilePictureUrl ?? _user!.photoUrl,
     );
 
     notifyListeners();

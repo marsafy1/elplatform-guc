@@ -109,7 +109,8 @@ class _PostState extends State<PostWidget> {
       userAvatar = generateGhostAvatar();
       displayedName = "Ghost";
     }
-    bool showCategory = widget.collection == "questions";
+    bool showCategory = widget.collection == "questions" ||
+        widget.collection == "lost_and_founds";
     bool showResolveOption = widget.collection == "questions" ||
         widget.collection == "lost_and_founds";
     String resolvedString =
@@ -145,7 +146,7 @@ class _PostState extends State<PostWidget> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            if (showResolveOption) ChipElement(category: widget.post.category),
+            if (showCategory) ChipElement(category: widget.post.category),
             Text(timeago.format(widget.post.dateCreated),
                 style: const TextStyle(color: Colors.grey)),
           ],
