@@ -42,7 +42,8 @@ class FirebaseApi {
     DocumentSnapshot snapshot =
         await PostsService().getPostById(postId, collection);
     User poster = await UserService.getUserById(snapshot['userId']);
-    Post post = Post.fromMap(snapshot as Map<String, dynamic>, snapshot.id,
+    Post post = Post.fromMap(
+        snapshot.data() as Map<String, dynamic>, snapshot.id,
         user: poster);
     navigatorKey.currentState!.pushNamed('/notificationDetails',
         arguments: {'widget': PostWidget(post: post, collection: collection)});
