@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:guc_swiss_knife/services/notifications_service.dart';
 import '../models/post.dart';
 import '../models/user.dart';
 
@@ -71,8 +73,8 @@ class PostsService {
       if (!likedByUsers.contains(userId)) {
         likedByUsers.add(userId);
       }
-
       transaction.update(postRef, {'likedByUsers': likedByUsers});
+      NotificationService.sendLikeNotification(userId, snapshot['userId']);
     });
   }
 

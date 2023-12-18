@@ -12,7 +12,7 @@ class FirebaseApi {
       criticalAlert: false,
       provisional: false,
       sound: true,
-    );    
+    );
     await initPushNotifications();
   }
 
@@ -26,7 +26,7 @@ class FirebaseApi {
     navigatorKey.currentState!.pushNamed('/courses');
   }
 
-  Future<void> BackgroundHandler(RemoteMessage message) async {
+  Future<void> backgroundHandler(RemoteMessage message) async {
     navigatorKey.currentState!.pushNamed('/courses');
   }
 
@@ -35,7 +35,7 @@ class FirebaseApi {
         .getInitialMessage()
         .then(handleBackGroundMessage);
     FirebaseMessaging.onMessageOpenedApp.listen(handleBackGroundMessage);
-    FirebaseMessaging.onBackgroundMessage(BackgroundHandler);
+    FirebaseMessaging.onBackgroundMessage(backgroundHandler);
     FirebaseMessaging.onMessage.listen(handleForeGroundMessage);
   }
 }
