@@ -51,9 +51,7 @@ class PostsService {
   }
 
   Future<void> addPost(String collection, Post post) async {
-    DocumentReference doc =
-        await _firestore.collection(collection).add(post.toMap());
-    await FirebaseMessaging.instance.subscribeToTopic(doc.id);
+    _firestore.collection(collection).add(post.toMap());
   }
 
   Future<void> deletePost(String collection, String postId) async {
@@ -80,7 +78,8 @@ class PostsService {
         likedByUsers.add(userId);
       }
       transaction.update(postRef, {'likedByUsers': likedByUsers});
-      NotificationService.sendLikeNotification(userId, postId);
+      NotificationService.sendLikeNotification(
+          userId, postId, collection, snapshot['userId']);
     });
   }
 
@@ -130,11 +129,9 @@ class PostsService {
     return null;
   }
 
-  Future<Post> getPostById(String postId) async {
-    DocumentSnapshot postSnapshot =
-        await _firestore.collection('feed').doc(postId).get();
-    Post post = Post.fromMap(
-        postSnapshot.data() as Map<String, dynamic>, postSnapshot.id);
-    return post;
+  Future<DocumentSnapshot> getPostById(String postId, String collection) async {
+    DocumentSnapshot snapshot =
+        await _firestore.collection(collection).doc(postId).get();
+    return snapshot;
   }
 }

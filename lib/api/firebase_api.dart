@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:guc_swiss_knife/components/posts/post.dart';
 import 'package:guc_swiss_knife/main.dart';
@@ -36,11 +37,14 @@ class FirebaseApi {
   static void handlePostInteraction(RemoteMessage? message) async {
     if (message == null) return;
     String postId = json.decode(message.data['info']!)['postId'];
-    Post post = await PostsService().getPostById(postId);
-    User poster = await UserService.getUserById(post.userId);
-    post.user = poster;
+    String collection = json.decode(message.data['info']!)['collection'];
+    DocumentSnapshot snapshot =
+        await PostsService().getPostById(postId, collection);
+    User poster = await UserService.getUserById(snapshot['userId']);
+    Post post = Post.fromMap(snapshot as Map<String, dynamic>, snapshot.id,
+        user: poster);
     navigatorKey.currentState!.pushNamed('/notificationDetails',
-        arguments: {'widget': PostWidget(post: post, collection: "feed")});
+        arguments: {'widget': PostWidget(post: post, collection: collection)});
   }
 
   void handleForeGroundMessage(RemoteMessage? message) {
