@@ -10,6 +10,7 @@ import '../utils/verified_check.dart';
 import '../comments/comments.dart';
 import '../../utils_functions/profile.dart';
 import '../../utils_functions/ghost.dart';
+import '../../utils_functions/success_chip.dart';
 import '../../services/posts_service.dart';
 
 class PostWidget extends StatefulWidget {
@@ -100,6 +101,10 @@ class _PostState extends State<PostWidget> {
       userAvatar = generateGhostAvatar();
       displayedName = "Ghost";
     }
+    bool showResolveOption = widget.collection == "questions" ||
+        widget.collection == "lost_and_founds";
+    String resolvedString =
+        collectionToResolvedOption[widget.collection] ?? "Resolved";
 
     return Row(
       children: [
@@ -126,7 +131,11 @@ class _PostState extends State<PostWidget> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            ChipElement(category: widget.post.category),
+            if (!showResolveOption) ChipElement(category: widget.post.category),
+            if (showResolveOption && isResolvedUI)
+              statusChip(resolvedString, Colors.green),
+            if (showResolveOption && !isResolvedUI)
+              statusChip("", Colors.transparent),
             Text(timeago.format(widget.post.dateCreated),
                 style: const TextStyle(color: Colors.grey)),
           ],
