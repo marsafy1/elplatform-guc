@@ -67,6 +67,8 @@ class _ContactsState extends State<Contacts> {
                           leading: SizedBox(
                             width: 50,
                             child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Icon(
                                   IconData(
@@ -75,11 +77,13 @@ class _ContactsState extends State<Contacts> {
                                         snapshot.data![index].iconFontFamily,
                                   ),
                                 ),
-                                Text(
-                                  snapshot.data![index].name,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
+                                Text(snapshot.data![index].name,
+                                    maxLines: 2,
+                                    textAlign: TextAlign.center,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontSize: 8,
+                                    )),
                               ],
                             ),
                           ),
