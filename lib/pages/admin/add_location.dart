@@ -16,7 +16,7 @@ class _AddLocationState extends State<AddLocation> {
   LocationService locationService = LocationService();
 
   late final GlobalKey<FormState> _formKey;
-  late final Map<String, FormInputField> fields;
+  late final Map<String, dynamic> fields;
 
   Location location = Location();
 
@@ -27,7 +27,7 @@ class _AddLocationState extends State<AddLocation> {
       "name": FormInputField(
         name: "name",
         controller: TextEditingController(),
-        icon: Icons.location_on,
+        icon: Icons.abc_rounded,
         validator: (value) {
           if (value!.isEmpty) {
             return 'Title is required';
@@ -35,6 +35,7 @@ class _AddLocationState extends State<AddLocation> {
           return null;
         },
       ),
+      "sized_box1": const SizedBox(height: 20),
       "description": FormInputField(
         name: "description",
         controller: TextEditingController(),
@@ -46,11 +47,12 @@ class _AddLocationState extends State<AddLocation> {
           return null;
         },
       ),
+      "sized_box2": const SizedBox(height: 20),
       "latitude": FormInputField(
         keyboardType: TextInputType.number,
         name: "latitude",
         controller: TextEditingController(),
-        icon: Icons.horizontal_rule,
+        icon: Icons.location_on,
         validator: (value) {
           if (value!.isEmpty) {
             return 'Latitude is required';
@@ -58,12 +60,12 @@ class _AddLocationState extends State<AddLocation> {
           return null;
         },
       ),
+      "sized_box3": const SizedBox(height: 20),
       "longitude": FormInputField(
         keyboardType: TextInputType.number,
         name: "longitude",
         controller: TextEditingController(),
-        icon: Icons.horizontal_rule,
-        rotateIcon: 90,
+        icon: Icons.location_on,
         validator: (value) {
           if (value!.isEmpty) {
             return 'Longitude is required';
@@ -81,19 +83,21 @@ class _AddLocationState extends State<AddLocation> {
       appBar: AppBar(
         title: const Text('Add Location'),
       ),
-      body: Card(
-        elevation: 2.0,
-        child: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                ...fields.values.map((field) => field),
-                ElevatedButton(
-                  onPressed: addLocation,
-                  child: const Text('Submit'),
-                ),
-              ],
+      body: Center(
+        child: Card(
+          elevation: 2.0,
+          child: SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  ...fields.values.map((field) => field),
+                  ElevatedButton(
+                    onPressed: addLocation,
+                    child: const Text('Submit'),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

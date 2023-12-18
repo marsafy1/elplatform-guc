@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:guc_swiss_knife/models/publish_request.dart';
+import 'package:guc_swiss_knife/models/user.dart';
+import 'package:guc_swiss_knife/services/user_service.dart';
+import 'package:guc_swiss_knife/utils_functions/profile.dart';
 import 'package:intl/intl.dart';
 
-class PublishRequestCard extends StatelessWidget {
+class PublishRequestCard extends StatefulWidget {
   final PublishRequest publishRequest;
 
   PublishRequestCard({
@@ -10,28 +13,47 @@ class PublishRequestCard extends StatelessWidget {
   });
 
   @override
+  State<PublishRequestCard> createState() => _PublishRequestCardState();
+}
+
+class _PublishRequestCardState extends State<PublishRequestCard> {
+  User? user;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUser();
+  }
+
+  void _fetchUser() {
+    UserService.getUserById(widget.publishRequest.userId).then((value) {
+      setState(() {
+        user = value;
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
-        leading: const CircleAvatar(
-          radius: 50,
-          backgroundColor: Colors.grey,
-          child: Icon(Icons.person),
-        ),
+        leading: generateAvatar(context, user ?? User.defaultUser),
         trailing: Text(
-          getFormattedDateTime(publishRequest.createdAt),
+          getFormattedDateTime(widget.publishRequest.createdAt),
           textAlign: TextAlign.center,
           style: const TextStyle(fontSize: 7),
         ),
-        title: Text(publishRequest.title),
+        title: Text(widget.publishRequest.title),
         subtitle: Text(
-          publishRequest.content,
+          widget.publishRequest.content,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
         onTap: () {
-          Navigator.of(context)
-              .pushNamed('/publishRequestDetails', arguments: publishRequest);
+          Navigator.of(context).pushNamed('/publishRequestDetails', arguments: {
+            "publish_request": widget.publishRequest,
+            "user": user
+          });
         },
       ),
     );
