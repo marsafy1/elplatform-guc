@@ -127,4 +127,12 @@ class PostsService {
     }
     return null;
   }
+
+  Future<Post> getPostById(String postId) async {
+    DocumentSnapshot postSnapshot =
+        await _firestore.collection('feed').doc(postId).get();
+    Post post = Post.fromMap(
+        postSnapshot.data() as Map<String, dynamic>, postSnapshot.id);
+    return post;
+  }
 }

@@ -12,6 +12,7 @@ import 'package:guc_swiss_knife/pages/auth/login_page.dart';
 import 'package:guc_swiss_knife/pages/auth/register_page.dart';
 import 'package:guc_swiss_knife/pages/extra_pages/guc_map.dart';
 import 'package:guc_swiss_knife/pages/extra_pages/location_details.dart';
+import 'package:guc_swiss_knife/pages/notification_details_page.dart';
 import 'package:guc_swiss_knife/pages/profile/change_password.dart';
 import 'package:guc_swiss_knife/pages/profile/edit_profile_page.dart';
 import 'package:guc_swiss_knife/pages/profile/profile_page.dart';
@@ -100,6 +101,7 @@ class MyApp extends StatelessWidget {
           '/gucMap': (dummyCtx) => const GucMap(),
           '/addCourse': (dummyCtx) => const AddCourse(),
           '/addInstructor': (dummyCtx) => const AddInstructor(),
+          '/notificationDetails': (dummyCtx) => const NotificationDetailsPage(),
         },
       ),
     );
