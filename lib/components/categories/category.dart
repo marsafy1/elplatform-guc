@@ -26,17 +26,28 @@ class _CategoryElementState extends State<CategoryElement> {
         padding: const EdgeInsets.all(8.0),
         margin: const EdgeInsets.all(5.0),
         decoration: BoxDecoration(
+          // Use gradient instead of a solid color
+          gradient: widget.category.selected
+              ? LinearGradient(
+                  colors: [
+                    Theme.of(context).colorScheme.primary,
+                    Theme.of(context).colorScheme.secondary,
+                    // You can add more colors to create a more complex gradient
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                )
+              : null, // No gradient when not selected
           color: widget.category.selected
-              ? Theme.of(context).colorScheme.primary
-              : Theme.of(context).secondaryHeaderColor,
+              ? null // Set to null because gradient is used
+              : Theme.of(context)
+                  .secondaryHeaderColor, // Use solid color when not selected
           borderRadius: BorderRadius.circular(10),
         ),
         child: Row(
           children: [
             widget.category.icon,
-            const SizedBox(
-              width: 5,
-            ),
+            const SizedBox(width: 5),
             Text(widget.category.name),
           ],
         ),
@@ -44,16 +55,10 @@ class _CategoryElementState extends State<CategoryElement> {
       onTap: () {
         setState(() {
           widget.category.selected = true;
-          if (widget.category.selected) {
-            widget.category.addCategory(widget.category, widget.asFilter);
-          }
+          widget.category.addCategory(widget.category, widget.asFilter);
           if (widget.updateSheet != null) {
             widget.updateSheet!();
           }
-          // else {
-          //   widget.category.removeCategory(widget.category, widget.asFilter);
-          //   print("Removed");
-          // }
         });
       },
     );
