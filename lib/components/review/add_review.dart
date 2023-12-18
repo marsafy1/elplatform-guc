@@ -6,6 +6,7 @@ import 'package:guc_swiss_knife/models/review.dart';
 import 'package:guc_swiss_knife/models/user.dart';
 import 'package:guc_swiss_knife/providers/auth_provider.dart';
 import 'package:guc_swiss_knife/services/course_service.dart';
+import 'package:guc_swiss_knife/services/instructor_review_service.dart';
 import 'package:guc_swiss_knife/services/instructor_service.dart';
 import 'package:provider/provider.dart';
 
@@ -143,6 +144,7 @@ class _AddReview extends State<AddReview> {
     return null;
   }
 
+  InstructorReviewService instructorReviewService = InstructorReviewService();
   void _onSubmit(String review, int rating) async {
     Review reviewObj = Review(
       userId: user.id,
@@ -153,14 +155,14 @@ class _AddReview extends State<AddReview> {
       if (widget.courseId != null) {
         await CourseService.addReview(widget.courseId, reviewObj);
       } else {
-        await InstructorService.addReview(widget.instructorId, reviewObj);
+        await instructorReviewService.addReview(widget.instructorId, reviewObj);
       }
     } else {
       if (widget.courseId != null) {
         await CourseService.updateReview(
             widget.courseId, _getOldReview(), reviewObj);
       } else {
-        await InstructorService.updateReview(
+        await instructorReviewService.updateReview(
             widget.instructorId, _getOldReview(), reviewObj);
       }
     }
@@ -175,7 +177,7 @@ class _AddReview extends State<AddReview> {
     if (widget.courseId != null) {
       await CourseService.deleteReview(widget.courseId, _getOldReview());
     } else {
-      await InstructorService.deleteReview(
+      await instructorReviewService.deleteReview(
           widget.instructorId, _getOldReview());
     }
     setState(() {
