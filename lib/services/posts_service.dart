@@ -77,7 +77,8 @@ class PostsService {
         likedByUsers.add(userId);
       }
       transaction.update(postRef, {'likedByUsers': likedByUsers});
-      NotificationService.sendLikeNotification(userId, snapshot['userId']);
+      NotificationService.sendLikeNotification(
+          userId, snapshot['userId'], postId);
     });
   }
 
