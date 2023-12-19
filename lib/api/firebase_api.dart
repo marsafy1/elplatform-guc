@@ -52,7 +52,8 @@ class FirebaseApi {
         user: poster);
     navigatorKey.currentState!.pushNamed('/notificationDetails',
         arguments: {'widget': PostWidget(post: post, collection: collection)});
-    NotificationService.readNotification(message.data['id']!,json.decode(message.data['info']!));
+    NotificationService.readNotification(
+        message.data['id']!, json.decode(message.data['info']!));
   }
 
   void handleForeGroundMessage(RemoteMessage? message) {
@@ -61,12 +62,15 @@ class FirebaseApi {
     ScaffoldMessenger.of(navigatorKey.currentContext!).showSnackBar(
       SnackBar(
           content: Text(message.notification!.body!),
-          action: SnackBarAction(
-            label: 'View ',
-            onPressed: () {
-              handlePostInteraction(message);
-            },
-          )),
+          action: message.data['type'] == "like" ||
+                  message.data['type'] == "comment"
+              ? SnackBarAction(
+                  label: 'View ',
+                  onPressed: () {
+                    handlePostInteraction(message);
+                  },
+                )
+              : null),
     );
   }
 

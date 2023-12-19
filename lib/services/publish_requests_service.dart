@@ -30,6 +30,8 @@ class PublishRequestsService {
       'is_publisher': true,
       'is_pending': false,
     });
+    NotificationService.sendPublishRequestResponseNotification(
+        publishRequest, true);
   }
 
   Future<void> declinePublishRequest(PublishRequest? publishRequest) async {
@@ -41,6 +43,8 @@ class PublishRequestsService {
       'is_publisher': false,
       'is_pending': false,
     });
+    NotificationService.sendPublishRequestResponseNotification(
+        publishRequest, false);
   }
 
   Future<void> addPublishRequest(PublishRequest publishRequest) async {

@@ -94,7 +94,7 @@ class NotificationService {
         message:
             '${requestOwner.firstName} ${requestOwner.lastName} requested to be a publisher',
         topic: '/topics/admin',
-        type: 'Comment',
+        type: 'Publish Request',
         info: {
           'dateCreated': Timestamp.now(),
         });
@@ -105,18 +105,18 @@ class NotificationService {
   }
 
   static void sendPublishRequestResponseNotification(
-      PublishRequest publishRequest) async {
-    User requestOwner = await UserService.getUserById(publishRequest.userId);
+      PublishRequest publishRequest, bool approved) async {
     NotificationModel notification = NotificationModel(
-        title: 'Publish Request',
+        title: 'Publish Request ${approved ? 'Approved' : 'Declined'}',
         message:
-            '${requestOwner.firstName} ${requestOwner.lastName} requested to be a publisher',
-        topic: '/topics/admin',
-        type: 'Comment',
+            'Your request to publish was ${approved ? 'approved' : 'declined'} by the admin',
+        topic: '/topics/${publishRequest.userId}',
+        type: 'Publish Request',
         info: {
           'dateCreated': Timestamp.now(),
+          'approved': approved,
+          'isRead': true,
         });
-    print(notification.toMap());
     await FirebaseFirestore.instance.collection('notifications').add(
           notification.toMap(),
         );
