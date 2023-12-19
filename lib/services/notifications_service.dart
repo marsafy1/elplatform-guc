@@ -27,7 +27,7 @@ class NotificationService {
         'postId': postId,
         'collection': collection,
         'senderId': likerId,
-        'dateCreated': DateTime.now(),
+        'dateCreated': Timestamp.now(),
         'isRead': false,
       },
     );
@@ -51,7 +51,7 @@ class NotificationService {
         'postId': postId,
         'collection': collection,
         'senderId': commenterId,
-        'dateCreated': DateTime.now(),
+        'dateCreated': Timestamp.now(),
         'isRead': false,
       },
     );
@@ -96,7 +96,25 @@ class NotificationService {
         topic: '/topics/admin',
         type: 'Comment',
         info: {
-          'dateCreated': DateTime.now(),
+          'dateCreated': Timestamp.now(),
+        });
+    print(notification.toMap());
+    await FirebaseFirestore.instance.collection('notifications').add(
+          notification.toMap(),
+        );
+  }
+
+  static void sendPublishRequestResponseNotification(
+      PublishRequest publishRequest) async {
+    User requestOwner = await UserService.getUserById(publishRequest.userId);
+    NotificationModel notification = NotificationModel(
+        title: 'Publish Request',
+        message:
+            '${requestOwner.firstName} ${requestOwner.lastName} requested to be a publisher',
+        topic: '/topics/admin',
+        type: 'Comment',
+        info: {
+          'dateCreated': Timestamp.now(),
         });
     print(notification.toMap());
     await FirebaseFirestore.instance.collection('notifications').add(
