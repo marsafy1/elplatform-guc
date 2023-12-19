@@ -43,7 +43,6 @@ class PublishRequestsService {
     });
   }
 
-  // add new publish request
   Future<void> addPublishRequest(PublishRequest publishRequest) async {
     await _firestore.collection("publish_requests").add(publishRequest.toMap());
     NotificationService.sendPublishRequestNotification(publishRequest);

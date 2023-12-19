@@ -6,13 +6,14 @@ class NotificationModel {
   final String? type;
   final Map<String, dynamic>? info;
 
-  NotificationModel(
-      {this.id = '',
-      this.title,
-      this.message,
-      this.topic,
-      this.type,
-      this.info});
+  NotificationModel({
+    this.id = '',
+    this.title,
+    this.message,
+    this.topic,
+    this.type,
+    this.info,
+  });
 
   NotificationModel.fromMap(Map<String, dynamic> map, String id)
       : id = map['id'],
@@ -21,7 +22,6 @@ class NotificationModel {
         topic = map['topic'],
         type = map['type'],
         info = map['info'];
-
   Map<String, dynamic> toMap() {
     return {
       'title': title,

@@ -23,7 +23,12 @@ class NotificationService {
           '${liker.firstName} ${liker.lastName} $action your ${_collectionsToNotifications[collection]}',
       topic: '/topics/$ownerId',
       type: 'like',
-      info: {'postId': postId, 'collection': collection, 'senderId': likerId},
+      info: {
+        'postId': postId,
+        'collection': collection,
+        'senderId': likerId,
+        'dateCreated': DateTime.now(),
+      },
     );
 
     await FirebaseFirestore.instance.collection('notifications').add(
@@ -44,7 +49,8 @@ class NotificationService {
       info: {
         'postId': postId,
         'collection': collection,
-        'senderId': commenterId
+        'senderId': commenterId,
+        'dateCreated': DateTime.now(),
       },
     );
     print(notification.toMap());
@@ -68,7 +74,15 @@ class NotificationService {
       }
       return notifications;
     });
-    return fetchedNotifications;
+    // sort by dateCreated
+    return fetchedNotifications.map((notifications) {
+      notifications.sort((a, b) {
+        return ((b.info?['dateCreated'] as Timestamp?) ?? Timestamp.now())
+            .compareTo(
+                (a.info?['dateCreated'] as Timestamp?) ?? Timestamp.now());
+      });
+      return notifications;
+    });
   }
 
   static void sendPublishRequestNotification(
@@ -80,7 +94,9 @@ class NotificationService {
             '${requestOwner.firstName} ${requestOwner.lastName} requested to be a publisher',
         topic: '/topics/admin',
         type: 'Comment',
-        info: {});
+        info: {
+          'dateCreated': DateTime.now(),
+        });
     print(notification.toMap());
     await FirebaseFirestore.instance.collection('notifications').add(
           notification.toMap(),

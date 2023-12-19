@@ -9,6 +9,7 @@ import 'package:guc_swiss_knife/models/user.dart';
 import 'package:guc_swiss_knife/services/posts_service.dart';
 import 'package:guc_swiss_knife/services/user_service.dart';
 import 'package:guc_swiss_knife/utils_functions/profile.dart';
+import 'package:intl/intl.dart';
 
 class NotificationCard extends StatefulWidget {
   final NotificationModel notification;
@@ -50,11 +51,14 @@ class _NotificationCardState extends State<NotificationCard> {
     return Card(
       child: ListTile(
         leading: generateAvatar(context, user ?? User.defaultUser),
-        // trailing: Text(
-        //   getFormattedDateTime(notification.createdAt),
-        //   textAlign: TextAlign.center,
-        //   style: const TextStyle(fontSize: 7),
-        // ),
+        trailing: Text(
+          getFormattedDateTime(
+              (widget.notification.info?['dateCreated'] as Timestamp?)
+                      ?.toDate() ??
+                  DateTime.now()),
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontSize: 7),
+        ),
         title: Text(widget.notification.title ?? ""),
         subtitle: Text(
           widget.notification.message ?? "",
@@ -66,5 +70,12 @@ class _NotificationCardState extends State<NotificationCard> {
         },
       ),
     );
+  }
+
+  String getFormattedDateTime(DateTime dateTime) {
+    String formattedDate = DateFormat('dd/MM/yyyy').format(dateTime);
+    String formattedTime = DateFormat('HH:mm').format(dateTime);
+
+    return '$formattedDate \n $formattedTime';
   }
 }

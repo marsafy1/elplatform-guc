@@ -50,5 +50,3 @@ class _NotificationsPageState extends State<NotificationsPage> {
     );
   }
 }
-
-
