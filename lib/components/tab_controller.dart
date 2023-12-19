@@ -1,8 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:guc_swiss_knife/models/publish_request.dart';
+import 'package:guc_swiss_knife/models/user.dart';
 import 'package:guc_swiss_knife/services/image_upload_service.dart';
 import 'package:guc_swiss_knife/services/publish_requests_service.dart';
+import 'package:guc_swiss_knife/services/user_service.dart';
 import 'package:guc_swiss_knife/utils_functions/confirm_action.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
@@ -457,14 +459,19 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
       floatingActionButton: selectedTabIndex == 4
           ? null
           : FloatingActionButton(
-              onPressed: () {
+              onPressed: () async {
                 final userAuth =
                     Provider.of<AuthProvider>(context, listen: false);
-                bool isPublisher = userAuth.user!.isPublisher;
+                User user = await UserService.getUserById(userAuth.user?.id);
+                print(user.toMap());
+                print(user.isPublisher);
+                print(user.isPending);
+                // bool isPublisher = userAuth.user!.isPublisher;
+                bool isPublisher = user.isPublisher;
                 bool inFeed = indexToCollection[selectedTabIndex] == "feed";
                 if (!isPublisher && inFeed) {
-                  if (userAuth.user!.isPending ?? false) {
-                    Toast.show(context, "Your request is pending", "ifo");
+                  if (user.isPending ?? false) {
+                    Toast.show(context, "Your request is pending", "info");
                     return;
                   }
                   Toast.show(context, "You need to be a publisher", "warning");

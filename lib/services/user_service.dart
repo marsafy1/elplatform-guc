@@ -21,6 +21,7 @@ class UserService {
             email: userData["email"],
             userType: (userData["user_type"] as String).toUserType(),
             isPublisher: userData["is_publisher"],
+            isPending: userData["is_pending"],
             header: userData["header"],
             bio: userData["bio"],
             faculty: userData["faculty"],

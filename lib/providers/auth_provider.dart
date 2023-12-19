@@ -1,13 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:guc_swiss_knife/models/instructor_review.dart';
 import 'package:guc_swiss_knife/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:guc_swiss_knife/services/analytics_service.dart';
+import 'package:guc_swiss_knife/services/instructor_review_service.dart';
 import 'package:guc_swiss_knife/services/user_service.dart';
 
 class AuthProvider with ChangeNotifier {
   final firebase_auth.FirebaseAuth _auth = firebase_auth.FirebaseAuth.instance;
   User? _user;
+  bool _isRegistering = false;
 
   AuthProvider() {
     firebase_auth.FirebaseAuth.instance
@@ -48,7 +51,7 @@ class AuthProvider with ChangeNotifier {
       );
 
       AnalyticsService.logLogin();
-
+      _isRegistering = false;
       return userCredential.user;
     } on firebase_auth.FirebaseAuthException catch (e) {
       throw AuthException(message: _handleAuthException(e));
@@ -81,8 +84,18 @@ class AuthProvider with ChangeNotifier {
         isPublisher: false,
       );
 
-      AnalyticsService.logSignUp();
+      if (userType == UserType.instructor) {
+        await InstructorReviewService().addInstructorReview(InstructorReview(
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+          faculty: '',
+          reviews: [],
+        ));
+      }
 
+      AnalyticsService.logSignUp();
+      _isRegistering = true;
       return userCredential.user;
     } on firebase_auth.FirebaseAuthException catch (e) {
       throw AuthException(message: _handleAuthException(e));
@@ -198,6 +211,8 @@ class AuthProvider with ChangeNotifier {
       throw AuthException(message: _handleAuthException(e));
     }
   }
+
+  get isRegistering => _isRegistering;
 }
 
 class AuthException implements Exception {
