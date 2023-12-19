@@ -70,7 +70,6 @@ class _LostAndFoundsPageState extends State<LostAndFoundsPage> {
         selectedCategories.clear();
         if (c.name.toLowerCase() != "all") {
           selectedCategories.add(c);
-          print('Added category: ${c.name}');
         }
         categories.forEach((element) {
           element.selected = false;
@@ -79,22 +78,19 @@ class _LostAndFoundsPageState extends State<LostAndFoundsPage> {
       }
     });
 
-    categories.forEach((element) {
-      print(element.name + " " + element.selected.toString());
-    });
-    selectedCategories.forEach((element) {
-      print("SS " + element.name + " " + element.selected.toString());
-    });
+    // categories.forEach((element) {
+    //   print(element.name + " " + element.selected.toString());
+    // });
+    // selectedCategories.forEach((element) {
+    //   print("SS " + element.name + " " + element.selected.toString());
+    // });
   }
 
   void removeCategory(Category c, bool asFilter) {
     setState(() {
-      print("remove category");
       if (asFilter) {
         selectedCategories.remove(c);
-        print("checking if category is empty");
         if (selectedCategories.isEmpty) {
-          print("empty");
           categories[0].selected = true;
           addCategory(categories[0], asFilter);
         }

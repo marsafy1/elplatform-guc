@@ -370,8 +370,6 @@ class _PostState extends State<PostWidget> {
                       interactionsCount -= 1;
                     });
                   } else {
-                    print("will like");
-
                     widget._postsService.likePost(
                         widget.collection, widget.post.id, currentUserId);
                     setState(() {

@@ -58,15 +58,11 @@ class _CommentsState extends State<Comments> {
         dateCreated: DateTime.now(),
       );
       // Add the comment to Firestore
-      print(widget.collectionName);
       commentService
           .addComment(newComment, widget.collectionName, postId)
           .then((_) {
-        print('Comment added successfully.');
         commentController.clear(); // Clear the text field after submission
-      }).catchError((error) {
-        print('Error adding comment: $error');
-      });
+      }).catchError((error) {});
     }
   }
 
