@@ -5,17 +5,46 @@ import './comment.dart';
 import '../../models/comment.dart';
 import '../../services/comments_service.dart';
 
-class Comments extends StatelessWidget {
+class Comments extends StatefulWidget {
   final String postId;
   final String collectionName;
   final String commentsDisplayedName;
-  final CommentService _commentsService = CommentService();
 
-  Comments(
-      {super.key,
-      required this.postId,
-      required this.collectionName,
-      required this.commentsDisplayedName});
+  const Comments({
+    super.key,
+    required this.postId,
+    required this.collectionName,
+    required this.commentsDisplayedName,
+  });
+
+  @override
+  _CommentsState createState() => _CommentsState();
+}
+
+class _CommentsState extends State<Comments> {
+  final CommentService _commentsService = CommentService();
+  final TextEditingController commentController = TextEditingController();
+  final FocusNode commentFocusNode = FocusNode();
+  bool isKeyboardVisible = false;
+
+  @override
+  void initState() {
+    super.initState();
+    commentFocusNode.addListener(() {
+      if (commentFocusNode.hasFocus) {
+        setState(() => isKeyboardVisible = true);
+      } else {
+        setState(() => isKeyboardVisible = false);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    commentController.dispose();
+    commentFocusNode.dispose();
+    super.dispose();
+  }
 
   void handleCommentSubmission(String comment, BuildContext context,
       TextEditingController commentController, String postId) {
@@ -29,12 +58,12 @@ class Comments extends StatelessWidget {
         dateCreated: DateTime.now(),
       );
       // Add the comment to Firestore
-      print(collectionName);
-      commentService.addComment(newComment, collectionName, postId).then((_) {
+      print(widget.collectionName);
+      commentService
+          .addComment(newComment, widget.collectionName, postId)
+          .then((_) {
         print('Comment added successfully.');
         commentController.clear(); // Clear the text field after submission
-        // Navigator.pop(
-        //     context);
       }).catchError((error) {
         print('Error adding comment: $error');
       });
@@ -43,91 +72,97 @@ class Comments extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController commentController = TextEditingController();
     return StreamBuilder(
-        stream: _commentsService.getComments(collectionName, postId),
-        builder: (context, AsyncSnapshot<List<CommentModel>> snapshot) {
-          if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          }
+      stream:
+          _commentsService.getComments(widget.collectionName, widget.postId),
+      builder: (context, AsyncSnapshot<List<CommentModel>> snapshot) {
+        if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        }
 
-          // Retrieve posts and filter them based on selected categories
-          List<CommentModel> allComments = snapshot.data ?? [];
+        // Retrieve comments
+        List<CommentModel> allComments = snapshot.data ?? [];
 
-          return Padding(
-            padding: MediaQuery.of(context).viewInsets,
-            child: Wrap(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Center(
-                    child: Text(commentsDisplayedName,
-                        style: const TextStyle(fontWeight: FontWeight.bold)),
-                  ),
+        return Padding(
+          padding: MediaQuery.of(context).viewInsets,
+          child: Wrap(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(
+                  child: Text(widget.commentsDisplayedName,
+                      style: const TextStyle(fontWeight: FontWeight.bold)),
                 ),
-                if (snapshot.connectionState == ConnectionState.waiting)
-                  const Padding(
-                    padding: EdgeInsets.all(50.0),
-                    child: Center(child: CircularProgressIndicator()),
+              ),
+              if (snapshot.connectionState == ConnectionState.waiting)
+                const Padding(
+                  padding: EdgeInsets.all(50.0),
+                  child: Center(child: CircularProgressIndicator()),
+                ),
+              if (snapshot.connectionState != ConnectionState.waiting &&
+                  allComments.isNotEmpty)
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  constraints: BoxConstraints(
+                    maxHeight: isKeyboardVisible ? 200 : 450,
                   ),
-                if (snapshot.connectionState != ConnectionState.waiting &&
-                    allComments.isNotEmpty)
-                  ConstrainedBox(
-                    constraints: const BoxConstraints(maxHeight: 450),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: allComments.map((comment) {
-                          return Comment(
-                              key: ValueKey(comment.id), comment: comment);
-                        }).toList(),
-                      ),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: allComments.map((comment) {
+                        return Comment(
+                            key: ValueKey(comment.id), comment: comment);
+                      }).toList(),
                     ),
                   ),
-                if (snapshot.connectionState != ConnectionState.waiting &&
-                    allComments.isEmpty)
-                  Padding(
-                    padding: const EdgeInsets.all(50.0),
-                    child: Center(child: Text("No $commentsDisplayedName")),
-                  ),
-                const Divider(),
+                ),
+              if (snapshot.connectionState != ConnectionState.waiting &&
+                  allComments.isEmpty)
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: TextField(
-                          controller: commentController,
-                          textInputAction: TextInputAction.send,
-                          onSubmitted: (value) {
-                            handleCommentSubmission(
-                                value, context, commentController, postId);
-                          },
-                          decoration: InputDecoration(
-                            hintText: "What's on your mind?",
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(25.0),
-                              borderSide: BorderSide.none,
-                            ),
-                            filled: true,
-                            fillColor: Colors.grey[800],
-                            contentPadding:
-                                const EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.all(50.0),
+                  child:
+                      Center(child: Text("No ${widget.commentsDisplayedName}")),
+                ),
+              const Divider(),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: TextField(
+                        controller: commentController,
+                        focusNode: commentFocusNode,
+                        textInputAction: TextInputAction.send,
+                        onSubmitted: (value) {
+                          handleCommentSubmission(
+                              value, context, commentController, widget.postId);
+                        },
+                        decoration: InputDecoration(
+                          hintText: "What's on your mind?",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25.0),
+                            borderSide: BorderSide.none,
                           ),
+                          filled: true,
+                          fillColor: Colors.grey[800],
+                          contentPadding:
+                              const EdgeInsets.symmetric(horizontal: 16),
                         ),
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.send),
-                        onPressed: () {
-                          handleCommentSubmission(commentController.text,
-                              context, commentController, postId);
-                        },
-                      ),
-                    ],
-                  ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.send),
+                      onPressed: () {
+                        handleCommentSubmission(commentController.text, context,
+                            commentController, widget.postId);
+                      },
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          );
-        });
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 }
