@@ -111,6 +111,25 @@ class AuthProvider with ChangeNotifier {
     AnalyticsService.logLogout();
   }
 
+  void respondToPublishRequest(bool isPublisher) {
+    _user = User(
+      id: _user!.id,
+      firstName: _user!.firstName,
+      lastName: _user!.lastName,
+      email: _user!.email,
+      userType: _user!.userType,
+      isPublisher: isPublisher,
+      header: _user!.header,
+      bio: _user!.bio,
+      faculty: _user!.faculty,
+      gucId: _user!.gucId,
+      photoUrl: _user!.photoUrl,
+      isPending: false,
+    );
+    print("Provider Entered");
+    notifyListeners();
+  }
+
   Future<void> updateUser({
     String? firstName,
     String? lastName,

@@ -8,11 +8,14 @@ import 'package:guc_swiss_knife/main.dart';
 import 'package:guc_swiss_knife/models/notification_model.dart';
 import 'package:guc_swiss_knife/models/post.dart';
 import 'package:guc_swiss_knife/models/user.dart';
+import 'package:guc_swiss_knife/providers/auth_provider.dart';
+import 'package:guc_swiss_knife/providers/auth_provider.dart';
 import 'package:guc_swiss_knife/services/notifications_service.dart';
 import 'package:guc_swiss_knife/services/posts_service.dart';
 import 'dart:convert';
 
 import 'package:guc_swiss_knife/services/user_service.dart';
+import 'package:provider/provider.dart';
 
 class FirebaseApi {
   final _firebaseMessaging = FirebaseMessaging.instance;
@@ -72,6 +75,11 @@ class FirebaseApi {
                 )
               : null),
     );
+    if (message.data['type'] != "like" && message.data['type'] != "comment") {
+      Provider.of<AuthProvider>(navigatorKey.currentContext!, listen: false)
+          .respondToPublishRequest(
+              json.decode(message.data['info'])['approved']);
+    }
   }
 
   Future<void> backgroundHandler(RemoteMessage message) async {
