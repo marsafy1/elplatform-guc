@@ -224,8 +224,6 @@ class _PostState extends State<PostWidget> {
   void _handleMenuSelection(String choice) {
     if (choice == 'Delete') {
       _showDeleteConfirmationBottomSheet();
-    } else {
-      // Handle other menu options here
     }
   }
 
@@ -247,15 +245,14 @@ class _PostState extends State<PostWidget> {
                   TextButton(
                     child: const Text('Cancel'),
                     onPressed: () {
-                      Navigator.of(context).pop(); // Dismiss the bottom sheet
+                      Navigator.of(context).pop();
                     },
                   ),
                   TextButton(
                     child: const Text('Delete'),
                     onPressed: () {
-                      // Call your deletion function here
                       _deletePost();
-                      Navigator.of(context).pop(); // Dismiss the bottom sheet
+                      Navigator.of(context).pop();
                     },
                   ),
                 ],
@@ -373,8 +370,6 @@ class _PostState extends State<PostWidget> {
                       interactionsCount -= 1;
                     });
                   } else {
-                    print("will like");
-                    //TODO: notification
                     widget._postsService.likePost(
                         widget.collection, widget.post.id, currentUserId);
                     setState(() {

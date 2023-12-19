@@ -31,7 +31,7 @@ class _ConfessionsPageState extends State<ConfessionsPage> {
 
   @override
   void dispose() {
-    _scrollController.dispose(); // Important to dispose the controller
+    _scrollController.dispose();
     super.dispose();
   }
 

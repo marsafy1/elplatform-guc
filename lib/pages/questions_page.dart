@@ -42,9 +42,8 @@ class _QuestionsPageState extends State<QuestionsPage> {
     super.initState();
     categories = categoriesMap.entries.map((entry) {
       return Category(
-        name: entry.value.name, // Use the name from the CategoryItem in the map
-        icon: CategoryIcon(
-            icon: entry.value.icon), // Use the icon from the CategoryItem
+        name: entry.value.name,
+        icon: CategoryIcon(icon: entry.value.icon),
         addCategory: addCategory,
         removeCategory: removeCategory,
       );
@@ -52,9 +51,8 @@ class _QuestionsPageState extends State<QuestionsPage> {
 
     categoriesChoices = categoriesMap.entries.map((entry) {
       return Category(
-        name: entry.value.name, // Use the name from the CategoryItem in the map
-        icon: CategoryIcon(
-            icon: entry.value.icon), // Use the icon from the CategoryItem
+        name: entry.value.name,
+        icon: CategoryIcon(icon: entry.value.icon),
         addCategory: addCategory,
         removeCategory: removeCategory,
       );
@@ -66,19 +64,12 @@ class _QuestionsPageState extends State<QuestionsPage> {
     });
   }
 
-  // void updateCategoriesAndReopenBottomSheet() {
-  //   Navigator.pop(context); // Close the existing bottom sheet
-  //   someFunctionThatUpdatesCategories(); // Update your categoriesChoices here
-  //   showBottomSheetForNewPost(context); // Reopen the bottom sheet
-  // }
-
   void addCategory(Category c, bool asFilter) {
     setState(() {
       if (asFilter) {
         selectedCategories.clear();
         if (c.name.toLowerCase() != "all") {
           selectedCategories.add(c);
-          print('Added category: ${c.name}');
         }
         categories.forEach((element) {
           element.selected = false;
@@ -87,22 +78,19 @@ class _QuestionsPageState extends State<QuestionsPage> {
       }
     });
 
-    categories.forEach((element) {
-      print(element.name + " " + element.selected.toString());
-    });
-    selectedCategories.forEach((element) {
-      print("SS " + element.name + " " + element.selected.toString());
-    });
+    // categories.forEach((element) {
+    //   print(element.name + " " + element.selected.toString());
+    // });
+    // selectedCategories.forEach((element) {
+    //   print("SS " + element.name + " " + element.selected.toString());
+    // });
   }
 
   void removeCategory(Category c, bool asFilter) {
     setState(() {
-      print("remove category");
       if (asFilter) {
         selectedCategories.remove(c);
-        print("checking if category is empty");
         if (selectedCategories.isEmpty) {
-          print("empty");
           categories[0].selected = true;
           addCategory(categories[0], asFilter);
         }
@@ -113,7 +101,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
   final ScrollController _scrollController = ScrollController();
   @override
   void dispose() {
-    _scrollController.dispose(); // Important to dispose the controller
+    _scrollController.dispose();
     super.dispose();
   }
 

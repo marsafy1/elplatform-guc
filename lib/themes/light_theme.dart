@@ -24,9 +24,7 @@ final ThemeData lightTheme = ThemeData(
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
-      // Set the foreground color (text color) of the ElevatedButton
       backgroundColor: Colors.white,
-      // You can also set other properties like backgroundColor, padding, etc.
     ),
   ),
 );
