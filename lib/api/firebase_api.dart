@@ -11,7 +11,6 @@ import 'package:guc_swiss_knife/models/user.dart';
 import 'package:guc_swiss_knife/services/notifications_service.dart';
 import 'package:guc_swiss_knife/services/posts_service.dart';
 import 'dart:convert';
-import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:guc_swiss_knife/services/user_service.dart';
 
