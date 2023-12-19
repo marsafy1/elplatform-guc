@@ -1,13 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:guc_swiss_knife/components/posts/post.dart';
+import 'package:guc_swiss_knife/components/toast/toast.dart';
 import 'package:guc_swiss_knife/main.dart';
+import 'package:guc_swiss_knife/models/notification_model.dart';
 import 'package:guc_swiss_knife/models/post.dart';
 import 'package:guc_swiss_knife/models/user.dart';
+import 'package:guc_swiss_knife/providers/auth_provider.dart';
+import 'package:guc_swiss_knife/providers/auth_provider.dart';
+import 'package:guc_swiss_knife/services/notifications_service.dart';
 import 'package:guc_swiss_knife/services/posts_service.dart';
 import 'dart:convert';
 
 import 'package:guc_swiss_knife/services/user_service.dart';
+import 'package:provider/provider.dart';
 
 class FirebaseApi {
   final _firebaseMessaging = FirebaseMessaging.instance;
@@ -47,11 +55,31 @@ class FirebaseApi {
         user: poster);
     navigatorKey.currentState!.pushNamed('/notificationDetails',
         arguments: {'widget': PostWidget(post: post, collection: collection)});
+    NotificationService.readNotification(
+        message.data['id']!, json.decode(message.data['info']!));
   }
 
   void handleForeGroundMessage(RemoteMessage? message) {
     if (message == null) return;
-    navigatorKey.currentState!.pushNamed('/courses');
+
+    ScaffoldMessenger.of(navigatorKey.currentContext!).showSnackBar(
+      SnackBar(
+          content: Text(message.notification!.body!),
+          action: message.data['type'] == "like" ||
+                  message.data['type'] == "comment"
+              ? SnackBarAction(
+                  label: 'View ',
+                  onPressed: () {
+                    handlePostInteraction(message);
+                  },
+                )
+              : null),
+    );
+    if (message.data['type'] != "like" && message.data['type'] != "comment") {
+      Provider.of<AuthProvider>(navigatorKey.currentContext!, listen: false)
+          .respondToPublishRequest(
+              json.decode(message.data['info'])['approved']);
+    }
   }
 
   Future<void> backgroundHandler(RemoteMessage message) async {

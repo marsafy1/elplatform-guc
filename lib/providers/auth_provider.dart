@@ -20,6 +20,9 @@ class AuthProvider with ChangeNotifier {
         UserService.getUserById(user.uid).then((value) async {
           _user = value;
           FirebaseMessaging.instance.subscribeToTopic(_user!.id);
+          if (isAdmin) {
+            FirebaseMessaging.instance.subscribeToTopic('admin');
+          }
           await AnalyticsService.setUserProperties(
             userId: user.uid,
             userType: _user!.userType,
@@ -103,8 +106,28 @@ class AuthProvider with ChangeNotifier {
 
   void logout() {
     FirebaseMessaging.instance.unsubscribeFromTopic(_user!.id);
+    if (isAdmin) FirebaseMessaging.instance.unsubscribeFromTopic('admin');
     _auth.signOut();
     AnalyticsService.logLogout();
+  }
+
+  void respondToPublishRequest(bool isPublisher) {
+    _user = User(
+      id: _user!.id,
+      firstName: _user!.firstName,
+      lastName: _user!.lastName,
+      email: _user!.email,
+      userType: _user!.userType,
+      isPublisher: isPublisher,
+      header: _user!.header,
+      bio: _user!.bio,
+      faculty: _user!.faculty,
+      gucId: _user!.gucId,
+      photoUrl: _user!.photoUrl,
+      isPending: false,
+    );
+    print("Provider Entered");
+    notifyListeners();
   }
 
   Future<void> updateUser({

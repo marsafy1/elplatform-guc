@@ -453,74 +453,77 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
         padding: const EdgeInsets.all(8.0),
         child: myPages[selectedTabIndex],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          final userAuth = Provider.of<AuthProvider>(context, listen: false);
-          bool isPublisher = userAuth.user!.isPublisher;
-          bool inFeed = indexToCollection[selectedTabIndex] == "feed";
-          if (!isPublisher && inFeed) {
-            Toast.show(context, "You need to be a publisher", "warning");
-            if (userAuth.user!.isPending ?? false) {
-              Toast.show(context, "Your request is pending", "ifo");
-              return;
-            }
-            ConfirmAction.showConfirmationDialog(
-                context: context,
-                onConfirm: () async {
-                  await ConfirmAction.showPublishRequestDialog(
-                    context: context,
-                    title: "Request Publish Access",
-                    onConfirm: (publishTitle, publisMessage) {
-                      _publishRequestsService
-                          .addPublishRequest(
-                        PublishRequest(
-                            title: publishTitle,
-                            content: publisMessage,
-                            userId: userAuth.user!.id),
-                      )
-                          .then((value) {
-                        userAuth.updateUser(
-                          isPending: true,
+      floatingActionButton: selectedTabIndex == 4
+          ? null
+          : FloatingActionButton(
+              onPressed: () {
+                final userAuth =
+                    Provider.of<AuthProvider>(context, listen: false);
+                bool isPublisher = userAuth.user!.isPublisher;
+                bool inFeed = indexToCollection[selectedTabIndex] == "feed";
+                if (!isPublisher && inFeed) {
+                  Toast.show(context, "You need to be a publisher", "warning");
+                  if (userAuth.user!.isPending ?? false) {
+                    Toast.show(context, "Your request is pending", "ifo");
+                    return;
+                  }
+                  ConfirmAction.showConfirmationDialog(
+                      context: context,
+                      onConfirm: () async {
+                        await ConfirmAction.showPublishRequestDialog(
+                          context: context,
+                          title: "Request Publish Access",
+                          onConfirm: (publishTitle, publisMessage) {
+                            _publishRequestsService
+                                .addPublishRequest(
+                              PublishRequest(
+                                  title: publishTitle,
+                                  content: publisMessage,
+                                  userId: userAuth.user!.id),
+                            )
+                                .then((value) {
+                              userAuth.updateUser(
+                                isPending: true,
+                              );
+                              Toast.show(context, "Request Sent", "success");
+                            });
+                          },
                         );
-                        Toast.show(context, "Request Sent", "success");
-                      });
-                    },
-                  );
-                },
-                title: "Request Publish Access",
-                message:
-                    "You are not authorized to publish. Do you want to send a request for the admin?",
-                confirmButton: "Request");
-          } else {
-            showBottomSheetForNewPost(context);
-          }
-        },
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        child: Ink(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            gradient: LinearGradient(
-              colors: [
-                Theme.of(context).colorScheme.primary,
-                Theme.of(context).colorScheme.secondary,
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+                      },
+                      title: "Request Publish Access",
+                      message:
+                          "You are not authorized to publish. Do you want to send a request for the admin?",
+                      confirmButton: "Request");
+                } else {
+                  showBottomSheetForNewPost(context);
+                }
+              },
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              child: Ink(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    colors: [
+                      Theme.of(context).colorScheme.primary,
+                      Theme.of(context).colorScheme.secondary,
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
+                child: Container(
+                  constraints: const BoxConstraints.expand(
+                    height: 56.0,
+                  ),
+                  alignment: Alignment.center,
+                  child: const FaIcon(
+                    FontAwesomeIcons.plus,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
             ),
-          ),
-          child: Container(
-            constraints: const BoxConstraints.expand(
-              height: 56.0,
-            ),
-            alignment: Alignment.center,
-            child: const FaIcon(
-              FontAwesomeIcons.plus,
-              color: Colors.white,
-            ),
-          ),
-        ),
-      ),
       bottomNavigationBar: GlassMorphicBottomNavigationBar(
         selectedIndex: selectedTabIndex,
         onItemSelected: switchPage,
