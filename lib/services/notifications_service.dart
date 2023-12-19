@@ -28,6 +28,7 @@ class NotificationService {
         'collection': collection,
         'senderId': likerId,
         'dateCreated': DateTime.now(),
+        'isRead': false,
       },
     );
 
@@ -51,6 +52,7 @@ class NotificationService {
         'collection': collection,
         'senderId': commenterId,
         'dateCreated': DateTime.now(),
+        'isRead': false,
       },
     );
     print(notification.toMap());
@@ -74,7 +76,6 @@ class NotificationService {
       }
       return notifications;
     });
-    // sort by dateCreated
     return fetchedNotifications.map((notifications) {
       notifications.sort((a, b) {
         return ((b.info?['dateCreated'] as Timestamp?) ?? Timestamp.now())
@@ -101,5 +102,17 @@ class NotificationService {
     await FirebaseFirestore.instance.collection('notifications').add(
           notification.toMap(),
         );
+  }
+
+  static void readNotification(String notificationId) async {
+    print(notificationId);
+    await FirebaseFirestore.instance
+        .collection('notifications')
+        .doc(notificationId)
+        .update({
+      'info': {
+        'isRead': true,
+      }
+    });
   }
 }

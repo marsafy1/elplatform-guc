@@ -6,6 +6,7 @@ import 'package:guc_swiss_knife/main.dart';
 import 'package:guc_swiss_knife/models/notification_model.dart';
 import 'package:guc_swiss_knife/models/post.dart';
 import 'package:guc_swiss_knife/models/user.dart';
+import 'package:guc_swiss_knife/services/notifications_service.dart';
 import 'package:guc_swiss_knife/services/posts_service.dart';
 import 'package:guc_swiss_knife/services/user_service.dart';
 import 'package:guc_swiss_knife/utils_functions/profile.dart';
@@ -30,6 +31,7 @@ class NotificationCard extends StatefulWidget {
         user: poster);
     navigatorKey.currentState!.pushNamed('/notificationDetails',
         arguments: {'widget': PostWidget(post: post, collection: collection)});
+    NotificationService.readNotification(notification.id ?? "");
   }
 }
 
@@ -49,6 +51,10 @@ class _NotificationCardState extends State<NotificationCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: widget.notification.info!['isRead'] ?? false
+          ? Theme.of(context).canvasColor
+          : Theme.of(context)
+              .disabledColor, // Change color based on unread status
       child: ListTile(
         leading: generateAvatar(context, user ?? User.defaultUser),
         trailing: Text(
@@ -57,13 +63,32 @@ class _NotificationCardState extends State<NotificationCard> {
                       ?.toDate() ??
                   DateTime.now()),
           textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 7),
+          style: TextStyle(
+              fontSize: 7,
+              color: widget.notification.info!['isRead'] ?? false
+                  ? Theme.of(context).primaryColorLight
+                  : Theme.of(context)
+                      .primaryColor), // Change text color based on unread status
         ),
-        title: Text(widget.notification.title ?? ""),
+        title: Text(
+          widget.notification.title ?? "",
+          style: TextStyle(
+              fontWeight: widget.notification.info!['isRead'] ?? false
+                  ? FontWeight.normal
+                  : FontWeight.bold,
+              color: widget.notification.info!['isRead'] ?? false
+                  ? Theme.of(context).primaryColorLight
+                  : Theme.of(context)
+                      .primaryColor), // Bold text for unread notifications
+        ),
         subtitle: Text(
           widget.notification.message ?? "",
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+              color: widget.notification.info!['isRead'] ?? false
+                  ? Theme.of(context).primaryColorLight
+                  : Theme.of(context).primaryColor),
         ),
         onTap: () {
           NotificationCard.notificationCardOnTab(widget.notification);

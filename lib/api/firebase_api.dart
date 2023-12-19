@@ -5,6 +5,7 @@ import 'package:guc_swiss_knife/main.dart';
 import 'package:guc_swiss_knife/models/notification_model.dart';
 import 'package:guc_swiss_knife/models/post.dart';
 import 'package:guc_swiss_knife/models/user.dart';
+import 'package:guc_swiss_knife/services/notifications_service.dart';
 import 'package:guc_swiss_knife/services/posts_service.dart';
 import 'dart:convert';
 
@@ -48,6 +49,7 @@ class FirebaseApi {
         user: poster);
     navigatorKey.currentState!.pushNamed('/notificationDetails',
         arguments: {'widget': PostWidget(post: post, collection: collection)});
+    NotificationService.readNotification(message.data['id']!);
   }
 
   // void handleForeGroundMessage(RemoteMessage? message) {

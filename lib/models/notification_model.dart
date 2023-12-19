@@ -15,8 +15,8 @@ class NotificationModel {
     this.info,
   });
 
-  NotificationModel.fromMap(Map<String, dynamic> map, String id)
-      : id = map['id'],
+  NotificationModel.fromMap(Map<String, dynamic> map, String docId)
+      : id = docId,
         title = map['title'],
         message = map['message'],
         topic = map['topic'],
