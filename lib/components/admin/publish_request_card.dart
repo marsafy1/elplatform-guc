@@ -43,9 +43,9 @@ class _PublishRequestCardState extends State<PublishRequestCard> {
           textAlign: TextAlign.center,
           style: const TextStyle(fontSize: 7),
         ),
-        title: Text(widget.publishRequest.title),
+        title: Text(user?.firstName ?? ""),
         subtitle: Text(
-          widget.publishRequest.content,
+          widget.publishRequest.title,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
