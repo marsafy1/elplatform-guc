@@ -24,7 +24,9 @@ class _AdminPublishRequestsState extends State<AdminPublishRequests> {
       builder: (context, AsyncSnapshot<List<PublishRequest>> snapshot) {
         if (snapshot.hasData) {
           return Scaffold(
-            appBar: MyAppBar(),
+            appBar: AppBar(
+              title: const Text("Publish Requests"),
+            ),
             drawer: const MainDrawer(),
             // generate list of cards in the body
             body: snapshot.data!.isEmpty
