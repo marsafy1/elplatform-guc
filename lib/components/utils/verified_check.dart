@@ -10,14 +10,13 @@ class VerifiedCheck extends StatelessWidget {
       height: 18,
       width: 18,
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary, // Blue background color
-        shape: BoxShape.circle, // Circular shape
+        color: Theme.of(context).colorScheme.primary,
+        shape: BoxShape.circle,
       ),
       child: const Icon(
-        Icons.check, // Checkmark icon
-        color: Colors.white, // White checkmark
-        size:
-            24 * 0.6, // Sizing the icon to be a bit smaller than the container
+        Icons.check,
+        color: Colors.white,
+        size: 24 * 0.6,
       ),
     );
   }

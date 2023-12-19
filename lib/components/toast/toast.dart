@@ -21,10 +21,8 @@ class Toast {
 
     final overlay = Overlay.of(context);
 
-    // Declare the overlayEntry variable
     OverlayEntry? overlayEntry;
 
-    // Initialize the overlayEntry
     overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
         top: MediaQuery.of(context).viewPadding.top + 100.0,
@@ -34,7 +32,7 @@ class Toast {
             if (onTap != null) {
               onTap();
             }
-            // Dismiss the toast when tapped
+
             if (overlayEntry!.mounted) {
               overlayEntry!.remove();
             }

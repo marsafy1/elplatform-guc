@@ -42,9 +42,8 @@ class _QuestionsPageState extends State<QuestionsPage> {
     super.initState();
     categories = categoriesMap.entries.map((entry) {
       return Category(
-        name: entry.value.name, // Use the name from the CategoryItem in the map
-        icon: CategoryIcon(
-            icon: entry.value.icon), // Use the icon from the CategoryItem
+        name: entry.value.name,
+        icon: CategoryIcon(icon: entry.value.icon),
         addCategory: addCategory,
         removeCategory: removeCategory,
       );
@@ -52,9 +51,8 @@ class _QuestionsPageState extends State<QuestionsPage> {
 
     categoriesChoices = categoriesMap.entries.map((entry) {
       return Category(
-        name: entry.value.name, // Use the name from the CategoryItem in the map
-        icon: CategoryIcon(
-            icon: entry.value.icon), // Use the icon from the CategoryItem
+        name: entry.value.name,
+        icon: CategoryIcon(icon: entry.value.icon),
         addCategory: addCategory,
         removeCategory: removeCategory,
       );
@@ -65,12 +63,6 @@ class _QuestionsPageState extends State<QuestionsPage> {
       categoriesChoices[0].selected = true;
     });
   }
-
-  // void updateCategoriesAndReopenBottomSheet() {
-  //   Navigator.pop(context); // Close the existing bottom sheet
-  //   someFunctionThatUpdatesCategories(); // Update your categoriesChoices here
-  //   showBottomSheetForNewPost(context); // Reopen the bottom sheet
-  // }
 
   void addCategory(Category c, bool asFilter) {
     setState(() {
@@ -113,7 +105,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
   final ScrollController _scrollController = ScrollController();
   @override
   void dispose() {
-    _scrollController.dispose(); // Important to dispose the controller
+    _scrollController.dispose();
     super.dispose();
   }
 

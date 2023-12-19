@@ -8,7 +8,6 @@ class ImageSlider extends StatefulWidget {
       : super(key: key);
 
   @override
-  // _ImageSliderState createState() => _ImageSliderState();
   State<ImageSlider> createState() => _ImageSliderState();
 }
 
@@ -70,9 +69,8 @@ class _ImageSliderState extends State<ImageSlider> {
         singleImage
             ? const SizedBox()
             : SizedBox(
-                width: double.infinity, // Set the width
+                width: double.infinity,
                 child: Center(
-                  // Center the Row
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: circles,

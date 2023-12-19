@@ -18,23 +18,19 @@ class GlassMorphicBottomNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: const BorderRadius.vertical(
-          top: Radius.circular(16)), // Rounded corners
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: blurStrength, sigmaY: blurStrength),
         child: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
-          backgroundColor: Theme.of(context)
-              .colorScheme
-              .background, // Transparent background color
+          backgroundColor: Theme.of(context).colorScheme.background,
           items: listItems,
           currentIndex: selectedIndex,
           onTap: (index) => onItemSelected(index),
           selectedItemColor: Theme.of(context).colorScheme.primary,
           unselectedItemColor: Colors.grey,
-          showSelectedLabels: false, // Do not show label for the selected item
-          showUnselectedLabels:
-              false, // Do not show label for the unselected items
+          showSelectedLabels: false,
+          showUnselectedLabels: false,
         ),
       ),
     );
