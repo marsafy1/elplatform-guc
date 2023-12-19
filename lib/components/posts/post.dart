@@ -348,7 +348,9 @@ class _PostState extends State<PostWidget> {
                         interactionIconBtn,
                         size: 17,
                         color: isLikedByUserUI
-                            ? Theme.of(context).colorScheme.primary
+                            ? Theme.of(context).brightness == Brightness.dark
+                                ? (Theme.of(context).colorScheme.primary)
+                                : Colors.white
                             : Colors.white,
                       ),
                       const SizedBox(
