@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:guc_swiss_knife/models/publish_request.dart';
+import 'package:guc_swiss_knife/services/notifications_service.dart';
 
 class PublishRequestsService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -45,5 +46,6 @@ class PublishRequestsService {
   // add new publish request
   Future<void> addPublishRequest(PublishRequest publishRequest) async {
     await _firestore.collection("publish_requests").add(publishRequest.toMap());
+    NotificationService.sendPublishRequestNotification(publishRequest);
   }
 }
