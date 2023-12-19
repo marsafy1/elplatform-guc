@@ -17,11 +17,12 @@ class NotificationService {
     String action =
         ['feed', 'confessions'].contains(collection) ? "liked" : "upvoted";
     NotificationModel notification = NotificationModel(
-      'Like',
-      '${liker.firstName} ${liker.lastName} $action your ${_collectionsToNotifications[collection]}',
-      '/topics/$ownerId',
-      'like',
-      {'postId': postId, 'collection': collection},
+      title: 'Like',
+      message:
+          '${liker.firstName} ${liker.lastName} $action your ${_collectionsToNotifications[collection]}',
+      topic: '/topics/$ownerId',
+      type: 'like',
+      info: {'postId': postId, 'collection': collection},
     );
 
     await FirebaseFirestore.instance.collection('notifications').add(
@@ -34,15 +35,34 @@ class NotificationService {
     User commenter = await UserService.getUserById(commenterId);
     String action = collection != "questions" ? "commented on" : "answered";
     NotificationModel notification = NotificationModel(
-      'Like',
-      '${commenter.firstName} ${commenter.lastName} $action your ${_collectionsToNotifications[collection]}',
-      '/topics/$ownerId',
-      'like',
-      {'postId': postId, 'collection': collection},
+      title: 'Comment',
+      message:
+          '${commenter.firstName} ${commenter.lastName} $action your ${_collectionsToNotifications[collection]}',
+      topic: '/topics/$ownerId',
+      type: 'Comment',
+      info: {'postId': postId, 'collection': collection},
     );
     print(notification.toMap());
     await FirebaseFirestore.instance.collection('notifications').add(
           notification.toMap(),
         );
+  }
+
+  Stream<List<NotificationModel>> fetchNotifications(String userId) {
+    Stream<List<NotificationModel>> fetchedNotifications = FirebaseFirestore
+        .instance
+        .collection("notifications")
+        .where('topic', isEqualTo: '/topics/$userId')
+        .snapshots()
+        .asyncMap((snapshot) async {
+      List<NotificationModel> notifications = [];
+      for (var doc in snapshot.docs) {
+        NotificationModel notification =
+            NotificationModel.fromMap(doc.data(), doc.id);
+        notifications.add(notification);
+      }
+      return notifications;
+    });
+    return fetchedNotifications;
   }
 }
