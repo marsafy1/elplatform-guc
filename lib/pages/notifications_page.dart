@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guc_swiss_knife/components/notification_card.dart';
 import 'package:guc_swiss_knife/components/utils/no_content.dart';
 import 'package:guc_swiss_knife/models/notification_model.dart';
 import 'package:guc_swiss_knife/providers/auth_provider.dart';
@@ -37,7 +38,9 @@ class _NotificationsPageState extends State<NotificationsPage> {
               : ListView.builder(
                   itemCount: snapshot.data!.length,
                   itemBuilder: (context, index) {
-                    return const Text("hell");
+                    return NotificationCard(
+                      notification: snapshot.data![index],
+                    );
                   },
                 );
         } else {
@@ -47,3 +50,5 @@ class _NotificationsPageState extends State<NotificationsPage> {
     );
   }
 }
+
+

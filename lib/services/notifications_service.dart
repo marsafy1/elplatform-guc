@@ -22,7 +22,7 @@ class NotificationService {
           '${liker.firstName} ${liker.lastName} $action your ${_collectionsToNotifications[collection]}',
       topic: '/topics/$ownerId',
       type: 'like',
-      info: {'postId': postId, 'collection': collection},
+      info: {'postId': postId, 'collection': collection, 'senderId': likerId},
     );
 
     await FirebaseFirestore.instance.collection('notifications').add(
@@ -40,7 +40,11 @@ class NotificationService {
           '${commenter.firstName} ${commenter.lastName} $action your ${_collectionsToNotifications[collection]}',
       topic: '/topics/$ownerId',
       type: 'Comment',
-      info: {'postId': postId, 'collection': collection},
+      info: {
+        'postId': postId,
+        'collection': collection,
+        'senderId': commenterId
+      },
     );
     print(notification.toMap());
     await FirebaseFirestore.instance.collection('notifications').add(
