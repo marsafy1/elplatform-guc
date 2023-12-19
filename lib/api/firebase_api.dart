@@ -52,7 +52,7 @@ class FirebaseApi {
         user: poster);
     navigatorKey.currentState!.pushNamed('/notificationDetails',
         arguments: {'widget': PostWidget(post: post, collection: collection)});
-    NotificationService.readNotification(message.data['id']!);
+    NotificationService.readNotification(message.data['id']!,json.decode(message.data['info']!));
   }
 
   void handleForeGroundMessage(RemoteMessage? message) {

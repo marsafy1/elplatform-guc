@@ -31,7 +31,9 @@ class NotificationCard extends StatefulWidget {
         user: poster);
     navigatorKey.currentState!.pushNamed('/notificationDetails',
         arguments: {'widget': PostWidget(post: post, collection: collection)});
-    NotificationService.readNotification(notification.id ?? "");
+    if (notification.info!['isRead'] ?? false) return;
+    NotificationService.readNotification(
+        notification.id ?? "", notification.info!);
   }
 }
 

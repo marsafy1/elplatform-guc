@@ -104,15 +104,13 @@ class NotificationService {
         );
   }
 
-  static void readNotification(String notificationId) async {
+  static void readNotification(
+      String notificationId, Map<String, dynamic> info) async {
     print(notificationId);
+    info['isRead'] = true;
     await FirebaseFirestore.instance
         .collection('notifications')
         .doc(notificationId)
-        .update({
-      'info': {
-        'isRead': true,
-      }
-    });
+        .update({'info': info});
   }
 }
