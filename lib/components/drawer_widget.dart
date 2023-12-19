@@ -90,6 +90,7 @@ class _MainDrawerState extends State<MainDrawer> {
                 title: const Text("Logout"),
                 onTap: () {
                   _authProvider.logout();
+                  Navigator.of(context).pushReplacementNamed('/login');
                 },
               ),
               ListTile(
