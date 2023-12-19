@@ -20,6 +20,9 @@ class AuthProvider with ChangeNotifier {
         UserService.getUserById(user.uid).then((value) async {
           _user = value;
           FirebaseMessaging.instance.subscribeToTopic(_user!.id);
+          if (isAdmin) {
+            FirebaseMessaging.instance.subscribeToTopic('admin');
+          }
           await AnalyticsService.setUserProperties(
             userId: user.uid,
             userType: _user!.userType,
@@ -103,6 +106,7 @@ class AuthProvider with ChangeNotifier {
 
   void logout() {
     FirebaseMessaging.instance.unsubscribeFromTopic(_user!.id);
+    if (isAdmin) FirebaseMessaging.instance.unsubscribeFromTopic('admin');
     _auth.signOut();
     AnalyticsService.logLogout();
   }

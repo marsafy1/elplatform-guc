@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:guc_swiss_knife/models/publish_request.dart';
 import 'package:guc_swiss_knife/models/user.dart';
 import 'package:guc_swiss_knife/services/user_service.dart';
 
@@ -39,7 +40,7 @@ class NotificationService {
       message:
           '${commenter.firstName} ${commenter.lastName} $action your ${_collectionsToNotifications[collection]}',
       topic: '/topics/$ownerId',
-      type: 'Comment',
+      type: 'comment',
       info: {
         'postId': postId,
         'collection': collection,
@@ -68,5 +69,21 @@ class NotificationService {
       return notifications;
     });
     return fetchedNotifications;
+  }
+
+  static void sendPublishRequestNotification(
+      PublishRequest publishRequest) async {
+    User requestOwner = await UserService.getUserById(publishRequest.userId);
+    NotificationModel notification = NotificationModel(
+        title: 'Publish Request',
+        message:
+            '${requestOwner.firstName} ${requestOwner.lastName} requested to be a publisher',
+        topic: '/topics/admin',
+        type: 'Comment',
+        info: {});
+    print(notification.toMap());
+    await FirebaseFirestore.instance.collection('notifications').add(
+          notification.toMap(),
+        );
   }
 }
