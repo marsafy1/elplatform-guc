@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:guc_swiss_knife/components/posts/post.dart';
+import 'package:guc_swiss_knife/components/toast/toast.dart';
 import 'package:guc_swiss_knife/main.dart';
 import 'package:guc_swiss_knife/models/notification_model.dart';
 import 'package:guc_swiss_knife/models/post.dart';
@@ -8,6 +11,7 @@ import 'package:guc_swiss_knife/models/user.dart';
 import 'package:guc_swiss_knife/services/notifications_service.dart';
 import 'package:guc_swiss_knife/services/posts_service.dart';
 import 'dart:convert';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:guc_swiss_knife/services/user_service.dart';
 
@@ -52,10 +56,20 @@ class FirebaseApi {
     NotificationService.readNotification(message.data['id']!);
   }
 
-  // void handleForeGroundMessage(RemoteMessage? message) {
-  //   if (message == null) return;
-  //   navigatorKey.currentState!.pushNamed('/courses');
-  // }
+  void handleForeGroundMessage(RemoteMessage? message) {
+    if (message == null) return;
+
+    ScaffoldMessenger.of(navigatorKey.currentContext!).showSnackBar(
+      SnackBar(
+          content: Text(message.notification!.body!),
+          action: SnackBarAction(
+            label: 'View ',
+            onPressed: () {
+              handlePostInteraction(message);
+            },
+          )),
+    );
+  }
 
   Future<void> backgroundHandler(RemoteMessage message) async {
     String type = message.data['type']!;
@@ -68,6 +82,6 @@ class FirebaseApi {
         .then(handleBackGroundMessage);
     FirebaseMessaging.onMessageOpenedApp.listen(handleBackGroundMessage);
     FirebaseMessaging.onBackgroundMessage(backgroundHandler);
-    //FirebaseMessaging.onMessage.listen(handleForeGroundMessage);
+    FirebaseMessaging.onMessage.listen(handleForeGroundMessage);
   }
 }
