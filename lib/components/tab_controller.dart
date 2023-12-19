@@ -179,7 +179,7 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.black,
+      backgroundColor: Theme.of(context).secondaryHeaderColor,
       builder: (BuildContext bc) {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setModalState) {
@@ -305,7 +305,8 @@ class _TabsControllerScreenState extends State<TabsControllerScreen> {
                                         style: localAnon
                                             ? const TextStyle(
                                                 color: Colors.white)
-                                            : const TextStyle()),
+                                            : const TextStyle(
+                                                color: Colors.white)),
                                     if (localAnon)
                                       const SizedBox(
                                         width: 3,

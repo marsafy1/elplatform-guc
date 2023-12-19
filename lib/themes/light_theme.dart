@@ -3,9 +3,11 @@ import 'package:google_fonts/google_fonts.dart';
 
 final ThemeData lightTheme = ThemeData(
   useMaterial3: true,
+  secondaryHeaderColor: Colors.white,
   colorScheme: ColorScheme.fromSeed(
-      primary: Colors.blue[700],
-      seedColor: Colors.lightBlue,
+      primary: Colors.blue,
+      secondary: Colors.indigo,
+      seedColor: Colors.indigo,
       brightness: Brightness.light,
       background: Colors.white),
   textTheme: TextTheme(
@@ -19,5 +21,12 @@ final ThemeData lightTheme = ThemeData(
     ),
     bodyMedium: GoogleFonts.notoSans(),
     displaySmall: GoogleFonts.notoSans(),
+  ),
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ElevatedButton.styleFrom(
+      // Set the foreground color (text color) of the ElevatedButton
+      backgroundColor: Colors.white,
+      // You can also set other properties like backgroundColor, padding, etc.
+    ),
   ),
 );

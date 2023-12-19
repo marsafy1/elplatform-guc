@@ -32,6 +32,7 @@ import 'pages/extra_pages/courses.dart';
 import 'pages/extra_pages/instructors.dart';
 import 'pages/extra_pages/navigation.dart';
 import 'themes/dark_theme.dart';
+import 'themes/light_theme.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
@@ -69,7 +70,7 @@ class MyApp extends StatelessWidget {
         ),
         title: appName,
         debugShowCheckedModeBanner: false,
-        theme: darkTheme,
+        theme: lightTheme,
         darkTheme: darkTheme,
         themeMode: ThemeMode.system,
         navigatorObservers: [
